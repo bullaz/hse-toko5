@@ -45,7 +45,7 @@ export default StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: 'ghostwhite'
+    backgroundColor: 'gray'
   },
 
   modalContent: {
@@ -54,7 +54,7 @@ export default StyleSheet.create({
     borderRadius: 10,
     width: 300,
     alignItems: 'center',
-    elevation: 1
+    elevation: 4
   },
 
   closeButton: {
