@@ -21,7 +21,7 @@ export default StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'stretch',
-    borderWidth: 1,
+    borderWidth: 0,
     borderStyle: 'dashed'
   },
 
@@ -44,12 +44,12 @@ export default StyleSheet.create({
   single: {
     flexDirection: 'column',
     alignContent: 'center',
-    borderWidth: 1,
+    borderWidth: 0,
     borderStyle: 'dashed'
   },
 
   checkboxContainer: {
-    borderWidth: 1,
+    borderWidth: 0,
     flexDirection: 'row',
     justifyContent: 'center'
   }

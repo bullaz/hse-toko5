@@ -15,9 +15,11 @@ import styles from "./styles";
 import { useState } from "react";
 import Think from "./components/Think";
 import SinglePicto from "./components/SinglePicto";
+import ControlMeasure from "./components/controlMeasure";
 export type RootStackParamList = {
   Think: undefined;
   SinglePicto: undefined;
+  ControlMeasure: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -41,6 +43,11 @@ export default function App() {
           name="Think" 
           component={Think}
           options={{ title: 'Penser / Diniho / Think' }}
+        />
+        <Stack.Screen 
+          name="ControlMeasure" 
+          component={ControlMeasure}
+          options={{ title: 'Prendre des mesures de controle' }}
         />
         <Stack.Screen 
           name="SinglePicto" 
