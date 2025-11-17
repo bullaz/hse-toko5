@@ -14,8 +14,10 @@ import { createNativeStackNavigator, NativeStackNavigationOptions } from "@react
 import styles from "./styles";
 import { useState } from "react";
 import Think from "./components/Think";
+import SinglePicto from "./components/SinglePicto";
 export type RootStackParamList = {
-  Home: undefined;
+  Think: undefined;
+  SinglePicto: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -24,7 +26,7 @@ export default function App() {
 
   const screenOptions: NativeStackNavigationOptions = {
     headerStyle: {
-      backgroundColor: '#6200ee',
+      backgroundColor: '#2322F0',
     },
     headerTintColor: '#fff',
     headerTitleStyle: {
@@ -36,9 +38,14 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator screenOptions={screenOptions}>
         <Stack.Screen 
-          name="Home" 
+          name="Think" 
           component={Think}
           options={{ title: 'Penser / Diniho / Think' }}
+        />
+        <Stack.Screen 
+          name="SinglePicto" 
+          component={SinglePicto}
+          options={{ title: 'pictogramme representant .....' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

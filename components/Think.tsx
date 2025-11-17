@@ -1,13 +1,17 @@
 import { useState } from "react";
-import { View, Text, TouchableOpacity, StatusBar, Pressable, Modal, Button } from "react-native";
+import { View, Text, TouchableOpacity, StatusBar, Pressable, Modal, Button, Alert } from "react-native";
 import styles from "../styles";
 import AnonymousHotSurfaceDanger from "../assets/Anonymous-hot-surface-danger.svg";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../App";
 
 const boxes = new Array(10).fill(null).map((v, i) => i + 1);
 
-export default function Think() {
+type Props = NativeStackScreenProps<RootStackParamList>;
 
-    const [modalVisible, setModalVisible] = useState(false);
+export default function Think({ navigation}: Props) {
+
+    /*const [modalVisible, setModalVisible] = useState(false);
 
     const toggleModal = () => {
         setModalVisible(!modalVisible);
@@ -22,7 +26,7 @@ export default function Think() {
                 </TouchableOpacity>
             </View>
         </View>
-    );
+    ); */
 
     return (
         <>
@@ -30,9 +34,28 @@ export default function Think() {
                 <View style={styles.pictoContainer}>
                     <StatusBar hidden={false} />
                     {boxes.map((i) => (
-                        <View key={i}>
+                        <View key={i} style={styles.single}>
+                            {/* <Modal
+                                animationType="fade"
+                                transparent={true}
+                                visible={modalVisible}
+                                onRequestClose={() => {
+                                    Alert.alert('Modal has been closed.');
+                                    setModalVisible(!modalVisible);
+                                }}>
+                                <View style={styles.centeredView}>
+                                    <View style={styles.modalView}>
+                                        <Text style={styles.modalText}>Hello World!</Text>
+                                        <Pressable
+                                            style={[styles.button, styles.buttonClose]}
+                                            onPress={() => setModalVisible(!modalVisible)}>
+                                            <Text style={styles.textStyle}>Hide Modal</Text>
+                                        </Pressable>
+                                    </View>
+                                </View>
+                            </Modal> */}
                             <Pressable
-                                onPress={toggleModal}
+                                onPress={() => navigation.navigate('SinglePicto')}
                                 style={({ pressed }) => [
                                     styles.box,
                                     pressed && styles.pressedBox,
@@ -40,7 +63,9 @@ export default function Think() {
                             >
                                 <AnonymousHotSurfaceDanger fill="blue" />
                             </Pressable>
-                            <Modal animationType="fade" transparent={true} visible={modalVisible}>{modalContent}</Modal>
+                            <View style={styles.checkboxContainer}>
+                                <Text>X.{i}.V</Text>
+                            </View>
                         </View>
                     ))}
                 </View>
@@ -48,14 +73,14 @@ export default function Think() {
                     <View>
                         <Button
                             title="précédent"
-                            color="#6200ee" // Optional: customize button color
+                            color="#2322F0" // Optional: customize button color
                             accessibilityLabel="Learn more about this button"
                         />
                     </View>
                     <View>
                         <Button
                             title="suivant"
-                            color="#6200ee" // Optional: customize button color
+                            color="#2322F0" // Optional: customize button color
                             accessibilityLabel="Learn more about this button"
                         />
                     </View>

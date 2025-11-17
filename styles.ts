@@ -11,11 +11,12 @@ export default StyleSheet.create({
     ...Platform.select({
       ios: { paddingTop: 40 },
       android: { paddingTop: StatusBar.currentHeight }
-    })
+    }),
+    paddingLeft: 10,
   }, 
   box: {
-    width: 100,
-    height: 100,
+    width: 90,
+    height: 90,
     margin: 10,
     justifyContent: 'center',
     alignItems: 'center',
@@ -40,7 +41,20 @@ export default StyleSheet.create({
     backgroundColor: 'ghostwhite'
   },
 
+  single: {
+    flexDirection: 'column',
+    alignContent: 'center',
+    borderWidth: 1,
+    borderStyle: 'dashed'
+  },
 
+  checkboxContainer: {
+    borderWidth: 1,
+    flexDirection: 'row',
+    justifyContent: 'center'
+  }
+
+  /*
   modalContainer: {
     flexDirection: 'column',
     justifyContent: 'space-around',
@@ -59,7 +73,49 @@ export default StyleSheet.create({
 
   closeButton: {
     marginTop: 20
-  }
+  },
+
+
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    /*shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 1,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 0,
+  },
+  buttonOpen: {
+    backgroundColor: '#F194FF',
+  },
+  buttonClose: {
+    backgroundColor: '#2196F3',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+  }*/
 
 
 })
