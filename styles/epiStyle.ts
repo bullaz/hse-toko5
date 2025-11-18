@@ -1,7 +1,7 @@
 import { Platform, StatusBar, StyleSheet } from "react-native";
 
 export default StyleSheet.create({
-  pictoContainer: {
+  container: {
     flex: 1,
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -52,7 +52,7 @@ export default StyleSheet.create({
 
   singleEpi: {
     flexDirection: 'row',
-    alignContent: 'center',
+    alignItems: 'center',
     borderWidth: 0,
     borderStyle: 'dashed',
     padding: 15
@@ -65,72 +65,8 @@ export default StyleSheet.create({
   },
 
   bottomButton: {
-    width: 130,
-    borderRadius: 5
+    width: 120,
   }
-
-  /*
-  modalContainer: {
-    flexDirection: 'column',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    backgroundColor: 'gray'
-  },
-
-  modalContent: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    width: 300,
-    alignItems: 'center',
-    elevation: 4
-  },
-
-  closeButton: {
-    marginTop: 20
-  },
-
-
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
-    /*shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 1,
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 0,
-  },
-  buttonOpen: {
-    backgroundColor: '#F194FF',
-  },
-  buttonClose: {
-    backgroundColor: '#2196F3',
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
-  }*/
 
 
 })

@@ -1,18 +1,23 @@
 import { useState } from "react";
-import { View, Text, TouchableOpacity, StatusBar, Pressable, Modal, Button, Alert } from "react-native";
+import { View, TouchableOpacity, StatusBar, Pressable, Modal, Alert, Image } from "react-native";
 import styles from "../styles";
 import AnonymousHotSurfaceDanger from "../assets/Anonymous-hot-surface-danger.svg";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
 import Checkbox from "expo-checkbox";
+import { IconButton } from "react-native-paper";
+import { useTheme } from "react-native-paper";
+import { Button, Text } from "react-native-paper";
 
-const boxes = new Array(10).fill(null).map((v, i) => i + 1);
+const boxes = new Array(3).fill(null).map((v, i) => i + 1);
 
 type Props = NativeStackScreenProps<RootStackParamList>;
 
 export default function Think({ navigation }: Props) {
 
     const [isChecked, setChecked] = useState(false);
+
+    const theme = useTheme();
 
     /*const [modalVisible, setModalVisible] = useState(false);
 
@@ -63,29 +68,56 @@ export default function Think({ navigation }: Props) {
                                 pressed && styles.pressedBox,
                             ]}
                         >
-                            <AnonymousHotSurfaceDanger fill="blue" />
+                            <Image source={require('../assets/pictogram/materiel.png')} style={{ width: 100, height: 100 }}></Image> 
                         </Pressable>
                         <View style={styles.checkboxContainer}>
-                            {/* {<Text>X.{i}.V</Text>} */}
-                            <Checkbox value={isChecked} onValueChange={setChecked} />
+                            {/* {<Text>X.{i}.V</Text>} 
+                            <Checkbox value={isChecked} onValueChange={setChecked} />*/}
+                            <IconButton
+                                //icon={isChecked ? "close" : "checkbox-blank-outline"}
+                                icon="close"
+                                iconColor={isChecked ? 'red' : theme.colors.outline}
+                                size={24}
+                                onPress={() => setChecked(!isChecked)}
+                            />
+                            <IconButton
+                                icon={isChecked ? "checkbox-marked-outline" : "checkbox-blank-outline"}
+                                iconColor={isChecked ? 'green' : theme.colors.outline}
+                                size={24}
+                                onPress={() => setChecked(!isChecked)}
+                            />
                         </View>
                     </View>
                 ))}
             </View>
             <View style={styles.buttonContainer}>
                 <View>
-                    <Button
-                        title="précédent"
-                        color="#2322F0" // Optional: customize button color
-                        accessibilityLabel="Learn more about this button"
-                    />
+                    <Button style={styles.bottomButton}
+                        mode="contained"
+                        onPress={() => {}}
+                        icon="arrow-left"
+                        labelStyle={{
+                            color: theme.colors.secondary, // Manually set to theme contrast color
+                            fontSize: 16
+                        }}
+                    >
+                        précédent
+                    </Button>
                 </View>
                 <View>
-                    <Button
-                        title="suivant"
-                        color="#2322F0" // Optional: customize button color
-                        accessibilityLabel="Learn more about this button"
-                    />
+                    <Button style={styles.bottomButton}
+                        mode="contained"
+                        onPress={() => { navigation.navigate('Organise1') }}
+                        icon="arrow-right"
+                        contentStyle={{ flexDirection: 'row-reverse' }}
+                        labelStyle={{
+                            color: theme.colors.secondary, // Manually set to theme contrast color
+                            fontSize: 16
+                        }}
+                    >
+
+                        suivant
+                    </Button>
                 </View>
             </View>
         </>
