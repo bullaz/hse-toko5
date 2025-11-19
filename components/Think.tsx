@@ -68,7 +68,7 @@ export default function Think({ navigation }: Props) {
                                 pressed && styles.pressedBox,
                             ]}
                         >
-                            <Image source={require('../assets/pictogram/materiel.png')} style={{ width: 100, height: 100 }}></Image> 
+                            <Image source={require('../assets/pictogram/think/materiel.png')} style={{ width: 100, height: 100 }}></Image> 
                         </Pressable>
                         <View style={styles.checkboxContainer}>
                             {/* {<Text>X.{i}.V</Text>} 

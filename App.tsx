@@ -39,6 +39,8 @@ export type RootStackParamList = {
   Fitness: undefined;
 };
 
+// console.log('TEST OUTSIDE COMPONENT')
+
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 
@@ -70,7 +72,7 @@ export default function App() {
           <Stack.Screen
             name="Login"
             component={Login}
-            options={{ title: "Identification" }}
+            options={{ title: "IDENTIFICATION" }}
           />
           <Stack.Screen
             name="Think"

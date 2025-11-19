@@ -32,7 +32,7 @@ export default function Organise1({ navigation }: Props) {
                                 pressed && styles.pressedBox,
                             ]}
                         >
-                            <Image source={require('../assets/pictogram/document.png')} style={{ width: 100, height: 100 }}></Image>
+                            <Image source={require('../assets/pictogram/organise/document.png')} style={{ width: 100, height: 100 }}></Image>
                         </Pressable>
                         <View style={styles.checkboxContainer}> 
                             <Checkbox value={isChecked} onValueChange={setChecked} />

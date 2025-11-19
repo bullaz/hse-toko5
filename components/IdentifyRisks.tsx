@@ -40,7 +40,7 @@ export default function IdentifyRisks({ navigation }: Props) {
                                 pressed && styles.pressedBox,
                             ]}
                         >
-                            <Image source={require('../assets/pictogram/electricity.png')} style={{ width: 100, height: 100 }}></Image>
+                            <Image source={require('../assets/pictogram/hazard/electricity.png')} style={{ width: 100, height: 100 }}></Image>
                         </Pressable>
                         <View style={styles.checkboxContainer}>
                             <Checkbox

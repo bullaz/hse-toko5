@@ -33,7 +33,7 @@ export default function Epi({ navigation }: Props) {
                                 pressed && styles.pressedBox,
                             ]}
                         >
-                            <Image source={require('../assets/pictogram/mask.png')} style={{ width: 100, height: 100 }}></Image>
+                            <Image source={require('../assets/pictogram/epi/mask.png')} style={{ width: 100, height: 100 }}></Image>
                         </Pressable>
                         <View style={styles.checkboxContainer}> 
                             <Checkbox value={isChecked} onValueChange={setChecked} />
