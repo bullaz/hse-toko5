@@ -20,7 +20,7 @@ export const initDatabase = () => {
           nom_contractant TEXT NOT NULL,
           prenom_contractant TEXT NOT NULL,
           date_heure TEXT NOT NULL,
-          etat TEXT NOT NULL DEFAULT 'ongoing', CHECK (etat in ('valide','invalide','ongoing')),
+          etat TEXT NOT NULL DEFAULT 'ongoing' CHECK (etat in ('valide','invalide','ongoing'))
         )`,
         [],
         () => {
@@ -36,13 +36,11 @@ export const initDatabase = () => {
 
       tx.executeSql(
         `CREATE TABLE IF NOT EXISTS question (
-          question_id INT AUTO_INCREMENT PRIMARY KEY,
+          question_id INT PRIMARY KEY AUTOINCREMENT,
           nom TEXT NOT NULL UNIQUE,
-          description TEXT,
           pictogramme TEXT,
-          required INT NOT NULL DEFAULT 0, CHECK (required in (0,1)),
-          is_risk_question INT NOT NULL DEFAULT 0, CHECK (is_risk_questoin in (0,1))
-          categorie TEXT NOT NULL, CHECK (categorie in ("think","organise","risk","epi","safety"))
+          required INT NOT NULL DEFAULT 0 CHECK (required in (0,1)),
+          categorie TEXT NOT NULL CHECK (categorie in ("think","organise","risk","epi","safety"))
         )`,
         [],
         () => {
@@ -55,12 +53,34 @@ export const initDatabase = () => {
         }
       );
 
+
+      tx.executeSql(
+        `CREATE TABLE IF NOT EXISTS traduction (
+          traduction_id INT PRIMARY KEY AUTOINCREMENT,
+          question_id INT NOT NULL,
+          nom TEXT NOT NULL UNIQUE,
+          description TEXT,
+          code_langue TEXT,
+          FOREIGN_KEY question_id REFERENCES question(question_id)
+        )`,
+        [],
+        () => {
+          console.log('Table question created successfully');
+          resolve();
+        },
+        (_, error) => {
+          console.log('Error creating table question: ', error);
+          reject(error);
+        }
+      );
+
+
       tx.executeSql(
         `CREATE TABLE IF NOT EXISTS reponse (
-          reponse_id INT AUTO_INCREMENT PRIMARY KEY,
+          reponse_id INT PRIMARY KEY AUTOINCREMENT,
           toko5_id TEXT NOT NULL,
           question_id INT NOT NULL,
-          valeur INT, CHECK (valeur in 0,1),
+          valeur INT CHECK (valeur in 0,1),
           FOREIGN KEY (toko5_id) REFERENCES toko5(toko5_id),
           FOREIGN KEY (question_id) REFERENCES question(question_id)
         )`,
@@ -77,7 +97,7 @@ export const initDatabase = () => {
 
       tx.executeSql(
         `CREATE TABLE IF NOT EXISTS commentaire (
-          commentaire_id INT AUTO_INCREMENT PRIMARY KEY,
+          commentaire_id INT PRIMARY KEY AUTOINCREMENT,
           toko5_id TEXT NOT NULL,
           nom TEXT NOT NULL,
           prenom TEXT NOT NULL,
@@ -97,11 +117,11 @@ export const initDatabase = () => {
 
       tx.executeSql(
         `CREATE TABLE IF NOT EXISTS mesure_controle (
-          mesure_controle_id INT AUTO_INCREMENT PRIMARY KEY,
+          mesure_controle_id INT PRIMARY KEY AUTOINCREMENT,
           toko5_id TEXT NOT NULL,
           question_id INT NOT NULL,
           mesure_prise TEXT NOT NULL,
-          implemented INT DEFAULT 0, CHECK (implemented in (0,1)),
+          implemented INT DEFAULT 0 CHECK (implemented in (0,1)),
           FOREIGN KEY (toko5_id) REFERENCES toko5(toko5_id),
           FOREIGN KEY (question_id) REFERENCES question(question_id)
         )`,
@@ -117,42 +137,42 @@ export const initDatabase = () => {
       );
 
       tx.executeSql(
-        `INSERT INTO question (nom, description, pictogramme, categorie, required) VALUES 
-            ('alcool', 'description',' alcohol', 'think', 1),
-            ('competence', 'description', 'competency', 'think', 1),
-            ('formation', 'description', 'formation', 'think', 1),
-            ('materiel', 'description', 'materiel', 'think', 1),
-            ('nombre de travailleurs', 'description', 'people', 'think', 1),
+        `INSERT INTO question (nom, pictogramme, categorie, required) VALUES 
+            ('alcool','alcohol', 'think', 1),
+            ('competence', 'competency', 'think', 1),
+            ('formation', 'formation', 'think', 1),
+            ('materiel', 'materiel', 'think', 1),
+            ('nombre de travailleurs', 'people', 'think', 1),
 
             
-            ('swp', 'description', 'swp', 'organise', 1),
-            ('ast', 'description', 'document', 'organise', 1),
-            ('permis de travail', 'description', 'workpermit', 'organise', 1),
-            ('attention eboulement', 'description', 'falling-rock', 'organise', 0),
-            ('pelle', 'description', 'pelle', 'organise', 0),
-            ('attention feu', 'description', 'fire_warning', 'organise', 0),
+            ('swp',  'swp', 'organise', 1),
+            ('ast', 'document', 'organise', 1),
+            ('permis de travail', 'workpermit', 'organise', 1),
+            ('attention eboulement', 'falling-rock', 'organise', 0),
+            ('pelle', 'pelle', 'organise', 0),
+            ('attention feu', 'fire_warning', 'organise', 0),
 
 
-            ('biohazard', 'description', 'biohazard', 'hazard', 0),
-            ('electricite', 'description', 'electricity', 'hazard', 0),
-            ('fatal', 'description', 'fatal', 'hazard', 0),
-            ('attention feu', 'description', 'fire_warning', 'hazard', 0),
-            ('attention terrain glissant', 'description', 'slippery', 'hazard', 0),
-            ('unknown', 'description', 'unknown', 'hazard', 0),
-            ('attention a la marche', 'description', 'watch-steps', 'hazard', 0),
-            ('autre', 'description', 'other-hazard', 'hazard', 0),
+            ('biohazard', 'biohazard', 'hazard', 0),
+            ('electricite', 'electricity', 'hazard', 0),
+            ('fatal', 'fatal', 'hazard', 0),
+            ('attention feu', 'fire_warning', 'hazard', 0),
+            ('attention terrain glissant', 'slippery', 'hazard', 0),
+            ('unknown', 'unknown', 'hazard', 0),
+            ('attention a la marche', 'watch-steps', 'hazard', 0),
+            ('autre', 'other-hazard', 'hazard', 0),
 
 
-            ('antibruit', 'description', 'antibruit', 'epi', 0),
-            ('verre de protection du visage', 'description', 'face-protection', 'epi', 0),
-            ('gant', 'description', 'gant', 'epi', 0),
-            ('gilet', 'description', 'gilet', 'epi', 0),
-            ('gilet', 'description', 'gilet2', 'epi', 0),
-            ('lunettes', 'description', 'glass2', 'epi', 0),
-            ('casque', 'description', 'helmet', 'epi', 0),
-            ('cache-bouche', 'description', 'mask2', 'epi', 0),
-            ('chaussures de protection', 'description', 'shoes', 'epi', 0),
-            ('uniforme', 'description', 'uniform', 'epi', 0),
+            ('antibruit', 'antibruit', 'epi', 0),
+            ('verre de protection du visage', 'face-protection', 'epi', 0),
+            ('gant', 'gant', 'epi', 0),
+            ('gilet', 'gilet', 'epi', 0),
+            ('gilet', 'gilet2', 'epi', 0),
+            ('lunettes', 'glass2', 'epi', 0),
+            ('casque', 'helmet', 'epi', 0),
+            ('cache-bouche', 'mask2', 'epi', 0),
+            ('chaussures de protection', 'shoes', 'epi', 0),
+            ('uniforme', 'uniform', 'epi', 0),
 
 
             ('safety1', 'Est-ce que je suis en bonne condition pour faire ce travail?', NULL, 'safety', 1),
@@ -170,6 +190,10 @@ export const initDatabase = () => {
         }
       );
 
+      //don't forget to insert inside traduction .. Use that instead of question.nom later
+
     });
   });
 };
+
+export default db;

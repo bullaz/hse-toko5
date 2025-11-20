@@ -13,8 +13,8 @@ export default function Login({ navigation }: Props) {
     const [text, setText] = useState("");
     return (
         <>
-            <StatusBar hidden={false} />
             <View style={styles.container}>
+                <StatusBar hidden={false} />
                 <View style={styles.loginDiv}>
                     <Text variant='titleLarge' style={{ fontWeight: 'bold', color: 'rgba(68, 66, 68, 0.87)' }}>Identifiez-vous</Text>
                     <TextInput
@@ -35,7 +35,7 @@ export default function Login({ navigation }: Props) {
                     />
                     <Button style={styles.bottomButton}
                         mode="contained"
-                        onPress={() => { navigation.navigate('Think') }}
+                        onPress={() => { navigation.navigate('Organise1') }}
                         contentStyle={{ flexDirection: 'row-reverse' }}
                         labelStyle={{
                             color: theme.colors.secondary, // Manually set to theme contrast color

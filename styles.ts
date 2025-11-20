@@ -1,11 +1,28 @@
 import { Platform, StatusBar, StyleSheet } from "react-native";
 
 export default StyleSheet.create({
+
+
+  //added to see changes
+  container: {
+    flex: 1,
+    backgroundColor: 'ghostwhite',
+  },
+
+  content: {
+    flex: 1,
+  },
+  //added to see changes does it really work why? (the original problem : /////there is a visual problem during the first second when we still retrieving the list question : the two buttons go bellow the end of the screen.. only part of it is visible and then after we get the data the buttons are placed on the right place
+
+
+
+
+
   pictoContainer: {
     flex: 1,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    alignItems: 'center',
+    alignItems: 'flex-start', // Changed from 'center' to 'flex-start'
     justifyContent: 'flex-start',
     backgroundColor: 'ghostwhite',
     ...Platform.select({
@@ -13,7 +30,7 @@ export default StyleSheet.create({
       android: { paddingTop: StatusBar.currentHeight }
     }),
     paddingLeft: 10,
-  }, 
+  },
 
   box: {
     width: 90,
