@@ -1,20 +1,29 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../App";
+import { RootStackParamList } from "../context";
 import { Button, Text, useTheme } from "react-native-paper";
 import { StatusBar, View } from "react-native";
 import styles from "../styles/loginStyle";
 import { TextInput } from "react-native-paper";
 import { useState } from "react";
+import { useCameraPermissions } from "expo-camera";
 
 type Props = NativeStackScreenProps<RootStackParamList>;
 
 export default function Login({ navigation }: Props) {
     const theme = useTheme();
     const [text, setText] = useState("");
+
+    ////////qr code test
+    const [permission, requestPermission] = useCameraPermissions();
+
+    const isPermissionGranted = Boolean(permission?.granted);
+    ////////
+
+
     return (
         <>
+            <StatusBar hidden={false} />
             <View style={styles.container}>
-                <StatusBar hidden={false} />
                 <View style={styles.loginDiv}>
                     <Text variant='titleLarge' style={{ fontWeight: 'bold', color: 'rgba(68, 66, 68, 0.87)' }}>Identifiez-vous</Text>
                     <TextInput
@@ -35,7 +44,14 @@ export default function Login({ navigation }: Props) {
                     />
                     <Button style={styles.bottomButton}
                         mode="contained"
-                        onPress={() => { navigation.navigate('Organise1') }}
+                        onPress={() => { 
+                            navigation.navigate('Think') 
+                        }}
+
+                        // ///test qr
+                        // // onPress = {requestPermission}
+                        // onPress = {() => {navigation.navigate('ScanQr')}}
+
                         contentStyle={{ flexDirection: 'row-reverse' }}
                         labelStyle={{
                             color: theme.colors.secondary, // Manually set to theme contrast color

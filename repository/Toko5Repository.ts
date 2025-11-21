@@ -166,9 +166,9 @@ class Toko5Repository {
                         ('uniforme', 'uniform', 'epi', 0),
 
 
-                        ('safety1', 'Est-ce que je suis en bonne condition pour faire ce travail?', 'safety', 1),
-                        ('safety2', 'Est-ce aue je suis en securite pour realiser la tache?', 'safety', 1),
-                        ('safety3', 'Ececuter la tache en toute securite', 'safety', 1)
+                        ('Est-ce que je suis en bonne condition pour faire ce travail?',null , 'safety', 1),
+                        ('Est-ce que je suis en securite pour realiser la tache?',null , 'safety', 1),
+                        ('Executer la tache en toute securite',null , 'safety', 1)
                     `
                 )
                 console.log('insert inside table question successfully');
@@ -227,6 +227,19 @@ class Toko5Repository {
         }
         console.log("db null")
         return null
+    }
+
+    async getQuestion(idQuestion: number) {
+        if (this.db !== null) {
+            try {
+                const question = await this.db.getFirstSync('SELECT * FROM question WHERE question_id = ?',idQuestion);
+                return question;
+            } catch (error) {
+                console.log("error getQuestion",error)
+            }
+        }
+        console.log("db null")
+        return null;
     }
 
 

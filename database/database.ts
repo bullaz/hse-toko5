@@ -1,3 +1,5 @@
+///////// NOT USED : changed mind; now it is the toko5repository with expo sqlite
+
 import SQLite from 'react-native-sqlite-storage';
 
 SQLite.enablePromise(true);

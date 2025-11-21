@@ -28,7 +28,7 @@ export default function ControlMeasure() {
     return (
         <>
             <View style={styles.container}>
-                <DataTable style={{ borderWidth: 1, borderColor: 'black' }}>
+                <DataTable style={{ borderWidth: 3, borderColor: 'rgba(0, 0, 0, 1)' }}>
                     <DataTable.Header>
                         <DataTable.Title style={styles.cell}>danger</DataTable.Title>
                         <DataTable.Title style={styles.cell}>mesures</DataTable.Title>
@@ -37,7 +37,7 @@ export default function ControlMeasure() {
 
                     
                     <DataTable.Row style={styles.trow}>
-                        <DataTable.Cell style={styles.cell}><Image source={require('../assets/pictogram/test.jpg')} style={{ width: 100, height: 100 }} /></DataTable.Cell>
+                        <DataTable.Cell style={styles.cell}><Image source={require('../assets/pictogram/test.jpg')} style={{ width: 70, height: 70 }} /></DataTable.Cell>
                         <DataTable.Cell style={styles.cell}>
                             <TextInput
                                 value={text}
@@ -55,7 +55,7 @@ export default function ControlMeasure() {
                     </DataTable.Row>
 
                     <DataTable.Row style={styles.trow}>
-                        <DataTable.Cell style={styles.cell}><Image source={require('../assets/pictogram/test.jpg')} style={{ width: 100, height: 100 }} /></DataTable.Cell>
+                        <DataTable.Cell style={styles.cell}><Image source={require('../assets/pictogram/test.jpg')} style={{ width: 70, height: 70  }} /></DataTable.Cell>
                         <DataTable.Cell style={styles.cell}>
                             <TextInput
                                 value={text}

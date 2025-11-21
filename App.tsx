@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import Think from "./components/Think";
 import SinglePicto from "./components/SinglePicto";
 import ControlMeasure from "./components/ControlMeasure";
-import { DefaultTheme, PaperProvider, Text } from "react-native-paper";
+import { ActivityIndicator, DefaultTheme, PaperProvider, Text } from "react-native-paper";
 import Organise1 from "./components/Organise1";
 import IdentifyRisks from "./components/IdentifyRisks";
 import Organise2 from "./components/Organise2";
@@ -19,19 +19,9 @@ import Login from "./components/Login";
 import Toko5Repository from "./repository/Toko5Repository";
 import { createContext } from "react";
 import { SQLiteDatabase } from "expo-sqlite";
-
-
-export type RootStackParamList = {
-  Login: undefined;
-  Think: undefined;
-  SinglePicto: undefined;
-  Organise1: undefined;
-  Organise2: undefined;
-  IdentifyRisks: undefined;
-  ControlMeasure: undefined;
-  Epi: undefined;
-  Fitness: undefined;
-};
+import { DatabaseContext, RootStackParamList } from "./context";
+import ScanQr from "./components/ScanQr";
+import Commentaire from "./components/Commentaire";
 
 // console.log('TEST OUTSIDE COMPONENT')
 
@@ -47,7 +37,9 @@ const theme = {
 };
 
 
-export const DatabaseContext = createContext<Toko5Repository | null>(null);
+//export const DatabaseContext = createContext<Toko5Repository | null>(null); ///////////////////////put this in a another file ... this causes circular dependencies that can cause problems
+
+
 
 export default function App() {
 
@@ -83,8 +75,8 @@ export default function App() {
 
   if (!dbInitialized || !toko5Repository) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Loading..</Text>
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={theme.colors.primary} />
       </View>
     );
   }
@@ -138,8 +130,21 @@ export default function App() {
             <Stack.Screen
               name="Fitness"
               component={Fitness}
-              options={{ title: 'Mon état actuel' }}
+              options={{ title: 'Fitness' }}
             />
+
+            <Stack.Screen
+              name="ScanQr"
+              component={ScanQr}
+              options={{ title: 'scanner un toko5' }}
+            />
+
+            <Stack.Screen
+              name="Commentaire"
+              component={Commentaire}
+              options={{ title: 'commentaires' }}
+            />
+
           </Stack.Navigator>
         </NavigationContainer>
       </PaperProvider>

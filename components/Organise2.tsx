@@ -3,9 +3,9 @@ import { View, TouchableOpacity, StatusBar, Pressable, Modal, Alert, Image } fro
 import styles from "../styles";
 import AnonymousHotSurfaceDanger from "../assets/Anonymous-hot-surface-danger.svg";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { DatabaseContext, RootStackParamList } from "../App";
+import { DatabaseContext, RootStackParamList } from "../context";
 import Checkbox from "expo-checkbox";
-import { IconButton } from "react-native-paper";
+import { ActivityIndicator, IconButton } from "react-native-paper";
 import { useTheme } from "react-native-paper";
 import { Button, Text } from "react-native-paper";
 import { QUESTION_CATEGORIES } from "../constants/questionTypes";
@@ -47,8 +47,8 @@ export default function Organise2({ navigation }: Props) {
     return (
         <>
             {loading ? (
-                <View>
-                    <Text>Chargement...</Text>
+                <View style={styles.loadingContainer}>
+                    <ActivityIndicator size="large" color={theme.colors.primary} />
                 </View>
             ) : (
                 <View style={styles.pictoContainer}>
@@ -56,13 +56,13 @@ export default function Organise2({ navigation }: Props) {
                     {listQuestion.map((question: any, index: number) => (
                         <View key={question.question_id} style={styles.single}>
                             <Pressable
-                                onPress={() => navigation.navigate('SinglePicto')}
+                                onPress={() => navigation.navigate('SinglePicto',{question: question})}
                                 style={({ pressed }) => [
                                     styles.box,
                                     pressed && styles.pressedBox,
                                 ]}
                             >
-                                <Image source={imagePathMapping(question.pictogramme)} style={{ width: 90, height: 90 }}></Image>
+                                <Image source={imagePathMapping(question.pictogramme)} style={{ width: 80, height: 80 }}></Image>
                             </Pressable>
                             <View style={styles.checkboxContainer}>
                                 <Checkbox value={isChecked} onValueChange={setChecked} />

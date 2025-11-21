@@ -3,13 +3,16 @@ import { View, TouchableOpacity, StatusBar, Pressable, Modal, Alert, Image } fro
 import styles from "../styles";
 import AnonymousHotSurfaceDanger from "../assets/Anonymous-hot-surface-danger.svg";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { DatabaseContext, RootStackParamList } from "../App";
-import { Checkbox } from 'react-native-paper';
+import { DatabaseContext, RootStackParamList } from "../context";
+import { ActivityIndicator, Checkbox, MD3Colors } from 'react-native-paper';
 import { IconButton } from "react-native-paper";
 import { useTheme } from "react-native-paper";
 import { Button, Text } from "react-native-paper";
 import { QUESTION_CATEGORIES } from "../constants/questionTypes";
 import { imagePathMapping } from "../utils/imagePathMapping";
+
+
+////one time from epi press that top button to go back here the buttons precedent and suivant was right below those pictograms not at the end of the screen ... FIND WHY
 
 const boxes = new Array(10).fill(null).map((v, i) => i + 1);
 
@@ -58,8 +61,8 @@ export default function IdentifyRisks({ navigation }: Props) {
     return (
         <>
             {loading ? (
-                <View>
-                    <Text>Chargement...</Text>
+                <View style={styles.loadingContainer}>
+                    <ActivityIndicator size="large" color={theme.colors.primary} />
                 </View>
             ) : (
                 <View style={styles.pictoContainer}>
@@ -67,20 +70,31 @@ export default function IdentifyRisks({ navigation }: Props) {
                     {listQuestion.map((question: any, index: string) => (
                         <View key={question.question_id} style={styles.single}>
                             <Pressable
-                                onPress={() => navigation.navigate('SinglePicto')}
+                                onPress={() => navigation.navigate('SinglePicto', { question: question })}
                                 style={({ pressed }) => [
                                     styles.box,
                                     pressed && styles.pressedBox,
                                 ]}
                             >
-                                <Image source={imagePathMapping(question.pictogramme)} style={{ width: 90, height: 90 }}></Image>
+                                <Image source={imagePathMapping(question.pictogramme)} style={{ width: 80, height: 80 }}></Image>
                             </Pressable>
-                            <View style={styles.checkboxContainer}>
-                                <Checkbox
-                                    status={isChecked ? 'checked' : 'unchecked'}
-                                    onPress={handleCheckBoxPress}
-                                />
-                            </View>
+
+                            {(question.nom !== 'autre') ?
+                                (
+                                    <View style={styles.checkboxContainer}>
+                                        <Checkbox
+                                            status={isChecked ? 'checked' : 'unchecked'}
+                                            onPress={handleCheckBoxPress}
+                                        />
+                                    </View>
+                                ) : (
+                                    <View style={styles.checkboxContainer}>
+                                        <Checkbox
+                                            status={isChecked ? 'checked' : 'unchecked'}
+                                            onPress={handleCheckBoxPress}
+                                        />
+                                    </View>
+                                )}
                         </View>
                     ))}
                 </View>

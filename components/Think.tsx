@@ -10,9 +10,9 @@ import { View, TouchableOpacity, StatusBar, Pressable, Modal, Alert, Image } fro
 import styles from "../styles";
 import AnonymousHotSurfaceDanger from "../assets/Anonymous-hot-surface-danger.svg";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { DatabaseContext, RootStackParamList } from "../App";
+import { DatabaseContext, RootStackParamList } from "../context";
 import Checkbox from "expo-checkbox";
-import { IconButton } from "react-native-paper";
+import { ActivityIndicator, IconButton } from "react-native-paper";
 import { useTheme } from "react-native-paper";
 import { Button, Text } from "react-native-paper";
 import Toko5Repository from "../repository/Toko5Repository";
@@ -72,13 +72,11 @@ export default function Think({ navigation }: Props) {
     ); */
 
     return (
-        <View style={styles.container}>
+        <>
             <StatusBar hidden={false} />
-
-            <View style={styles.content}>
                 {loading ? (
-                    <View>
-                        <Text>Chargement...</Text>
+                    <View style={styles.loadingContainer}>
+                        <ActivityIndicator size="large" color={theme.colors.primary} />
                     </View>
                 ) : (
                     <View style={styles.pictoContainer}>
@@ -104,13 +102,13 @@ export default function Think({ navigation }: Props) {
                                 </View>
                             </Modal> */}
                                 <Pressable
-                                    onPress={() => navigation.navigate('SinglePicto')}
+                                    onPress={() => navigation.navigate('SinglePicto',{question: question})}
                                     style={({ pressed }) => [
                                         styles.box,
                                         pressed && styles.pressedBox,
                                     ]}
                                 >
-                                    <Image source={imagePathMapping(question.pictogramme)} style={{ width: 90, height: 90 }}></Image>
+                                    <Image source={imagePathMapping(question.pictogramme)} style={{ width: 70, height: 70 }}></Image>
                                 </Pressable>
                                 <View style={styles.checkboxContainer}>
                                     {/* {<Text>X.{i}.V</Text>} 
@@ -168,7 +166,6 @@ export default function Think({ navigation }: Props) {
                         </Button>
                     </View>
                 </View>
-            </View>
-        </View >
+            </>
     );
 }

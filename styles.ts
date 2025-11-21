@@ -15,7 +15,11 @@ export default StyleSheet.create({
   //added to see changes does it really work why? (the original problem : /////there is a visual problem during the first second when we still retrieving the list question : the two buttons go bellow the end of the screen.. only part of it is visible and then after we get the data the buttons are placed on the right place
 
 
-
+  loadingContainer: {
+    flex:1,
+    justifyContent: "center",
+    alignItems: 'center'
+  },
 
 
   pictoContainer: {
@@ -25,6 +29,8 @@ export default StyleSheet.create({
     alignItems: 'flex-start', // Changed from 'center' to 'flex-start'
     justifyContent: 'flex-start',
     backgroundColor: 'ghostwhite',
+
+    //this is responsable for that padding on top of the screen.. that padding on that title
     ...Platform.select({
       ios: { paddingTop: 40 },
       android: { paddingTop: StatusBar.currentHeight }

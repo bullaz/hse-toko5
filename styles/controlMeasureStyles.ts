@@ -11,12 +11,11 @@ export default StyleSheet.create({
   trow: {
     alignItems: 'center',
     justifyContent: 'center',
-    borderBottomWidth: 1,
+    borderWidth: 1,
     height: 150
   },
   cell: {
     alignItems: 'center',
     justifyContent: 'center',
-    borderRightWidth: 1
   }
 });
