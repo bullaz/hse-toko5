@@ -7,6 +7,10 @@ import { TextInput } from "react-native-paper";
 import { useState } from "react";
 import { useCameraPermissions } from "expo-camera";
 
+
+//////////////////////////wrap every other components with a wrapper component that verify if the toko 5 is valid or not
+/////////////////// if it is not valid the wrapper component just navigate to the "please talk with your supervisor" component
+
 type Props = NativeStackScreenProps<RootStackParamList>;
 
 export default function Login({ navigation }: Props) {
@@ -48,9 +52,9 @@ export default function Login({ navigation }: Props) {
                             navigation.navigate('Think') 
                         }}
 
-                        // ///test qr
-                        // // onPress = {requestPermission}
-                        // onPress = {() => {navigation.navigate('ScanQr')}}
+                        //test qr
+                        //onPress = {requestPermission}
+                        //onPress = {() => {navigation.navigate('ScanQr')}}
 
                         contentStyle={{ flexDirection: 'row-reverse' }}
                         labelStyle={{

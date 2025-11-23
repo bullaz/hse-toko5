@@ -19,4 +19,5 @@ export type RootStackParamList = {
   Fitness: undefined;
   ScanQr: undefined;
   Commentaire: undefined;
+  Recent: undefined;
 };

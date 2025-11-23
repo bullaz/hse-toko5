@@ -22,6 +22,7 @@ import { SQLiteDatabase } from "expo-sqlite";
 import { DatabaseContext, RootStackParamList } from "./context";
 import ScanQr from "./components/ScanQr";
 import Commentaire from "./components/Commentaire";
+import Recent from "./components/Recent";
 
 // console.log('TEST OUTSIDE COMPONENT')
 
@@ -87,15 +88,28 @@ export default function App() {
       <PaperProvider theme={theme}>
         <NavigationContainer>
           <Stack.Navigator screenOptions={screenOptions}>
+            
+            <Stack.Screen
+              name="Recent"
+              component={Recent}
+              options={{ title: 'toko5 recent(s)' }}
+            />
+
+            <Stack.Screen
+              name="ScanQr"
+              component={ScanQr}
+              options={{ title: 'scanner un toko5' }}
+            />
+
             <Stack.Screen
               name="Login"
               component={Login}
-              options={{ title: "IDENTIFICATION" }}
+              options={{ title: "IDENTIFICATION"}}
             />
             <Stack.Screen
               name="Think"
               component={Think}
-              options={{ title: 'Penser' }}
+              options={{ title: 'Penser' , headerBackVisible: false }}
             />
             <Stack.Screen
               name="SinglePicto"
@@ -131,12 +145,6 @@ export default function App() {
               name="Fitness"
               component={Fitness}
               options={{ title: 'Fitness' }}
-            />
-
-            <Stack.Screen
-              name="ScanQr"
-              component={ScanQr}
-              options={{ title: 'scanner un toko5' }}
             />
 
             <Stack.Screen
