@@ -121,7 +121,7 @@ export default function Think({ navigation }: Props) {
                                         onPress={() => setChecked(!isChecked)}
                                     />
                                     <IconButton
-                                        icon={isChecked ? "checkbox-marked-outline" : "checkbox-blank-outline"}
+                                        icon={isChecked ? "checkbox-marked-outline" : "checkbox-marked-outline"}
                                         iconColor={isChecked ? 'green' : theme.colors.outline}
                                         size={24}
                                         onPress={() => setChecked(!isChecked)}

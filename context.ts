@@ -20,4 +20,5 @@ export type RootStackParamList = {
   ScanQr: undefined;
   Commentaire: undefined;
   Recent: undefined;
+  Invalide: undefined;
 };

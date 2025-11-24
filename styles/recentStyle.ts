@@ -9,11 +9,10 @@ export default StyleSheet.create({
     alignContent: 'center',
     justifyContent: 'space-between',
     backgroundColor: "ghostwhite",
-    // ...Platform.select({
-    //   ios: { paddingTop: 40 },
-    //   android: { paddingTop: StatusBar.currentHeight }
-    // }),
-    //marginTop: 30
+    ...Platform.select({
+      ios: { paddingTop: 40 },
+      android: { paddingTop: StatusBar.currentHeight }
+    }),
   },
 
   verticalLine: {
@@ -26,17 +25,25 @@ export default StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "lightgray",
+    // backgroundColor: "lightgray",
+    backgroundColor: 'rgba(213, 238, 248, 1)',
     width: "90%",
     padding: 5,
-    borderRadius: 10
+    //marginTop: 30,
+    borderRadius: 10,
+
+    shadowColor: "black",
+    shadowOpacity: 0.26,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 8,
+    elevation: 5,
   },
 
   pressableToko5: {
     backgroundColor: "lightgray",
     width: "90%",
     padding: 5,
-    borderRadius: 10
+    borderRadius: 10,
   },
 
   //   box: {

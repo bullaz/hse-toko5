@@ -21,6 +21,13 @@ export default StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     gap: 20,
+    backgroundColor: 'ghostwhite',
+
+    shadowColor: "black",
+    shadowOpacity: 0.26,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 8,
+    elevation: 8,
   },
   bottomButton: {
     width: 200,

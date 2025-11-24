@@ -23,6 +23,7 @@ import { DatabaseContext, RootStackParamList } from "./context";
 import ScanQr from "./components/ScanQr";
 import Commentaire from "./components/Commentaire";
 import Recent from "./components/Recent";
+import Invalide from "./components/Invalide";
 
 // console.log('TEST OUTSIDE COMPONENT')
 
@@ -92,7 +93,13 @@ export default function App() {
             <Stack.Screen
               name="Recent"
               component={Recent}
-              options={{ title: 'toko5 recent(s)' }}
+              options={{ title: 'toko5 recent(s)', headerBackVisible: false }}
+            />
+
+            <Stack.Screen
+              name="Invalide"
+              component={Invalide}
+              options={{ title: 'Votre toko5 est invalide', headerBackVisible: false}}
             />
 
             <Stack.Screen

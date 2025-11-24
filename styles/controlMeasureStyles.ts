@@ -5,19 +5,30 @@ export default StyleSheet.create({
     flex: 1,
     flexWrap: 'wrap',
     flexDirection: "column",
+    justifyContent: 'space-between',
     alignItems: "center",
-    gap: 70,
-    paddingLeft: 10,
-    paddingRight: 10,
+    alignContent: 'center',
+    gap: 60,
+    // paddingLeft: 10,
+    // paddingRight: 10,
   },
   trow: {
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 1,
-    height: 150,
+    height: 50,
   },
   cell: {
     alignItems: "center",
     justifyContent: "center",
   },
+
+
+  modalStyle: {
+    width: "95%", 
+    backgroundColor: 'ghostwhite', 
+    borderRadius: 30,
+    minHeight: "40%", //currently we support only numbers in height prop warning
+    padding: 20,
+    alignSelf: 'center'
+  }
 });

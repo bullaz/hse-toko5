@@ -90,6 +90,16 @@ export default StyleSheet.create({
   bottomButton: {
     width: 130,
     borderRadius: 5
+  },
+
+
+  modalStyle: {
+    width: "95%",
+    backgroundColor: 'ghostwhite', 
+    borderRadius: 30,
+    minHeight: "50%",
+    padding: 20,
+    alignSelf: 'center'
   }
 
   /*

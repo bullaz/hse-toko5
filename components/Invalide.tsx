@@ -64,7 +64,13 @@ export default function Invalide({ navigation }: Props) {
         </View>
       ) : (
         <View style={styles.container}>
-          <View style={{flex:1, flexWrap: 'wrap',flexDirection:'row', justifyContent: 'center', alignItems:'center', alignContent: 'center'}}>
+
+          <View style={{marginTop: 40}}>
+            <Image source={require('../assets/pictogram/stop.png')} style={{ width: 240, height: 240 }}></Image>
+          </View>
+
+
+          <View style={{ flex: 1, flexWrap: 'wrap', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', alignContent: 'center' }}>
             <MaterialDesignIcons
               name="lightbulb-on-outline"
               size={30}
@@ -82,10 +88,10 @@ export default function Invalide({ navigation }: Props) {
           </View>
           <View>
             <IconButton
-              icon="plus"
+              icon="home"
               size={24}
               iconColor="white"
-              onPress={() => navigation.navigate("Login")}
+              onPress={() => navigation.navigate("Recent")}
               style={{
                 backgroundColor: "rgba(26, 85, 161, 0.87)",
                 width: 70,

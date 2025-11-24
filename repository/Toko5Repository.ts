@@ -6,6 +6,8 @@
 import * as SQLite from 'expo-sqlite';
 import { SQLiteDatabase } from 'expo-sqlite';
 import { QUESTION_CATEGORIES } from '../constants/questionTypes';
+import { v4 as uuidv4 } from 'uuid';
+
 
 class Toko5Repository {
     private db: SQLiteDatabase | null;
@@ -39,6 +41,7 @@ class Toko5Repository {
                         etat TEXT NOT NULL DEFAULT 'ongoing' CHECK (etat in ('valide','invalide','ongoing'))
                     )`
                 )
+                //date time as ISO8601 string
                 console.log('Table toko5 created successfully');
             } catch (error) {
                 console.log('Error creating table toko5: ', error);
@@ -189,58 +192,85 @@ class Toko5Repository {
     }
 
 
-
     async getAllCategorieQuestion(categorie: string) {
         if (this.db !== null) {
             try {
                 const listThinkQuestion = await this.db.getAllAsync('SELECT * FROM question WHERE categorie = ?', categorie);
                 return listThinkQuestion;
             } catch (error) {
-                console.log("error getAllThinkQuestion",error)
+                console.log("error getAllThinkQuestion", error)
             }
         }
-        console.log("db null")
-        return null
+        throw new Error('Database not initialized')
     }
 
     async getAllRequiredOrganise() {
         if (this.db !== null) {
             try {
-                const list = await this.db.getAllAsync('SELECT * FROM question WHERE categorie = ? and required = true',QUESTION_CATEGORIES.ORGANISE);
+                const list = await this.db.getAllAsync('SELECT * FROM question WHERE categorie = ? and required = true', QUESTION_CATEGORIES.ORGANISE);
                 return list;
             } catch (error) {
-                console.log("error getAllRequiredOrganise",error)
+                console.log("error getAllRequiredOrganise", error)
             }
         }
-        console.log("db null")
-        return null
+        // console.log("db null")
+        // return null
+        throw new Error('Database not initialized')
     }
 
     async getAllNotRequiredOrganise() {
         if (this.db !== null) {
             try {
-                const list = await this.db.getAllAsync('SELECT * FROM question WHERE categorie = ? and required = false',QUESTION_CATEGORIES.ORGANISE);
+                const list = await this.db.getAllAsync('SELECT * FROM question WHERE categorie = ? and required = false', QUESTION_CATEGORIES.ORGANISE);
                 return list;
             } catch (error) {
-                console.log("error getAllNotRequiredOrganise",error)
+                console.log("error getAllNotRequiredOrganise", error)
             }
         }
-        console.log("db null")
-        return null
+        // console.log("db null")
+        // return null
+        throw new Error('Database not initialized')
     }
 
     async getQuestion(idQuestion: number) {
         if (this.db !== null) {
             try {
-                const question = await this.db.getFirstSync('SELECT * FROM question WHERE question_id = ?',idQuestion);
+                const question = await this.db.getFirstSync('SELECT * FROM question WHERE question_id = ?', idQuestion);
                 return question;
             } catch (error) {
-                console.log("error getQuestion",error)
+                console.log("error getQuestion", error)
             }
         }
-        console.log("db null")
-        return null;
+        throw new Error('Database not initialized')
     }
+
+
+    async getAllToko5() {
+        if (this.db !== null) {
+            try {
+                const listToko5 = await this.db.getAllAsync('SELECT * FROM toko5');
+                return listToko5;
+            } catch (error) {
+                console.log("error getAllToko5", error)
+            }
+        }
+        throw new Error('Database not initialized')
+    }
+
+
+    async newToko5(nom: string, prenom: string) {
+        if (this.db !== null) {
+            try {
+                const newUUID: string = uuidv4();
+                //runAsync or execAsync ???? 
+                await this.db.runAsync("INSERT INTO toko5(toko5_id, nom_contractant, prenom_contractant) values ('?','?','?')",newUUID,nom,prenom);
+            } catch (error) {
+                console.log("error newToko5", error)
+            }
+        }
+        throw new Error('Database not initialized')
+    }
+
 
 
 
