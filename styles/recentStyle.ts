@@ -26,9 +26,9 @@ export default StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     // backgroundColor: "lightgray",
-    backgroundColor: 'rgba(213, 238, 248, 1)',
+    // backgroundColor: 'rgba(213, 238, 248, 1)',
     width: "90%",
-    padding: 5,
+    padding: 4,
     //marginTop: 30,
     borderRadius: 10,
 

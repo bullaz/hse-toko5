@@ -7,6 +7,8 @@ import * as SQLite from 'expo-sqlite';
 import { SQLiteDatabase } from 'expo-sqlite';
 import { QUESTION_CATEGORIES } from '../constants/questionTypes';
 import { v4 as uuidv4 } from 'uuid';
+import 'react-native-get-random-values';
+import { getLocalDateTimeISOString } from '../utils/commonFunctions';
 
 
 class Toko5Repository {
@@ -129,6 +131,7 @@ class Toko5Repository {
             }
 
             try {
+                await this.db.execAsync(`DELETE FROM toko5`);
                 await this.db.execAsync(`DELETE FROM question`);
                 await this.db.runAsync(
                     `INSERT INTO question (nom, pictogramme, categorie, required) VALUES 
@@ -198,7 +201,8 @@ class Toko5Repository {
                 const listThinkQuestion = await this.db.getAllAsync('SELECT * FROM question WHERE categorie = ?', categorie);
                 return listThinkQuestion;
             } catch (error) {
-                console.log("error getAllThinkQuestion", error)
+                console.log("error getAllThinkQuestion", error);
+                throw error;
             }
         }
         throw new Error('Database not initialized')
@@ -210,7 +214,8 @@ class Toko5Repository {
                 const list = await this.db.getAllAsync('SELECT * FROM question WHERE categorie = ? and required = true', QUESTION_CATEGORIES.ORGANISE);
                 return list;
             } catch (error) {
-                console.log("error getAllRequiredOrganise", error)
+                console.log("error getAllRequiredOrganise", error);
+                throw error;
             }
         }
         // console.log("db null")
@@ -224,7 +229,8 @@ class Toko5Repository {
                 const list = await this.db.getAllAsync('SELECT * FROM question WHERE categorie = ? and required = false', QUESTION_CATEGORIES.ORGANISE);
                 return list;
             } catch (error) {
-                console.log("error getAllNotRequiredOrganise", error)
+                console.log("error getAllNotRequiredOrganise", error);
+                throw error;
             }
         }
         // console.log("db null")
@@ -238,7 +244,8 @@ class Toko5Repository {
                 const question = await this.db.getFirstSync('SELECT * FROM question WHERE question_id = ?', idQuestion);
                 return question;
             } catch (error) {
-                console.log("error getQuestion", error)
+                console.log("error getQuestion", error);
+                throw error;
             }
         }
         throw new Error('Database not initialized')
@@ -251,10 +258,11 @@ class Toko5Repository {
                 const listToko5 = await this.db.getAllAsync('SELECT * FROM toko5');
                 return listToko5;
             } catch (error) {
-                console.log("error getAllToko5", error)
+                console.log("error getAllToko5", error);
+                throw error;
             }
         }
-        throw new Error('Database not initialized')
+        throw new Error('Database not initialized');
     }
 
 
@@ -262,10 +270,42 @@ class Toko5Repository {
         if (this.db !== null) {
             try {
                 const newUUID: string = uuidv4();
+                const dateHeureNow: string = getLocalDateTimeISOString();
+                //console.log(dateHeureNow);
                 //runAsync or execAsync ???? 
-                await this.db.runAsync("INSERT INTO toko5(toko5_id, nom_contractant, prenom_contractant) values ('?','?','?')",newUUID,nom,prenom);
+                await this.db.runAsync("INSERT INTO toko5(toko5_id, nom_contractant, prenom_contractant, date_heure) values (?,?,?,?)", newUUID, nom, prenom, dateHeureNow);
+                return newUUID;
             } catch (error) {
-                console.log("error newToko5", error)
+                console.log("error newToko5", error);
+                throw error;
+            }
+        }
+        throw new Error('Database not initialized');
+    }
+
+    async insertListReponse(list: any[]) {
+        if (this.db !== null) {
+            for (let elem of list) {
+                if (this.db !== null) {
+                    try {
+                        await this.db.runAsync("INSERT INTO REPONSE(toko5_id, question_id, valeur) VALUES (?,?,?)",elem.toko5_id,elem.question_id,elem.valeur);
+                    } catch (error) {
+                        console.log('error insertListReponse', error);
+                    }
+                } throw new Error("Database not initilized");
+            }
+
+        } throw new Error('Database not initialized');
+    }
+
+    async getAllReponseToko5Categorie(toko5Id:string, categorie: string) {
+        if (this.db !== null) {
+            try {
+                const listReponse = await this.db.getAllAsync('SELECT * FROM reponse,question WHERE (reponse.question_id = question.question_id AND toko5_id = ? AND question.categorie = ?)',toko5Id, categorie);
+                return listReponse;
+            } catch (error) {
+                console.log("error getAllReponseToko5Categorie", error);
+                throw error;
             }
         }
         throw new Error('Database not initialized')

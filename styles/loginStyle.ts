@@ -35,4 +35,10 @@ export default StyleSheet.create({
   textInput: {
     width: 250,
   },
+
+  loadingContainer: {
+    justifyContent: "center",
+    alignItems: 'center',
+    padding:10
+  },
 });

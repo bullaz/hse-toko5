@@ -12,12 +12,20 @@ import {
 } from "react-native-paper";
 import globalStyles from "../styles";
 import styles from "../styles/recentStyle";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { QUESTION_CATEGORIES } from "../constants/questionTypes";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { ETAT } from "../constants/commonConstants";
+import { useFocusEffect } from "@react-navigation/native";
 
 type Props = NativeStackScreenProps<RootStackParamList>;
+
+// const inProgressImage = ({ color, size}:({ color:number, size: string})) => (
+//   <Image
+//     source={require('./assets/pictogram/en_cours.png')}
+//     style={{ tintColor: color, width: size, height: size }}
+//   />
+// );
 
 export default function Recent({ navigation }: Props) {
   const [isChecked, setChecked] = useState(false);
@@ -35,6 +43,7 @@ export default function Recent({ navigation }: Props) {
       setLoading(true);
       if (toko5Repository !== null) {
         let list = await toko5Repository.getAllToko5()
+        //console.log('list toko5', list);
         setListToko5(list);
         //console.log(list)
       } else {
@@ -50,9 +59,21 @@ export default function Recent({ navigation }: Props) {
     }
   };
 
-  useEffect(() => {
-    getAllToko5();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      // This will run every time the screen comes into focus
+      getAllToko5();
+
+      // Optional: Cleanup function
+      return () => {
+        // Cleanup if needed
+      };
+    }, [])
+  );
+
+  // useFocusEffect(() => {
+  //   getAllToko5();
+  // }, []);
 
   return (
     <>
@@ -80,13 +101,39 @@ export default function Recent({ navigation }: Props) {
 
                 // make sure that pressable doesn't change height or width when the name is too long.. It should only show part of it in that case
 
-                <Pressable style={styles.toko5}>
+                <Pressable key={toko5.toko5_id} style={({ pressed }) => [
+                  styles.toko5,
+                  {
+                    backgroundColor: pressed ? 'rgba(148, 203, 224, 1)' : 'rgba(213, 238, 248, 1)',
+                    borderRadius: 8, // Add borderRadius for better visual effect
+                  }
+                ]} onPress={()=>{navigation.navigate('Think',{toko5Id: toko5.toko5_id})}}>
+                  {/* <View style={{ flexDirection: 'column', flexWrap: 'wrap' }}>
+                    <Text
+                      style={{ textAlign: "center", paddingLeft: 17 }}
+                      variant="titleMedium"
+                    >
+                      toko5 de {toko5.prenom_contractant}
+                      </Text>
+                     <Text
+                      style={{ textAlign: "center", paddingLeft: 17 }}
+                      variant="titleMedium"
+                    > 
+                      {toko5.date_heure.split("T")[0]}
+                    </Text>
+                  </View> */}
                   <Text
-                    style={{ textAlign: "center", paddingLeft: 17 }}
+                    style={{
+                      textAlign: "center", paddingLeft: 17, flex: 1, // Add this
+                      flexWrap: 'wrap', // Add this
+                      flexShrink: 1,
+                    }}
                     variant="titleMedium"
                   >
-                    toko5 de {toko5.prenom} {"\n"}
-                    {toko5.date_heure.split(" ")[0]}
+                    TOKO5 de {toko5.prenom_contractant.slice(0, 22)}...  {"\n"}
+                    <Text style={{ color: 'green' }}>
+                      {toko5.date_heure.split("T")[0]}
+                    </Text>
                   </Text>
                   <View
                     style={{ flexDirection: "row", justifyContent: "flex-start" }}
@@ -104,7 +151,7 @@ export default function Recent({ navigation }: Props) {
 
                     {toko5.etat === ETAT.valide && (
                       <IconButton
-                        disabled={true}
+                        //disabled={true}
                         icon="check"
                         iconColor="green"
                         size={24}
@@ -113,7 +160,7 @@ export default function Recent({ navigation }: Props) {
 
                     {toko5.etat === ETAT.invalide && (
                       <IconButton
-                        disabled={true}
+                        //disabled={true}
                         icon="close"
                         iconColor="red"
                         size={24}
@@ -122,8 +169,7 @@ export default function Recent({ navigation }: Props) {
 
                     {toko5.etat === ETAT.ongoing && (
                       <IconButton
-                        disabled={true}
-                        icon="spinner"
+                        icon="loading"
                         // or use that image in the pictogram folder
                         iconColor="green"
                         size={24}
@@ -189,126 +235,6 @@ export default function Recent({ navigation }: Props) {
                 />
               </View>
             </Pressable>
-
-            <Pressable style={styles.toko5}>
-              <Text
-                style={{ textAlign: "center", paddingLeft: 17 }}
-                variant="titleMedium"
-              >
-                toko5 de jean {"\n"}
-                23/01/25
-              </Text>
-              <View
-                style={{ flexDirection: "row", justifyContent: "flex-start" }}
-              >
-                <IconButton
-                  icon="trash-can-outline"
-                  size={24}
-                  onPress={() => setChecked(!isChecked)}
-                />
-                <IconButton
-                  icon="qrcode"
-                  size={24}
-                  onPress={() => setChecked(!isChecked)}
-                />
-                <IconButton
-                  icon="close"
-                  iconColor="red"
-                  size={24}
-                  onPress={() => setChecked(!isChecked)}
-                />
-              </View>
-            </Pressable>
-
-            <Pressable style={styles.toko5}>
-              <Text
-                style={{ textAlign: "center", paddingLeft: 17 }}
-                variant="titleMedium"
-              >
-                toko5 de jean {"\n"}
-                23/01/25
-              </Text>
-              <View
-                style={{ flexDirection: "row", justifyContent: "flex-start" }}
-              >
-                <IconButton
-                  icon="trash-can-outline"
-                  size={24}
-                  onPress={() => setChecked(!isChecked)}
-                />
-                <IconButton
-                  icon="qrcode"
-                  size={24}
-                  onPress={() => setChecked(!isChecked)}
-                />
-                <IconButton
-                  icon="close"
-                  iconColor="red"
-                  size={24}
-                  onPress={() => setChecked(!isChecked)}
-                />
-              </View>
-            </Pressable>
-
-            <Pressable style={styles.toko5}>
-              <Text
-                style={{ textAlign: "center", paddingLeft: 17 }}
-                variant="titleMedium"
-              >
-                toko5 de jean {"\n"}
-                23/01/25
-              </Text>
-              <View
-                style={{ flexDirection: "row", justifyContent: "flex-start" }}
-              >
-                <IconButton
-                  icon="trash-can-outline"
-                  size={24}
-                  onPress={() => setChecked(!isChecked)}
-                />
-                <IconButton
-                  icon="qrcode"
-                  size={24}
-                  onPress={() => setChecked(!isChecked)}
-                />
-                <IconButton
-                  icon="close"
-                  iconColor="red"
-                  size={24}
-                  onPress={() => setChecked(!isChecked)}
-                />
-              </View>
-            </Pressable>
-
-            <Pressable style={styles.toko5}>
-              <Text
-                style={{ textAlign: "center", paddingLeft: 17 }}
-                variant="titleMedium"
-              >
-                toko5 de jean{"\n"}
-                23/01/25
-              </Text>
-              <View
-                style={{ flexDirection: "row", justifyContent: "flex-start" }}
-              >
-                <IconButton
-                  icon="trash-can-outline"
-                  size={24}
-                  onPress={() => setChecked(!isChecked)}
-                />
-                <IconButton
-                  icon="qrcode"
-                  size={24}
-                  onPress={() => setChecked(!isChecked)}
-                />
-                <IconButton
-                  icon="close"
-                  iconColor="red"
-                  size={24}
-                  onPress={() => setChecked(!isChecked)}
-                />
-              </View>
-            </Pressable>
           </View> */}
 
           <View>
@@ -327,8 +253,9 @@ export default function Recent({ navigation }: Props) {
             />
             {/* "rgba(105, 146, 200, 0.87)" */}
           </View>
-        </View>
-      )}
+        </View >
+      )
+      }
     </>
   );
 }

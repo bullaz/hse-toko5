@@ -89,7 +89,7 @@ export default function App() {
       <PaperProvider theme={theme}>
         <NavigationContainer>
           <Stack.Navigator screenOptions={screenOptions}>
-            
+
             <Stack.Screen
               name="Recent"
               component={Recent}
@@ -99,7 +99,7 @@ export default function App() {
             <Stack.Screen
               name="Invalide"
               component={Invalide}
-              options={{ title: 'Votre toko5 est invalide', headerBackVisible: false}}
+              options={{ title: 'Votre toko5 est invalide', headerBackVisible: false }}
             />
 
             <Stack.Screen
@@ -111,12 +111,12 @@ export default function App() {
             <Stack.Screen
               name="Login"
               component={Login}
-              options={{ title: "IDENTIFICATION"}}
+              options={{ title: "IDENTIFICATION" }}
             />
             <Stack.Screen
               name="Think"
               component={Think}
-              options={{ title: 'Penser' , headerBackVisible: false }}
+              options={{ title: 'Penser', headerBackVisible: false, gestureEnabled: false }}
             />
             <Stack.Screen
               name="SinglePicto"
@@ -168,3 +168,27 @@ export default function App() {
 }
 
 AppRegistry.registerComponent('toko5', () => App)
+
+
+
+//   < Stack.Screen
+// name = "Recent"
+// options = {{ title: 'toko5 recent(s)', headerBackVisible: false }}
+//             >
+//   {() => (
+//     <AuthGuard>
+//       <Recent />
+//     </AuthGuard>
+//   )}
+//             </Stack.Screen >
+
+//   <Stack.Screen
+//     name="Invalide"
+//     options={{ title: 'Votre toko5 est invalide', headerBackVisible: false }}
+//   >
+//     {() => (
+//       <AuthGuard>
+//         <Invalide />
+//       </AuthGuard>
+//     )}
+//   </Stack.Screen>

@@ -1,10 +1,10 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../context";
-import { Button, Text, useTheme } from "react-native-paper";
+import { DatabaseContext, RootStackParamList } from "../context";
+import { ActivityIndicator, Button, Text, useTheme } from "react-native-paper";
 import { KeyboardAvoidingView, StatusBar, View } from "react-native";
 import styles from "../styles/loginStyle";
 import { TextInput } from "react-native-paper";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useCameraPermissions } from "expo-camera";
 
 
@@ -15,16 +15,36 @@ type Props = NativeStackScreenProps<RootStackParamList>;
 
 export default function Login({ navigation }: Props) {
     const theme = useTheme();
-    const [text, setText] = useState("");
 
     ////////qr code test
     // const [permission, requestPermission] = useCameraPermissions();
 
     ///const isPermissionGranted = Boolean(permission?.granted);
     ////////
-
+    const toko5Repository = useContext(DatabaseContext);
     const [nom, setNom] = useState<string>("");
     const [prenom, setPrenom] = useState<string>("");
+
+    const [text, setText] = useState<string>("");
+
+    const [loading, setLoading] = useState<boolean>(false);
+
+    const newToko5 = async () => {
+        try {
+            setLoading(true)
+            if (toko5Repository !== null) {
+                const toko5Id = await toko5Repository.newToko5(nom, prenom);
+                setLoading(false)
+                navigation.navigate('Think', { toko5Id: toko5Id })
+                return
+            }
+            setLoading(false)
+            throw new Error("repository is null");
+        } catch (error) {
+            console.log("login newToko5 error: ",error);
+            setLoading(false);
+        }
+    }
 
 
     return (
@@ -45,9 +65,9 @@ export default function Login({ navigation }: Props) {
                                     Nom
                                 </Text>
                             }
-                            value={text}
+                            value={nom}
                             style={styles.textInput}
-                            onChangeText={text => setText(text)}
+                            onChangeText={nom => setNom(nom)}
                             underlineColor='darkgrey'
                         />
 
@@ -61,9 +81,9 @@ export default function Login({ navigation }: Props) {
                                     Prenom
                                 </Text>
                             }
-                            value={text}
+                            value={prenom}
                             style={styles.textInput}
-                            onChangeText={text => setText(text)}
+                            onChangeText={prenom => setPrenom(prenom)}
                             underlineColor='darkgrey'
                         />
 
@@ -71,7 +91,7 @@ export default function Login({ navigation }: Props) {
                             left={<TextInput.Icon icon={require('../assets/pictogram/id.png')} />}
                             label={
                                 <Text
-                                    style={{ textAlign: "center", color: 'rgba(77, 77, 71, 0.87)'}}
+                                    style={{ textAlign: "center", color: 'rgba(77, 77, 71, 0.87)' }}
                                     variant="titleMedium"
                                 >
                                     ID permis de travail
@@ -84,9 +104,7 @@ export default function Login({ navigation }: Props) {
                         />
                         <Button style={styles.bottomButton}
                             mode="contained"
-                            onPress={() => {
-                                navigation.navigate('ScanQr')
-                            }}
+                            onPress={newToko5}
 
                             //test qr
                             //onPress = {requestPermission}
@@ -100,6 +118,10 @@ export default function Login({ navigation }: Props) {
                         >
                             s'identifier
                         </Button>
+                        {loading && (
+                            <View style={styles.loadingContainer}>
+                                <ActivityIndicator size="large" color={theme.colors.primary} />
+                            </View>)}
                     </View>
 
                 </KeyboardAvoidingView>

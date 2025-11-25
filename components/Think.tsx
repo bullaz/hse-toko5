@@ -5,12 +5,12 @@
 ///////////////////// WHY IS EXPO CRASHING EACH TIME I ENTER THAT COMPONENTS EVER SINCE I IMPLEMENTED THAT IMAGE MAPPING 
 
 
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { View, TouchableOpacity, StatusBar, Pressable, Modal, Alert, Image } from "react-native";
 import styles from "../styles";
 import AnonymousHotSurfaceDanger from "../assets/Anonymous-hot-surface-danger.svg";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { DatabaseContext, RootStackParamList } from "../context";
+import { DatabaseContext, Question, ReponseInterfaceView, Reponse, RootStackParamList } from "../context";
 import Checkbox from "expo-checkbox";
 import { ActivityIndicator, IconButton } from "react-native-paper";
 import { useTheme } from "react-native-paper";
@@ -18,14 +18,18 @@ import { Button, Text } from "react-native-paper";
 import Toko5Repository from "../repository/Toko5Repository";
 import { imagePathMapping } from "../utils/imagePathMapping";
 import { QUESTION_CATEGORIES } from "../constants/questionTypes";
+import { useFocusEffect } from "@react-navigation/native";
+import { BackHandler } from 'react-native';
 
 const boxes = new Array(3).fill(null).map((v, i) => i + 1);
 
-type Props = NativeStackScreenProps<RootStackParamList>;
+type Props = NativeStackScreenProps<RootStackParamList, 'Think'>;
 
-export default function Think({ navigation }: Props) {
+export default function Think({ navigation, route }: Props) {
 
     const [isChecked, setChecked] = useState(false);
+
+    const { toko5Id } = route.params;
 
     const theme = useTheme();
 
@@ -35,137 +39,185 @@ export default function Think({ navigation }: Props) {
 
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const getAllThinkQuestions = async () => {
-            try {
-                setLoading(true);
-                if (toko5Repository !== null) {
-                    let list = await toko5Repository.getAllCategorieQuestion(QUESTION_CATEGORIES.THINK);
-                    setListQuestion(list);
-                    //console.log(list)
+    const [listReponse, setListReponse] = useState<Record<number, ReponseInterfaceView>>({});
+
+    const getAllThinkData = async () => {
+        try {
+            setLoading(true);
+            if (toko5Repository !== null) {
+                let list = await toko5Repository.getAllCategorieQuestion(QUESTION_CATEGORIES.THINK);
+                setListQuestion(list);
+                // find a cleaner way to achieve this .. I think this is too dirty ... maybe
+                let listAnswer = await toko5Repository.getAllReponseToko5Categorie(toko5Id, QUESTION_CATEGORIES.THINK);
+                console.log('saved list answer', listAnswer);
+                if (listAnswer.length > 0) {
+                    let listRep: Record<number, ReponseInterfaceView> = {};
+
+                    for(let answer of listAnswer as Reponse[]){
+                        let x: ReponseInterfaceView = {
+                            toko5_id: toko5Id,
+                            question_id: answer.question_id,
+                            valeur: answer.valeur,
+                            pressed: true
+                        };
+                        listRep[answer.question_id] = x;
+                    }
+                    setListReponse(listRep);
+                } else {
+                    let listRep: Record<number, ReponseInterfaceView> = {};
+                    for (let question of list as Question[]) {
+                        //console.log('question',question);
+                        let reponse: ReponseInterfaceView = {
+                            toko5_id: toko5Id,
+                            question_id: question.question_id,
+                            valeur: false,
+                            pressed: false
+                        };
+                        //console.log('reponse',reponse);
+                        listRep[question.question_id] = reponse;
+                    }
+                    //console.log('listRep',listRep);
+                    setListReponse(listRep)
+
+                    //console.log(listRep)
                 }
-            } catch (error) {
-                console.error('Error in the component think while retrieving list of questions ', error);
-            } finally {
-                setLoading(false);
             }
-        };
-
-        getAllThinkQuestions();
-    }, []);
-
-    /*const [modalVisible, setModalVisible] = useState(false);
-
-    const toggleModal = () => {
-        setModalVisible(!modalVisible);
+        } catch (error) {
+            console.error('Error in the component think while retrieving list of questions ', error);
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const modalContent = (
-        <View style={styles.modalContainer}>
-            <View >
-                <Text>This is a Modal</Text>
-                <TouchableOpacity onPress={toggleModal} style={styles.closeButton}>
-                    <Text>fermer</Text>
-                </TouchableOpacity>
-            </View>
-        </View>
-    ); */
+    const updateListReponse = (question_id: number, valeur: boolean) => {
+        let list: Record<number, ReponseInterfaceView> = JSON.parse(JSON.stringify(listReponse));
+        list[question_id].valeur = valeur;
+        list[question_id].pressed = !(list[question_id].pressed);
+        setListReponse(list);
+        //console.log(list[question_id].pressed);
+        //console.log(list[question_id].question_id,'valeur',list[question_id].valeur,'pressed',list[question_id].pressed);
+    }
+
+    // does this happen 2 times in the first mounting if i use both useEffect and useFocusEffect or not .. Should I use only useFocusEffect ??!!
+    // useEffect(() => {
+    //     getAllThinkQuestions();
+    // }, []);
+
+
+    useFocusEffect(
+        useCallback(() => {
+            getAllThinkData();
+            return () => {
+            };
+        }, [])
+    );
 
     return (
         <>
             <StatusBar hidden={false} />
-                {loading ? (
-                    <View style={styles.loadingContainer}>
-                        <ActivityIndicator size="large" color={theme.colors.primary} />
-                    </View>
-                ) : (
-                    <View style={styles.pictoContainer}>
-                        {listQuestion.map((question: any, i: number) => (
-                            <View key={question.question_id} style={styles.single}>
-                                {/* <Modal
-                                animationType="fade"
-                                transparent={true}
-                                visible={modalVisible}
-                                onRequestClose={() => {
-                                    Alert.alert('Modal has been closed.');
-                                    setModalVisible(!modalVisible);
-                                }}>
-                                <View style={styles.centeredView}>
-                                    <View style={styles.modalView}>
-                                        <Text style={styles.modalText}>Hello World!</Text>
-                                        <Pressable
-                                            style={[styles.button, styles.buttonClose]}
-                                            onPress={() => setModalVisible(!modalVisible)}>
-                                            <Text style={styles.textStyle}>Hide Modal</Text>
-                                        </Pressable>
-                                    </View>
-                                </View>
-                            </Modal> */}
-                                <Pressable
-                                    onPress={() => navigation.navigate('SinglePicto',{question: question})}
-                                    style={({ pressed }) => [
-                                        styles.box,
-                                        pressed && styles.pressedBox,
-                                    ]}
-                                >
-                                    <Image source={imagePathMapping(question.pictogramme)} style={{ width: 70, height: 70 }}></Image>
-                                </Pressable>
-                                <View style={styles.checkboxContainer}>
-                                    {/* {<Text>X.{i}.V</Text>} 
-                            <Checkbox value={isChecked} onValueChange={setChecked} />*/}
-                                    <IconButton
-                                        //icon={isChecked ? "close" : "checkbox-blank-outline"}
-                                        icon="close"
-                                        iconColor={isChecked ? 'red' : theme.colors.outline}
-                                        size={24}
-                                        onPress={() => setChecked(!isChecked)}
-                                    />
-                                    <IconButton
-                                        icon={isChecked ? "checkbox-marked-outline" : "checkbox-marked-outline"}
-                                        iconColor={isChecked ? 'green' : theme.colors.outline}
-                                        size={24}
-                                        onPress={() => setChecked(!isChecked)}
-                                    />
-                                </View>
-                            </View>
-                        ))}
-                    </View>
-                )}
-
-
-
-
-
-                <View style={styles.buttonContainer}>
-                    <View>
-                        <Button style={styles.bottomButton}
-                            mode="contained"
-                            onPress={() => { }}
-                            icon="arrow-left"
-                            labelStyle={{
-                                color: theme.colors.secondary, // Manually set to theme contrast color
-                                fontSize: 16
-                            }}
-                        >
-                            précédent
-                        </Button>
-                    </View>
-                    <View>
-                        <Button style={styles.bottomButton}
-                            mode="contained"
-                            onPress={() => { navigation.navigate('Organise1') }}
-                            icon="arrow-right"
-                            contentStyle={{ flexDirection: 'row-reverse' }}
-                            labelStyle={{
-                                color: theme.colors.secondary, // Manually set to theme contrast color
-                                fontSize: 16
-                            }}
-                        >
-
-                            suivant
-                        </Button>
-                    </View>
+            {loading ? (
+                <View style={styles.loadingContainer}>
+                    <ActivityIndicator size="large" color={theme.colors.primary} />
                 </View>
-            </>
+            ) : (
+                <View style={styles.pictoContainer}>
+                    {listQuestion.map((question: any, i: number) => (
+                        <View key={question.question_id} style={styles.single}>
+                            <Pressable
+                                onPress={() => navigation.navigate('SinglePicto', { question: question })}
+                                style={({ pressed }) => [
+                                    styles.box,
+                                    pressed && styles.pressedBox,
+                                ]}
+                            >
+                                <Image source={imagePathMapping(question.pictogramme)} style={{ width: 70, height: 70 }}></Image>
+                            </Pressable>
+                            <View style={styles.checkboxContainer}>
+
+                                {/* {<Text>X.{i}.V</Text>} 
+                            <Checkbox value={isChecked} onValueChange={setChecked} />*/}
+
+                                {!(listReponse[question.question_id].pressed) && (
+                                    <>
+                                        <IconButton
+                                            icon="close"
+                                            iconColor={theme.colors.outline}
+                                            size={24}
+                                            onPress={() => updateListReponse(question.question_id, false)}
+                                        />
+                                        <IconButton
+                                            icon="checkbox-marked-outline"
+                                            iconColor={theme.colors.outline}
+                                            size={24}
+                                            onPress={() => updateListReponse(question.question_id, true)}
+                                        />
+                                    </>
+                                )}
+
+                                {(listReponse[question.question_id].pressed) && listReponse[question.question_id].valeur && (
+                                    <>
+                                        <IconButton
+                                            icon="checkbox-marked-outline"
+                                            iconColor='green'
+                                            size={24}
+                                            onPress={() => updateListReponse(question.question_id, false)}
+                                        />
+                                    </>
+                                )}
+
+                                {(listReponse[question.question_id].pressed) && !(listReponse[question.question_id].valeur) && (
+                                    <>
+                                        <IconButton
+                                            icon="close"
+                                            iconColor='red'
+                                            size={24}
+                                            onPress={() => updateListReponse(question.question_id, false)}
+                                        />
+                                    </>
+                                )}
+
+
+
+                            </View>
+                        </View>
+                    ))}
+                </View>
+            )}
+
+
+
+
+
+            <View style={styles.buttonContainer}>
+                <View>
+                    <Button style={styles.bottomButton}
+                        mode="contained"
+                        onPress={() => { }}
+                        icon="arrow-left"
+                        labelStyle={{
+                            color: theme.colors.secondary, // Manually set to theme contrast color
+                            fontSize: 16
+                        }}
+                    >
+                        précédent
+                    </Button>
+                </View>
+                <View>
+                    <Button style={styles.bottomButton}
+                        mode="contained"
+                        onPress={() => { navigation.navigate('Organise1') }}
+                        icon="arrow-right"
+                        contentStyle={{ flexDirection: 'row-reverse' }}
+                        labelStyle={{
+                            color: theme.colors.secondary, // Manually set to theme contrast color
+                            fontSize: 16
+                        }}
+                    >
+
+                        suivant
+                    </Button>
+                </View>
+            </View>
+        </>
     );
 }

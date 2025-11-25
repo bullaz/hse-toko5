@@ -17,8 +17,11 @@ export default StyleSheet.create({
 
   loadingContainer: {
     flex:1,
+    flexWrap:'wrap',
+    flexDirection:'column',
     justifyContent: "center",
-    alignItems: 'center'
+    alignItems: 'center',
+    alignContent: 'center'
   },
 
 

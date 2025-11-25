@@ -7,7 +7,9 @@ export const DatabaseContext = createContext<Toko5Repository | null>(null);
 //maybe put this in another file XD
 export type RootStackParamList = {
   Login: undefined;
-  Think: undefined;
+  Think: {
+    toko5Id: string; 
+  };
   SinglePicto: {
     question: any;
   };
@@ -22,3 +24,24 @@ export type RootStackParamList = {
   Recent: undefined;
   Invalide: undefined;
 };
+
+
+export interface Question {
+  question_id: number;
+  // add other properties that your question object has
+  texte?: string;
+  categorie?: string;
+}
+
+export interface ReponseInterfaceView {
+  toko5_id: string;
+  question_id: number;
+  valeur: boolean;
+  pressed: boolean;
+}
+
+export interface Reponse {
+  toko5_id: string;
+  question_id: number;
+  valeur: boolean;
+}
