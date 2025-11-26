@@ -20,8 +20,8 @@ import { imagePathMapping } from "../utils/imagePathMapping";
 import { QUESTION_CATEGORIES } from "../constants/questionTypes";
 import { useFocusEffect } from "@react-navigation/native";
 import { BackHandler } from 'react-native';
+import { useValidity } from "../hooks/useValidity";
 
-const boxes = new Array(3).fill(null).map((v, i) => i + 1);
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Think'>;
 
@@ -30,6 +30,8 @@ export default function Think({ navigation, route }: Props) {
     const [isChecked, setChecked] = useState(false);
 
     const { toko5Id } = route.params;
+
+    //const {validity, validityLoading}: {validity: boolean | null, validityLoading: boolean} = useValidity(route);
 
     const theme = useTheme();
 
@@ -41,6 +43,10 @@ export default function Think({ navigation, route }: Props) {
 
     const [listReponse, setListReponse] = useState<Record<number, ReponseInterfaceView>>({});
 
+    const [saveLoading, setSaveLoading] = useState<boolean>(false);
+
+    //const isLoading = loading || validityLoading;
+
     const getAllThinkData = async () => {
         try {
             setLoading(true);
@@ -49,11 +55,12 @@ export default function Think({ navigation, route }: Props) {
                 setListQuestion(list);
                 // find a cleaner way to achieve this .. I think this is too dirty ... maybe
                 let listAnswer = await toko5Repository.getAllReponseToko5Categorie(toko5Id, QUESTION_CATEGORIES.THINK);
-                console.log('saved list answer', listAnswer);
+                //console.log('saved list answer', listAnswer);
                 if (listAnswer.length > 0) {
                     let listRep: Record<number, ReponseInterfaceView> = {};
 
-                    for(let answer of listAnswer as Reponse[]){
+                    for (let answer of listAnswer as Reponse[]) {
+                        //console.log('conversion individual of the database answer to reponse',answer);
                         let x: ReponseInterfaceView = {
                             toko5_id: toko5Id,
                             question_id: answer.question_id,
@@ -89,12 +96,28 @@ export default function Think({ navigation, route }: Props) {
         }
     };
 
+    const saveAllReponse = async () => {
+        try {
+            setSaveLoading(true);
+            //console.log(Object.values(listReponse));
+            if (toko5Repository !== null) {
+                //console.log('here');
+                await toko5Repository.insertListReponse(Object.values(listReponse));
+                //console.log('here2');
+            } throw new Error('toko5Repository not initialized');
+        } catch (error) {
+
+        }finally{
+            setSaveLoading(false);
+        }
+    }
+
     const updateListReponse = (question_id: number, valeur: boolean) => {
         let list: Record<number, ReponseInterfaceView> = JSON.parse(JSON.stringify(listReponse));
         list[question_id].valeur = valeur;
         list[question_id].pressed = !(list[question_id].pressed);
         setListReponse(list);
-        //console.log(list[question_id].pressed);
+        //console.log(list[question_id].question_id,'valeur',list[question_id].valeur);
         //console.log(list[question_id].question_id,'valeur',list[question_id].valeur,'pressed',list[question_id].pressed);
     }
 
@@ -111,6 +134,11 @@ export default function Think({ navigation, route }: Props) {
             };
         }, [])
     );
+
+    ///just test 
+    // if (validity === false) {
+    //     return null;
+    // }
 
     return (
         <>
@@ -192,7 +220,7 @@ export default function Think({ navigation, route }: Props) {
                 <View>
                     <Button style={styles.bottomButton}
                         mode="contained"
-                        onPress={() => { }}
+                        onPress={async () => { await saveAllReponse(); navigation.navigate('Recent')}}
                         icon="arrow-left"
                         labelStyle={{
                             color: theme.colors.secondary, // Manually set to theme contrast color
@@ -202,10 +230,18 @@ export default function Think({ navigation, route }: Props) {
                         précédent
                     </Button>
                 </View>
-                <View>
+
+
+                {saveLoading && (
+                    <View style={styles.loadingContainer}>
+                        <ActivityIndicator size="small" color={theme.colors.primary} />
+                    </View>
+                )}
+
+                < View >
                     <Button style={styles.bottomButton}
                         mode="contained"
-                        onPress={() => { navigation.navigate('Organise1') }}
+                        onPress={async () => { await saveAllReponse(); navigation.navigate('Organise1',{toko5Id: toko5Id})}}
                         icon="arrow-right"
                         contentStyle={{ flexDirection: 'row-reverse' }}
                         labelStyle={{
@@ -217,7 +253,7 @@ export default function Think({ navigation, route }: Props) {
                         suivant
                     </Button>
                 </View>
-            </View>
+            </View >
         </>
     );
 }

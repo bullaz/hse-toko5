@@ -3,7 +3,7 @@ import {
   View,
 } from "react-native";
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator, NativeStackNavigationOptions } from "@react-navigation/native-stack";
+import { createNativeStackNavigator, NativeStackNavigationOptions, NativeStackScreenProps } from "@react-navigation/native-stack";
 import styles from "./styles";
 import { useEffect, useState } from "react";
 import Think from "./components/Think";
@@ -24,6 +24,7 @@ import ScanQr from "./components/ScanQr";
 import Commentaire from "./components/Commentaire";
 import Recent from "./components/Recent";
 import Invalide from "./components/Invalide";
+import { ProtectedToko5Route } from "./components/ProtectedToko5Route";
 
 // console.log('TEST OUTSIDE COMPONENT')
 
@@ -33,7 +34,8 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const theme = {
   ...DefaultTheme,
   colors: {
-    primary: '#2322F0',
+    primary: 'rgba(16, 81, 165, 1)',
+    //primary: '',
     secondary: 'white'
   },
 };
@@ -49,7 +51,7 @@ export default function App() {
 
   const screenOptions: NativeStackNavigationOptions = {
     headerStyle: {
-      backgroundColor: '#2322F0',
+      backgroundColor: 'rgba(16, 81, 165, 1)',
     },
     headerTintColor: '#fff',
     headerTitleStyle: {
@@ -93,7 +95,7 @@ export default function App() {
             <Stack.Screen
               name="Recent"
               component={Recent}
-              options={{ title: 'toko5 recent(s)', headerBackVisible: false }}
+              options={{ title: 'toko5 recent(s)', headerBackVisible: false, gestureEnabled: false }}
             />
 
             <Stack.Screen
@@ -115,19 +117,32 @@ export default function App() {
             />
             <Stack.Screen
               name="Think"
-              component={Think}
               options={{ title: 'Penser', headerBackVisible: false, gestureEnabled: false }}
-            />
+            >
+              {(props: NativeStackScreenProps<RootStackParamList, 'Think'>) => (
+                <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
+                  <Think {...props} />
+                </ProtectedToko5Route>
+              )}
+            </Stack.Screen>
             <Stack.Screen
               name="SinglePicto"
               component={SinglePicto}
               options={{ title: 'description du pictogramme' }}
             />
+
             <Stack.Screen
               name="Organise1"
-              component={Organise1}
-              options={{ title: 'Organiser' }}
-            />
+              options={{ title: 'Organiser', gestureEnabled: false }}
+            >
+              {(props: NativeStackScreenProps<RootStackParamList, 'Organise1'>) => (
+                <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
+                  <Organise1 {...props} />
+                </ProtectedToko5Route>
+              )}
+            </Stack.Screen>
+
+
             <Stack.Screen
               name="Organise2"
               component={Organise2}

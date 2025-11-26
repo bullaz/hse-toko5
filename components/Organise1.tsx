@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { View, TouchableOpacity, StatusBar, Pressable, Modal, Alert, Image } from "react-native";
 import styles from "../styles";
 import AnonymousHotSurfaceDanger from "../assets/Anonymous-hot-surface-danger.svg";
@@ -10,10 +10,13 @@ import { useTheme } from "react-native-paper";
 import { Button, Text } from "react-native-paper";
 import { QUESTION_CATEGORIES } from "../constants/questionTypes";
 import { imagePathMapping } from "../utils/imagePathMapping";
+import { useFocusEffect } from "@react-navigation/native";
 
-type Props = NativeStackScreenProps<RootStackParamList>;
+type Props = NativeStackScreenProps<RootStackParamList, 'Organise1'>;
 
-export default function Organise1({ navigation }: Props) {
+export default function Organise1({ navigation, route }: Props) {
+
+    const { toko5Id } = route.params;
 
     const [isChecked, setChecked] = useState(false);
 
@@ -25,24 +28,32 @@ export default function Organise1({ navigation }: Props) {
 
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const getAllThinkQuestions = async () => {
-            try {
-                setLoading(true);
-                if (toko5Repository !== null) {
-                    let list = await toko5Repository.getAllRequiredOrganise();
-                    setListQuestion(list);
-                    //console.log(list)
-                }
-            } catch (error) {
-                console.error('Error in the component think while retrieving list of questions ', error);
-            } finally {
-                setLoading(false);
+    const getAllRequiredOrganiseQuestions = async () => {
+        try {
+            setLoading(true);
+            if (toko5Repository !== null) {
+                let list = await toko5Repository.getAllRequiredOrganise();
+                setListQuestion(list);
+                //console.log(list)
             }
-        };
+        } catch (error) {
+            console.error('Error in the component organise1 while retrieving list of questions ', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-        getAllThinkQuestions();
-    }, []);
+    // useEffect(() => {
+    //     getAllRequiredOrganiseQuestions();
+    // }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+            getAllRequiredOrganiseQuestions();
+            return () => {
+            };
+        }, [])
+    );
 
     return (
         <>
@@ -56,7 +67,7 @@ export default function Organise1({ navigation }: Props) {
                     {listQuestion.map((question: any, index: number) => (
                         <View key={question.question_id} style={styles.single}>
                             <Pressable
-                                onPress={() => navigation.navigate('SinglePicto',{question: question})}
+                                onPress={() => navigation.navigate('SinglePicto', { question: question })}
                                 style={({ pressed }) => [
                                     styles.box,
                                     pressed && styles.pressedBox,
@@ -75,7 +86,7 @@ export default function Organise1({ navigation }: Props) {
                 <View>
                     <Button style={styles.bottomButton}
                         mode="contained"
-                        onPress={() => { navigation.navigate('Think') }}
+                        onPress={() => { navigation.navigate('Think', { toko5Id: toko5Id }) }}
                         icon="arrow-left"
                         labelStyle={{
                             color: theme.colors.secondary, // Manually set to theme contrast color

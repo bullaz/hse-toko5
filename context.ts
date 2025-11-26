@@ -13,7 +13,9 @@ export type RootStackParamList = {
   SinglePicto: {
     question: any;
   };
-  Organise1: undefined;
+  Organise1: {
+    toko5Id: string; 
+  };
   Organise2: undefined;
   IdentifyRisks: undefined;
   ControlMeasure: undefined;

@@ -1,70 +1,61 @@
 // hooks/useAuth.ts
-import { useState, useEffect } from 'react';
-import { useNavigation } from '@react-navigation/native';
+import { useState, useEffect, useContext, useCallback } from 'react';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../context';
+import { DatabaseContext, RootStackParamList } from '../context';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
-export const useValidity = () => {
+export const useValidity = (toko5Id: string) => {
+  //const { toko5Id } = route.params;
   const navigation = useNavigation<NavigationProp>();
   const [validity, setValidity] = useState<boolean | null>(null);
+  const [validityLoading, setValidityLoading] = useState<boolean>(true);
+  const toko5Repository = useContext(DatabaseContext);
 
-  const validateJWT = async (): Promise<boolean> => {
+  const getValidity = async (toko5Id: string): Promise<boolean> => {
     try {
-      // Replace this with your actual JWT validation logic
-      // Example: check token in AsyncStorage, verify expiry, etc.
-      const token = await getTokenFromStorage();
-      
-      if (!token) {
-        return false;
+      if (toko5Repository !== null) {
+        return await toko5Repository?.getValidityToko5(toko5Id);
       }
-
-      // Verify token validity (you might want to call an API or decode JWT)
-      const isValid = await verifyToken(token);
-      return isValid;
-      
+      throw new Error('toko5repository not initialized');
     } catch (error) {
-      console.error('Token validation error:', error);
+      console.error('useValidity verifyValidity error:', error);
       return false;
     }
-  };
+  }
 
-  const getTokenFromStorage = async (): Promise<string | null> => {
-    // Implement your token retrieval logic
-    // Example using expo-secure-store:
-    // return await SecureStore.getItemAsync('userToken');
-    return null; // Replace with actual implementation
-  };
-
-  const verifyToken = async (token: string): Promise<boolean> => {
-    // Implement your token verification logic
-    // This could be decoding JWT and checking expiry, or calling an API
+  const verifyValidity = async (toko5Id: string) => {
     try {
-      // Example: decode and check expiry
-      // const decoded = jwtDecode(token);
-      // return decoded.exp > Date.now() / 1000;
-      return true; // Replace with actual verification
-    } catch {
-      return false;
+      const isValid = await getValidity(toko5Id);
+      console.log("USEVALIDITY : new etat in the database :",isValid);
+      setValidity(isValid);
+      setValidityLoading(false);
+      // if (!isValid) {
+      //   setValidityLoading(false);
+      //   navigation.navigate('Invalide');
+      // }else{
+
+      // }
+    } catch (error) {
+      console.log('error in useValidity verifyValidity', error);
     }
   };
 
-  const checkAuthentication = async () => {
-    const isValid = await validateJWT();
-    if (!isValid) {
-      navigation.navigate('Login');
-    }
-    setValidity(isValid);
-  };
+  useFocusEffect(
+    useCallback(() => {
+      verifyValidity(toko5Id);
+      return () => {
+      };
+    }, [toko5Repository, toko5Id])
+  );
 
-  useEffect(() => {
-    checkAuthentication();
-  }, []);
+  // useEffect(() => {
+  //   verifyValidity(toko5Id);
+  // }, [toko5Repository, route]);
 
-  return { 
-    validity, 
-    checkAuthentication,
-    validateJWT 
+  return {
+    validity,
+    validityLoading
   };
 };

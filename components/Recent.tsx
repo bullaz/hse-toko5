@@ -1,3 +1,6 @@
+///// VERIFY WHY SOMETIMES THE PADDING ON THAT HEADER ON THAT RECENT COMPONENT IS LARGER THAN OTHERS AND SOMETIMES THE PADDING IS NORMAL XD XD XD XD XD
+
+
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { DatabaseContext, RootStackParamList } from "../context";
 import { Image, Platform, Pressable, StatusBar, View } from "react-native";
@@ -131,8 +134,8 @@ export default function Recent({ navigation }: Props) {
                     variant="titleMedium"
                   >
                     TOKO5 de {toko5.prenom_contractant.slice(0, 22)}...  {"\n"}
-                    <Text style={{ color: 'green' }}>
-                      {toko5.date_heure.split("T")[0]}
+                    <Text style={{ color: 'rgba(26, 85, 161, 0.87)', fontWeight: 'bold'}}>
+                      {toko5.date_heure.split("T")[0].replaceAll("-","/")}
                     </Text>
                   </Text>
                   <View
@@ -169,9 +172,9 @@ export default function Recent({ navigation }: Props) {
 
                     {toko5.etat === ETAT.ongoing && (
                       <IconButton
-                        icon="loading"
+                        icon="progress-helper"
                         // or use that image in the pictogram folder
-                        iconColor="green"
+                        iconColor={theme.colors.primary}
                         size={24}
                       />
                     )}

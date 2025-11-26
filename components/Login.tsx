@@ -56,7 +56,7 @@ export default function Login({ navigation }: Props) {
                     <View style={styles.loginDiv}>
                         {/* <Text variant='titleLarge' style={{ fontWeight: 'bold', color: 'rgba(68, 66, 68, 0.87)' }}>Identifiez-vous</Text> */}
                         <TextInput
-                            left={<TextInput.Icon icon={require('../assets/pictogram/worker-icon.png')} />}
+                            left={<TextInput.Icon icon={require('../assets/pictogram/worker.png')} />}
                             label={
                                 <Text
                                     style={{ textAlign: "center", color: 'rgba(77, 77, 71, 0.87)' }}
@@ -72,7 +72,7 @@ export default function Login({ navigation }: Props) {
                         />
 
                         <TextInput
-                            left={<TextInput.Icon icon={require('../assets/pictogram/worker-icon.png')} />}
+                            left={<TextInput.Icon icon={require('../assets/pictogram/worker.png')} />}
                             label={
                                 <Text
                                     style={{ textAlign: "center", color: 'rgba(77, 77, 71, 0.87)' }}

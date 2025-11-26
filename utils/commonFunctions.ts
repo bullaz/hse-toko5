@@ -1,3 +1,6 @@
+import { QUESTION_CATEGORIES } from "../constants/questionTypes";
+import { Question, Reponse } from "../context";
+
 export function getLocalDateTimeISOString(): string {
   const now = new Date();
 
@@ -20,3 +23,68 @@ export function getLocalDateTimeISOString(): string {
   // Construct the ISO 8601 string with local timezone offset
   return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}${timezoneOffset}`;
 }
+
+
+
+const getAllReponseData = async (toko5Repository: any /*should use the appropriate typing bro*/, categorie: string, toko5Id: string, withRequired: boolean, required: boolean) => {
+  try {
+    if (toko5Repository !== null) {
+      let listQuestion = [];
+      if (withRequired) {
+        listQuestion = await toko5Repository.getAllCategorieQuestionWithRequired(categorie, required);
+      } else {
+        listQuestion = await toko5Repository.getAllCategorieQuestion(categorie, required);
+      }
+      //setListQuestion(list);
+
+
+
+      // find a cleaner way to achieve this .. I think this is too dirty ... maybe
+      let listAnswer = [];
+      if (withRequired) {
+        listAnswer = await toko5Repository.getAllReponseToko5CategorieWithRequired(toko5Id, categorie, required); //with required
+      } else {
+        listAnswer = await toko5Repository.getAllReponseToko5Categorie(toko5Id, categorie); //with required
+        //console.log('saved list answer', listAnswer);
+      }
+
+      let listValiny:any;
+      if (listAnswer.length > 0) {
+        let listRep: Record<number, Reponse> = {};
+
+        for (let answer of listAnswer as Reponse[]) {
+          //console.log('conversion individual of the database answer to reponse',answer);
+          let x: Reponse = {
+            toko5_id: toko5Id,
+            question_id: answer.question_id,
+            valeur: answer.valeur
+          };
+          listRep[answer.question_id] = x;
+        }
+        listValiny = listRep;
+        //setListReponse(listRep);
+      } else {
+        let listRep: Record<number, Reponse> = {};
+        for (let question of listQuestion as Question[]) {
+          //console.log('question',question);
+          let reponse: Reponse = {
+            toko5_id: toko5Id,
+            question_id: question.question_id,
+            valeur: false,
+          };
+          //console.log('reponse',reponse);
+          listRep[question.question_id] = reponse;
+        }
+        //console.log('listRep',listRep);
+        listValiny = listRep
+
+        //console.log(listRep)
+      }
+      return {listQuestion: listQuestion, listReponse: listValiny}
+    }throw new Error('getAllReponseData function : toko5repository is null');
+  } catch (error) {
+    console.error('Error in the getAllReponseData function ', error);
+  } finally {
+    //setLoading(false);
+  }
+};

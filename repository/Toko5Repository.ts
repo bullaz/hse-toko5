@@ -9,6 +9,7 @@ import { QUESTION_CATEGORIES } from '../constants/questionTypes';
 import { v4 as uuidv4 } from 'uuid';
 import 'react-native-get-random-values';
 import { getLocalDateTimeISOString } from '../utils/commonFunctions';
+import { ETAT } from '../constants/commonConstants';
 
 
 class Toko5Repository {
@@ -84,10 +85,10 @@ class Toko5Repository {
             try {
                 await this.db.execAsync(
                     `CREATE TABLE IF NOT EXISTS reponse (
-                        reponse_id INTEGER PRIMARY KEY AUTOINCREMENT,
                         toko5_id TEXT NOT NULL,
                         question_id INTEGER NOT NULL,
                         valeur INTEGER CHECK (valeur in (0,1)),
+                        PRIMARY KEY (toko5_id, question_id),
                         FOREIGN KEY (toko5_id) REFERENCES toko5(toko5_id),
                         FOREIGN KEY (question_id) REFERENCES question(question_id)
                     )`
@@ -131,6 +132,7 @@ class Toko5Repository {
             }
 
             try {
+                await this.db.execAsync(`DELETE FROM reponse`);
                 await this.db.execAsync(`DELETE FROM toko5`);
                 await this.db.execAsync(`DELETE FROM question`);
                 await this.db.runAsync(
@@ -202,6 +204,19 @@ class Toko5Repository {
                 return listThinkQuestion;
             } catch (error) {
                 console.log("error getAllThinkQuestion", error);
+                throw error;
+            }
+        }
+        throw new Error('Database not initialized')
+    }
+
+    async getAllCategorieQuestionWithRequired(categorie: string, required: boolean) {
+        if (this.db !== null) {
+            try {
+                const listThinkQuestion = await this.db.getAllAsync('SELECT * FROM question WHERE categorie = ? AND required = ?', categorie, required);
+                return listThinkQuestion;
+            } catch (error) {
+                console.log("error getAllThinkQuestionWithRequired", error);
                 throw error;
             }
         }
@@ -284,24 +299,56 @@ class Toko5Repository {
     }
 
     async insertListReponse(list: any[]) {
+        ////why tf does this won't work
         if (this.db !== null) {
+            //console.log('list[0] toko5id', list[0].toko5_id);
             for (let elem of list) {
-                if (this.db !== null) {
-                    try {
-                        await this.db.runAsync("INSERT INTO REPONSE(toko5_id, question_id, valeur) VALUES (?,?,?)",elem.toko5_id,elem.question_id,elem.valeur);
-                    } catch (error) {
-                        console.log('error insertListReponse', error);
-                    }
-                } throw new Error("Database not initilized");
+                try {
+                    await this.db.runAsync("INSERT OR REPLACE INTO REPONSE(toko5_id, question_id, valeur) VALUES (?,?,?)", elem.toko5_id, elem.question_id, elem.valeur);
+                } catch (error) {
+                    console.log('error insertListReponse', error);
+                }
             }
+            try {
+                const newEtat = await this.updateValidityToko5(list[0].toko5_id);
+                console.log("AFTER INSERT OR REPLACE INTO REPONSE : new etat toko5:", newEtat)
+            } catch (error) {
+                console.log(error)
+            }
+            //const test = this.db.getFirstSync("Select * from REPONSE WHERE toko_id = ?", list[0].toko5_id);
+            //const test = await this.db.getAllAsync("SELECT * FROM reponse where toko5_id = ?",list[0].toko5_id);
+            //console.log('test reponse from database', test);
+            //return 'yes';
 
         } throw new Error('Database not initialized');
     }
 
-    async getAllReponseToko5Categorie(toko5Id:string, categorie: string) {
+
+    async updateValidityToko5(toko5Id: string) {
         if (this.db !== null) {
             try {
-                const listReponse = await this.db.getAllAsync('SELECT * FROM reponse,question WHERE (reponse.question_id = question.question_id AND toko5_id = ? AND question.categorie = ?)',toko5Id, categorie);
+                const result: any = await this.db.getFirstAsync("SELECT COUNT(*) as count FROM reponse, question WHERE reponse.question_id = question.question_id and question.required = 1 and reponse.toko5_id = ? and reponse.valeur = 0", toko5Id);
+
+                const etat = (result.count == 0) ? 'ongoing' : 'invalide';
+
+                await this.db.runAsync(
+                    "UPDATE TOKO5 SET etat = ? WHERE toko5_id = ?",
+                    etat, toko5Id
+                );
+
+                return etat;
+            } catch (error) {
+                console.log('error in updateValidityToko5', error);
+            }
+        } throw new Error('Database not initiliazed')
+    }
+
+
+    async getAllReponseToko5Categorie(toko5Id: string, categorie: string) {
+        if (this.db !== null) {
+            try {
+                const listReponse = await this.db.getAllAsync('SELECT * FROM reponse,question WHERE (reponse.question_id = question.question_id AND toko5_id = ? AND question.categorie = ?)', toko5Id, categorie);
+                //console.log('listReponse in database', listReponse);
                 return listReponse;
             } catch (error) {
                 console.log("error getAllReponseToko5Categorie", error);
@@ -310,6 +357,37 @@ class Toko5Repository {
         }
         throw new Error('Database not initialized')
     }
+
+    async getAllReponseToko5CategorieWithRequired(toko5Id: string, categorie: string, required: boolean) {
+        if (this.db !== null) {
+            try {
+                const listReponse = await this.db.getAllAsync('SELECT * FROM reponse,question WHERE (reponse.question_id = question.question_id AND toko5_id = ? AND question.categorie = ? AND question.required = ?)', toko5Id, categorie, required);
+                //console.log('listReponse in database', listReponse);
+                return listReponse;
+            } catch (error) {
+                console.log("error getAllReponseToko5CategorieWithRequired", error);
+                throw error;
+            }
+        }
+        throw new Error('Database not initialized')
+    }
+
+    async getValidityToko5(toko5Id: string): Promise<boolean> {
+        if (this.db !== null) {
+            try {
+                const validity: any = await this.db.getFirstAsync('SELECT etat FROM TOKO5 where toko5_id = ?', toko5Id);
+                if (validity.etat === ETAT.valide || validity.etat === ETAT.ongoing) return true;
+                return false;
+            } catch (error) {
+                console.log("error getValidity", error);
+                throw error;
+            }
+        }
+        throw new Error('Database not initialized')
+    }
+
+
+
 
 
 
