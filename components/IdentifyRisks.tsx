@@ -1,36 +1,32 @@
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { View, TouchableOpacity, StatusBar, Pressable, Modal, Alert, Image } from "react-native";
 import styles from "../styles";
 import AnonymousHotSurfaceDanger from "../assets/Anonymous-hot-surface-danger.svg";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { DatabaseContext, RootStackParamList } from "../context";
+import { DatabaseContext, Reponse, RootStackParamList } from "../context";
 import { ActivityIndicator, Checkbox, MD3Colors } from 'react-native-paper';
 import { IconButton } from "react-native-paper";
 import { useTheme } from "react-native-paper";
 import { Button, Text } from "react-native-paper";
 import { QUESTION_CATEGORIES } from "../constants/questionTypes";
 import { imagePathMapping } from "../utils/imagePathMapping";
+import { useFocusEffect } from "@react-navigation/native";
+import { getAllData } from "../utils/commonFunctions";
 
 
 ////one time from epi press that top button to go back here the buttons precedent and suivant was right below those pictograms not at the end of the screen ... FIND WHY
 
 const boxes = new Array(10).fill(null).map((v, i) => i + 1);
 
-type Props = NativeStackScreenProps<RootStackParamList>;
+type Props = NativeStackScreenProps<RootStackParamList, 'IdentifyRisks'>;
 
-export default function IdentifyRisks({ navigation }: Props) {
+export default function IdentifyRisks({ navigation, route }: Props) {
+
+    const { toko5Id } = route.params;
 
     const [isChecked, setChecked] = useState(false);
 
     const theme = useTheme();
-
-    const handleCheckBoxPress = () => {
-        const newChecked = !isChecked;
-        setChecked(!isChecked);
-        if (newChecked) {
-            navigation.navigate('ControlMeasure')
-        }
-    };
 
     const [listQuestion, setListQuestion] = useState<any>([]);
 
@@ -38,24 +34,102 @@ export default function IdentifyRisks({ navigation }: Props) {
 
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const getAllThinkQuestions = async () => {
-            try {
-                setLoading(true);
-                if (toko5Repository !== null) {
-                    let list = await toko5Repository.getAllCategorieQuestion(QUESTION_CATEGORIES.RISKS);
-                    setListQuestion(list);
-                    //console.log(list)
-                }
-            } catch (error) {
-                console.error('Error in the component think while retrieving list of questions ', error);
-            } finally {
-                setLoading(false);
-            }
-        };
+    const [listReponse, setListReponse] = useState<Record<number, Reponse>>({});
 
-        getAllThinkQuestions();
-    }, []);
+    const [saveLoading, setSaveLoading] = useState<boolean>(false);
+
+
+    // useEffect(() => {
+    //     const getAllThinkQuestions = async () => {
+    //         try {
+    //             setLoading(true);
+    //             if (toko5Repository !== null) {
+    //                 let list = await toko5Repository.getAllCategorieQuestion(QUESTION_CATEGORIES.RISKS);
+    //                 setListQuestion(list);
+    //                 //console.log(list)
+    //             }
+    //         } catch (error) {
+    //             console.error('Error in the component think while retrieving list of questions ', error);
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+
+    //     getAllThinkQuestions();
+    // }, []);
+
+    const getData = async () => {
+        try {
+            setLoading(true);
+            const data = await getAllData(toko5Repository, QUESTION_CATEGORIES.RISKS, toko5Id, false, false);
+            setListQuestion(data?.listQuestion);
+            setListReponse(data?.listReponse);
+
+        } catch (error) {
+            console.log('error in getAllDAta risks', error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const saveAllReponse = async (list: Record<number, Reponse> | null) => {
+        try {
+            //console.log('list before saving all',listReponse);
+            setSaveLoading(true);
+            if (toko5Repository !== null) {
+                if (list === null) {
+                    await toko5Repository.insertListReponse(Object.values(listReponse));
+                } else {
+                    await toko5Repository.insertListReponse(Object.values(list));
+                }
+            } else {
+                throw new Error('toko5Repository not initialized');
+            }
+        } catch (error) {
+            console.log('error in saveAllReponse Organise1', error);
+        } finally {
+            setSaveLoading(false);
+        }
+    }
+
+    const updateListReponse = (question_id: number, valeur: boolean): Record<number, Reponse> => {
+        let list: Record<number, Reponse> = JSON.parse(JSON.stringify(listReponse));
+        list[question_id].valeur = valeur;
+        setListReponse(list);
+        return list;
+        //console.log('checkbox pressed',list[question_id]);
+    }
+
+    const handleCheckBoxPress = async (questionId: number, valeur: boolean) => {
+        setSaveLoading(true);
+        let listValiny = updateListReponse(questionId, valeur);
+        await saveAllReponse(listValiny);
+        let test = await toko5Repository?.getAllReponseToko5Categorie(toko5Id, QUESTION_CATEGORIES.RISKS);
+        //console.log('list reponse after checkbox', test);
+        if (valeur) {
+            // insert in controlMeasure;
+            await toko5Repository?.insertIntoControlMeasure(toko5Id,questionId,"",false);
+            navigation.navigate('ControlMeasure', { toko5Id: toko5Id, questionId: questionId });
+
+        } else {
+            // delete from measureControl
+            // stop using that ? syntax xD 
+            await toko5Repository?.deleteFromControlMeasure(toko5Id, questionId);
+        }
+        setSaveLoading(false);
+    };
+
+    // useEffect(() => {
+    //     getAllRequiredOrganiseQuestions();
+    // }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+            getData();
+            return () => {
+            };
+        }, [])
+    );
 
 
     return (
@@ -83,15 +157,16 @@ export default function IdentifyRisks({ navigation }: Props) {
                                 (
                                     <View style={styles.checkboxContainer}>
                                         <Checkbox
-                                            status={isChecked ? 'checked' : 'unchecked'}
-                                            onPress={handleCheckBoxPress}
+                                            status={listReponse[question.question_id].valeur ? 'checked' : 'unchecked'}
+                                            onPress={async () => { await handleCheckBoxPress(question.question_id, !(listReponse[question.question_id].valeur)) }}
+                                        //{() => { updateListReponse(question.question_id, !listReponse[question.question_id].valeur) }}
                                         />
                                     </View>
                                 ) : (
                                     <View style={styles.checkboxContainer}>
                                         <Checkbox
-                                            status={isChecked ? 'checked' : 'unchecked'}
-                                            onPress={handleCheckBoxPress}
+                                            status='unchecked'
+                                            onPress={async () => { await handleCheckBoxPress(question.question_id, true) }}
                                         />
                                     </View>
                                 )}
@@ -103,7 +178,7 @@ export default function IdentifyRisks({ navigation }: Props) {
                 <View>
                     <Button style={styles.bottomButton}
                         mode="contained"
-                        onPress={() => { navigation.navigate('Organise2') }}
+                        onPress={async () => { await saveAllReponse(null); navigation.navigate('Organise2', { toko5Id: toko5Id }); }}
                         icon="arrow-left"
                         labelStyle={{
                             color: theme.colors.secondary, // Manually set to theme contrast color
@@ -113,10 +188,15 @@ export default function IdentifyRisks({ navigation }: Props) {
                         précédent
                     </Button>
                 </View>
+                {saveLoading && (
+                    <View style={styles.loadingContainer}>
+                        <ActivityIndicator size="small" color={theme.colors.primary} />
+                    </View>
+                )}
                 <View>
                     <Button style={styles.bottomButton}
                         mode="contained"
-                        onPress={() => { navigation.navigate('Epi') }}
+                        onPress={async () => { await saveAllReponse(null); navigation.navigate('Epi', { toko5Id: toko5Id }); }}
                         icon="arrow-right"
                         contentStyle={{ flexDirection: 'row-reverse' }}
                         labelStyle={{

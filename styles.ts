@@ -21,7 +21,8 @@ export default StyleSheet.create({
     flexDirection:'column',
     justifyContent: "center",
     alignItems: 'center',
-    alignContent: 'center'
+    alignContent: 'center',
+    backgroundColor: 'ghostwhite',
   },
 
 

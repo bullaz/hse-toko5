@@ -16,10 +16,19 @@ export type RootStackParamList = {
   Organise1: {
     toko5Id: string; 
   };
-  Organise2: undefined;
-  IdentifyRisks: undefined;
-  ControlMeasure: undefined;
-  Epi: undefined;
+  Organise2: {
+    toko5Id: string; 
+  };
+  IdentifyRisks:{
+    toko5Id: string;
+  };
+  ControlMeasure:{
+    toko5Id: string;
+    questionId: number;
+  };
+  Epi:{
+    toko5Id: string;
+  };
   Fitness: undefined;
   ScanQr: undefined;
   Commentaire: undefined;

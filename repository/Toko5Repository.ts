@@ -3,6 +3,10 @@
 
 //********************************* VERIFY CONNECTION OPENING AND CLOSING */
 
+
+
+///// USE PREPARED STATEMENT LATER, TRY TO FIND SOME ROOM FOR OPTIMIZATION 
+
 import * as SQLite from 'expo-sqlite';
 import { SQLiteDatabase } from 'expo-sqlite';
 import { QUESTION_CATEGORIES } from '../constants/questionTypes';
@@ -135,6 +139,8 @@ class Toko5Repository {
                 await this.db.execAsync(`DELETE FROM reponse`);
                 await this.db.execAsync(`DELETE FROM toko5`);
                 await this.db.execAsync(`DELETE FROM question`);
+                await this.db.execAsync(`DELETE FROM mesure_controle`);
+                await this.db.execAsync(`DELETE FROM commentaire`);
                 await this.db.runAsync(
                     `INSERT INTO question (nom, pictogramme, categorie, required) VALUES 
                         ('alcool','alcohol', 'think', 1),
@@ -200,10 +206,10 @@ class Toko5Repository {
     async getAllCategorieQuestion(categorie: string) {
         if (this.db !== null) {
             try {
-                const listThinkQuestion = await this.db.getAllAsync('SELECT * FROM question WHERE categorie = ?', categorie);
-                return listThinkQuestion;
+                const listQuestion = await this.db.getAllAsync('SELECT * FROM question WHERE categorie = ?', categorie);
+                return listQuestion;
             } catch (error) {
-                console.log("error getAllThinkQuestion", error);
+                console.log("error getAllCategorieQuestion", error);
                 throw error;
             }
         }
@@ -213,10 +219,11 @@ class Toko5Repository {
     async getAllCategorieQuestionWithRequired(categorie: string, required: boolean) {
         if (this.db !== null) {
             try {
-                const listThinkQuestion = await this.db.getAllAsync('SELECT * FROM question WHERE categorie = ? AND required = ?', categorie, required);
-                return listThinkQuestion;
+                const listQuestion = await this.db.getAllAsync('SELECT * FROM question WHERE categorie = ? AND required = ?', categorie, required);
+                //console.log('listQuestion getAllCategorieQuestionWithREquired',listQuestion);
+                return listQuestion;
             } catch (error) {
-                console.log("error getAllThinkQuestionWithRequired", error);
+                console.log("error getAllCategorieQuestionWithRequired", error);
                 throw error;
             }
         }
@@ -320,7 +327,9 @@ class Toko5Repository {
             //console.log('test reponse from database', test);
             //return 'yes';
 
-        } throw new Error('Database not initialized');
+        } else {
+            throw new Error('Database not initialized');
+        }
     }
 
 
@@ -386,6 +395,44 @@ class Toko5Repository {
         throw new Error('Database not initialized')
     }
 
+
+    async deleteFromControlMeasure(toko5Id: string, questionId: number) {
+        if (this.db !== null) {
+            await this.db.runAsync('DELETE FROM mesure_controle where toko5_id = ? AND question_id = ?', toko5Id, questionId);
+        } else {
+            throw new Error('Database not initialized');
+        }
+    }
+
+    async insertIntoControlMeasure(toko5Id: string, questionId: number, mesure: string, implemented: boolean) {
+        if (this.db !== null) {
+            await this.db.runAsync('INSERT INTO mesure_controle(toko5_id, question_id, mesure_prise, implemented) values (?,?,?,?)', toko5Id, questionId, mesure, implemented);
+        } else {
+            throw new Error('Database not initialized');
+        }
+    }
+
+    async updateControlMesure(controleMesureId: number, mesure: string, implemented: boolean) {
+        if (this.db !== null) {
+            await this.db.runAsync('UPDATE mesure_controle set mesure = ?, implemented = ? where mesure_controle_id = ?', controleMesureId, mesure, implemented);
+        } else {
+            throw new Error('Database not initialized');
+        }
+    }
+
+    async getAllControlMeasure(toko5Id: string) {
+        if (this.db !== null) {
+            try {
+                const list = await this.db.getAllAsync('SELECT * FROM mesure_controle mc, question q where mc.question_id = q.question_id', toko5Id);
+                // console.log('list control measure', list);
+                return list;
+            } catch (error) {
+                console.log("error getAllControlMeasure", error);
+                throw error;
+            }
+        }
+        throw new Error('Database not initialized');
+    }
 
 
 

@@ -3,7 +3,7 @@ import { View, TouchableOpacity, StatusBar, Pressable, Modal, Alert, Image } fro
 import styles from "../styles";
 import AnonymousHotSurfaceDanger from "../assets/Anonymous-hot-surface-danger.svg";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { DatabaseContext, RootStackParamList } from "../context";
+import { DatabaseContext, Reponse, RootStackParamList } from "../context";
 import Checkbox from "expo-checkbox";
 import { ActivityIndicator, IconButton } from "react-native-paper";
 import { useTheme } from "react-native-paper";
@@ -11,6 +11,7 @@ import { Button, Text } from "react-native-paper";
 import { QUESTION_CATEGORIES } from "../constants/questionTypes";
 import { imagePathMapping } from "../utils/imagePathMapping";
 import { useFocusEffect } from "@react-navigation/native";
+import { getAllData } from "../utils/commonFunctions";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Organise1'>;
 
@@ -28,20 +29,59 @@ export default function Organise1({ navigation, route }: Props) {
 
     const [loading, setLoading] = useState(true);
 
-    const getAllRequiredOrganiseQuestions = async () => {
+    const [listReponse, setListReponse] = useState<Record<number, Reponse>>({});
+
+    const [saveLoading, setSaveLoading] = useState<boolean>(false);
+
+    // const getAllRequiredOrganiseQuestions = async () => {
+    //     try {
+    //         setLoading(true);
+    //         if (toko5Repository !== null) {
+    //             let list = await toko5Repository.getAllRequiredOrganise();
+    //             setListQuestion(list);
+    //             //console.log(list)
+    //         }
+    //     } catch (error) {
+    //         console.error('Error in the component organise1 while retrieving list of questions ', error);
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
+
+    const getData = async () => {
         try {
             setLoading(true);
-            if (toko5Repository !== null) {
-                let list = await toko5Repository.getAllRequiredOrganise();
-                setListQuestion(list);
-                //console.log(list)
-            }
+            const data = await getAllData(toko5Repository,QUESTION_CATEGORIES.ORGANISE, toko5Id, true, true);
+            setListQuestion(data?.listQuestion);
+            setListReponse(data?.listReponse);
+
         } catch (error) {
-            console.error('Error in the component organise1 while retrieving list of questions ', error);
+            console.log('error in getAllDAta organise1', error);
         } finally {
             setLoading(false);
         }
-    };
+    }
+
+    const saveAllReponse = async () => {
+        try {
+            setSaveLoading(true);
+            if (toko5Repository !== null) {
+                await toko5Repository.insertListReponse(Object.values(listReponse));
+            } else{
+                throw new Error('toko5Repository not initialized');
+            }
+        } catch (error) {
+            console.log('error in saveAllReponse Organise1', error);
+        } finally {
+            setSaveLoading(false);
+        }
+    }
+
+    const updateListReponse = (question_id: number, valeur: boolean) => {
+        let list: Record<number, Reponse> = JSON.parse(JSON.stringify(listReponse));
+        list[question_id].valeur = valeur;
+        setListReponse(list);
+    }
 
     // useEffect(() => {
     //     getAllRequiredOrganiseQuestions();
@@ -49,7 +89,7 @@ export default function Organise1({ navigation, route }: Props) {
 
     useFocusEffect(
         useCallback(() => {
-            getAllRequiredOrganiseQuestions();
+            getData();
             return () => {
             };
         }, [])
@@ -76,7 +116,7 @@ export default function Organise1({ navigation, route }: Props) {
                                 <Image source={imagePathMapping(question.pictogramme)} style={{ width: 80, height: 80 }}></Image>
                             </Pressable>
                             <View style={styles.checkboxContainer}>
-                                <Checkbox value={isChecked} onValueChange={setChecked} />
+                                <Checkbox value={listReponse[question.question_id].valeur} onValueChange={() => { updateListReponse(question.question_id, !listReponse[question.question_id].valeur) }} />
                             </View>
                         </View>
                     ))}
@@ -86,7 +126,7 @@ export default function Organise1({ navigation, route }: Props) {
                 <View>
                     <Button style={styles.bottomButton}
                         mode="contained"
-                        onPress={() => { navigation.navigate('Think', { toko5Id: toko5Id }) }}
+                        onPress={async () => { await saveAllReponse(); navigation.navigate('Think', { toko5Id: toko5Id }) }}
                         icon="arrow-left"
                         labelStyle={{
                             color: theme.colors.secondary, // Manually set to theme contrast color
@@ -96,10 +136,17 @@ export default function Organise1({ navigation, route }: Props) {
                         précédent
                     </Button>
                 </View>
+
+                {saveLoading && (
+                    <View style={styles.loadingContainer}>
+                        <ActivityIndicator size="small" color={theme.colors.primary} />
+                    </View>
+                )}
+
                 <View>
                     <Button style={styles.bottomButton}
                         mode="contained"
-                        onPress={() => { navigation.navigate('Organise2') }}
+                        onPress={async () => { await saveAllReponse(); navigation.navigate('Organise2',{toko5Id: toko5Id}) }}
                         icon="arrow-right"
                         contentStyle={{ flexDirection: 'row-reverse' }}
                         labelStyle={{

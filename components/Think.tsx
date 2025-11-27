@@ -27,8 +27,6 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Think'>;
 
 export default function Think({ navigation, route }: Props) {
 
-    const [isChecked, setChecked] = useState(false);
-
     const { toko5Id } = route.params;
 
     //const {validity, validityLoading}: {validity: boolean | null, validityLoading: boolean} = useValidity(route);
@@ -64,7 +62,7 @@ export default function Think({ navigation, route }: Props) {
                         let x: ReponseInterfaceView = {
                             toko5_id: toko5Id,
                             question_id: answer.question_id,
-                            valeur: answer.valeur,
+                            valeur: Boolean(answer.valeur),
                             pressed: true
                         };
                         listRep[answer.question_id] = x;
@@ -101,12 +99,14 @@ export default function Think({ navigation, route }: Props) {
             setSaveLoading(true);
             //console.log(Object.values(listReponse));
             if (toko5Repository !== null) {
-                //console.log('here');
+                //console.log('Think saveAllReponse toko5Repository not null');
                 await toko5Repository.insertListReponse(Object.values(listReponse));
                 //console.log('here2');
-            } throw new Error('toko5Repository not initialized');
+            }else{
+                throw new Error('toko5Repository not initialized saveAllReponse function!')
+            }
         } catch (error) {
-
+            console.log('error in saveAllReponse think here',error);
         }finally{
             setSaveLoading(false);
         }
@@ -221,13 +221,13 @@ export default function Think({ navigation, route }: Props) {
                     <Button style={styles.bottomButton}
                         mode="contained"
                         onPress={async () => { await saveAllReponse(); navigation.navigate('Recent')}}
-                        icon="arrow-left"
+                        icon="home"
                         labelStyle={{
                             color: theme.colors.secondary, // Manually set to theme contrast color
                             fontSize: 16
                         }}
                     >
-                        précédent
+                        Accueil
                     </Button>
                 </View>
 

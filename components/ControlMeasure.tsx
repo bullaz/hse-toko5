@@ -1,5 +1,5 @@
-import React from "react";
-import { Image, KeyboardAvoidingView, Platform, View } from "react-native";
+import React, { useCallback, useContext, useEffect, useState } from "react";
+import { Image, KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 import {
   Button,
   Checkbox,
@@ -11,248 +11,330 @@ import {
   PaperProvider,
   Portal,
   Modal,
+  ActivityIndicator,
 } from "react-native-paper";
 import styles from "../styles/controlMeasureStyles";
 import globalStyles from "../styles";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { DatabaseContext, Reponse, RootStackParamList } from "../context";
+import { useFocusEffect } from "@react-navigation/native";
+import { imagePathMapping } from "../utils/imagePathMapping";
 
-export default function ControlMeasure() {
+type Props = NativeStackScreenProps<RootStackParamList, 'ControlMeasure'>;
+
+export default function ControlMeasure({ navigation, route }: Props) {
+
+  const { toko5Id, questionId } = route.params;
+
   const theme = useTheme();
-  const [page, setPage] = React.useState<number>(0);
-  const [numberOfItemsPerPageList] = React.useState([2, 3, 4]);
-  const [itemsPerPage, onItemsPerPageChange] = React.useState(
+  const [page, setPage] = useState<number>(0);
+  const [numberOfItemsPerPageList] = useState([2, 3, 4]);
+  const [itemsPerPage, onItemsPerPageChange] = useState(
     numberOfItemsPerPageList[0]
   );
-
   /* const from = page * itemsPerPage;
     const to = Math.min((page + 1) * itemsPerPage, items.length); */
 
-  const [checked, setChecked] = React.useState(false);
+  const [checked, setChecked] = useState(false);
 
-  const [text, setText] = React.useState(
+  const [text, setText] = useState(
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eget velit mauris."
   );
 
-  const [visible, setVisible] = React.useState(false);
+  const [visible, setVisible] = useState(false);
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
 
-  React.useEffect(() => {
+  const [listMesure, setListMesure] = useState<any>([]);
+
+  const toko5Repository = useContext(DatabaseContext);
+
+  const [loading, setLoading] = useState(true);
+
+  const [listReponse, setListReponse] = useState<Record<number, Reponse>>({});
+
+  const [saveLoading, setSaveLoading] = useState<boolean>(false);
+
+  const getAllData = async () => {
+    try {
+      setLoading(true);
+      const data = await toko5Repository?.getAllControlMeasure(toko5Id);
+      //console.log('list control measure', data);
+      setListMesure(data);
+    } catch (error) {
+      console.log('error in getAllDAta risks', error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
     setPage(0);
   }, [itemsPerPage]);
 
+  useFocusEffect(
+    useCallback(() => {
+      getAllData();
+      return () => {
+      };
+    }, [])
+  );
+
   return (
     <>
-      <PaperProvider>
-        <Portal>
-          <View style={styles.container}>
-            <View style={{
-                  flex: 1,
-                  flexWrap: "wrap",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  alignContent: "center",
-                  gap: 40,
-                  width:"100%"
-                  // alignContent: "center",
-                }}>
-              <View
-                style={{
-                  marginTop: 40,
-                  // flex: 1,
-                  flexWrap: "wrap",
-                  flexDirection: "row",
-                  justifyContent: 'center',
-                  alignItems: "center",
-                  // alignContent: "center",
-                }}
-              >
-                <MaterialDesignIcons
-                  name="lightbulb-on-outline"
-                  size={30}
-                  style={{
-                    color: 'black'
-                  }}
-                />
-                <Text
-                  style={{ textAlign: "center", paddingLeft: 17 }}
-                  variant="titleMedium"
-                >
-                  Pour ajouter une nouvelle ligne:{" "}
-                  {"\n"}
-                  Appuyer sur le bouton en dessous
-                  {/* Vous n'avez pas de : {"\n"}- [something...] */}
-                </Text>
-              </View>
-
-              <DataTable style={{
-                backgroundColor: 'ghostwhite',
-                borderColor: "rgba(0, 0, 0, 1)",
-                borderRadius: 10,
-                width: "95%",
-                borderEndColor: 'ghostwhite',
-                shadowColor: "black",
-                shadowOpacity: 0.26,
-                shadowOffset: { width: 0, height: 2 },
-                shadowRadius: 8,
-                elevation: 5,
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={theme.colors.primary} />
+        </View>
+      ) : (
+        <PaperProvider>
+          <Portal>
+            <View style={styles.container}>
+              <View style={{
+                flex: 1,
+                flexWrap: "wrap",
+                flexDirection: "column",
+                alignItems: "center",
+                alignContent: "center",
+                gap: 40,
+                width: "100%"
+                // alignContent: "center",
               }}>
-                <DataTable.Header>
-                  <DataTable.Title style={styles.cell}>danger</DataTable.Title>
-                  <DataTable.Title style={styles.cell}>mesures</DataTable.Title>
-                  <DataTable.Title style={styles.cell}>en place</DataTable.Title>
-                  <DataTable.Title style={styles.cell}>supprimer</DataTable.Title>
-                </DataTable.Header>
-
-                <DataTable.Row style={styles.trow}>
-                  <DataTable.Cell style={styles.cell}>
-                    <Image
-                      source={require("../assets/pictogram/test.jpg")}
-                      style={{ width: 30, height: 30 }}
-                    />
-                  </DataTable.Cell>
-                  <DataTable.Cell style={styles.cell}>
-                    {/* <TextInput
-                  value={text}
-                  multiline={true}
-                  onChangeText={(text) => setText(text)}
-                /> */}
-                    <IconButton
-                      icon="pen"
-                      size={24}
-                      onPress={showModal}
-                    />
-                  </DataTable.Cell>
-                  <DataTable.Cell style={styles.cell}>
-                    <Checkbox
-                      status={checked ? "checked" : "unchecked"}
-                      onPress={() => {
-                        setChecked(!checked);
-                      }}
-                    />
-                  </DataTable.Cell>
-
-                  <DataTable.Cell style={styles.cell}>
-                    <IconButton
-                      icon="trash-can-outline"
-                      size={24}
-                      onPress={showModal}
-                    />
-                  </DataTable.Cell>
-
-                </DataTable.Row>
-
-                <DataTable.Row style={styles.trow}>
-                  <DataTable.Cell style={styles.cell}>
-                    <Image
-                      source={require("../assets/pictogram/test.jpg")}
-                      style={{ width: 30, height: 30 }}
-                    />
-                  </DataTable.Cell>
-                  <DataTable.Cell style={styles.cell}>
-                    <IconButton
-                      icon="pen"
-                      size={24}
-                      onPress={() => { }}
-                    />
-                  </DataTable.Cell>
-                  <DataTable.Cell style={styles.cell}>
-                    <Checkbox
-                      status={checked ? "checked" : "unchecked"}
-                      onPress={() => {
-                        setChecked(!checked);
-                      }}
-                    />
-                  </DataTable.Cell>
-
-                  <DataTable.Cell style={styles.cell}>
-                    <IconButton
-                      icon="trash-can-outline"
-                      size={24}
-                      onPress={() => { }}
-                    />
-                  </DataTable.Cell>
-
-                </DataTable.Row>
-              </DataTable>
-            </View>
-
-            <View>
-              <IconButton
-                icon="plus"
-                size={24}
-                iconColor="white"
-                onPress={() => { }}
-                style={{
-                  backgroundColor: "rgba(26, 85, 161, 0.87)",
-                  width: 70,
-                  height: 70,
-                  borderRadius: 100,
-                  marginBottom: 35,
-                }}
-              />
-              {/* "rgba(105, 146, 200, 0.87)" */}
-            </View>
-          </View>
-
-          {/* mesure a prendre modal */}
-          {/* HOW TO MAKE THIS SHIT REACT PROPERLY WHEN THE KEYBOARD SHOWS */}
-          <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={styles.modalStyle}>
-            <View style={{
-              flex: 1,
-              flexWrap: 'wrap',
-              flexDirection: 'column',
-              alignContent: 'center',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: 10
-            }}>
-              <TextInput
-                multiline={true}
-                left={<TextInput.Icon icon="pen" />}
-                label={
+                <View
+                  style={{
+                    marginTop: 40,
+                    marginBottom: 10,
+                    // flex: 1,
+                    flexWrap: "wrap",
+                    flexDirection: "row",
+                    justifyContent: 'center',
+                    alignItems: "center",
+                    // alignContent: "center",
+                  }}
+                >
+                  <MaterialDesignIcons
+                    name="lightbulb-on-outline"
+                    size={30}
+                    style={{
+                      color: 'black'
+                    }}
+                  />
                   <Text
-                    style={{ textAlign: "center", color: 'rgba(77, 77, 71, 0.87)',textAlignVertical: 'top' }}
+                    style={{ textAlign: "center", paddingLeft: 17 }}
                     variant="titleMedium"
                   >
-                    Mesure à prendre
+                    Pour ajouter une nouvelle ligne:{" "}
+                    {"\n"}
+                    Appuyer sur le bouton en dessous
+                    {/* Vous n'avez pas de : {"\n"}- [something...] */}
                   </Text>
-                }
-                style={{ width: "90%", height: "70%", backgroundColor: 'rgba(234, 235, 232, 0.87)' }}
-                onChangeText={text => setText(text)}
-                underlineColor='darkgrey'
-              />
+                </View>
 
-              <Button style={{
-                width: "90%",
-                borderRadius: 5,
-                backgroundColor: "rgba(26, 85, 161, 0.87)"
-              }}
-                mode="contained"
-                onPress={() => {
-                }}
+                <ScrollView
+                  keyboardShouldPersistTaps="handled"
+                  style={{
+                    width: '90%', // 90% of parent width
+                    maxHeight: '60%', // 60% of screen height
+                    alignSelf: 'center',
+                    backgroundColor: 'ghostwhite',
+                    borderRadius: 10,
+                    borderEndColor: 'ghostwhite',
+                    shadowColor: "black",
+                    shadowOpacity: 0.26,
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowRadius: 8,
+                    elevation: 5,
+                  }}
+                  contentContainerStyle={{
+                    flexGrow: 1,
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    alignContent: 'center',
+                  }}
+                >
 
-                //test qr
-                //onPress = {requestPermission}
-                //onPress = {() => {navigation.navigate('ScanQr')}}
+                  <DataTable style={{
+                    backgroundColor: 'ghostwhite',
+                    borderColor: "rgba(0, 0, 0, 1)",
+                    borderRadius: 10,
+                    width: "100%",
+                    borderEndColor: 'ghostwhite',
+                    // shadowColor: "black",
+                    // shadowOpacity: 0.26,
+                    // shadowOffset: { width: 0, height: 2 },
+                    // shadowRadius: 8,
+                    // elevation: 5,
+                  }}>
+                    <DataTable.Header>
+                      <DataTable.Title style={styles.cell}>danger</DataTable.Title>
+                      <DataTable.Title style={styles.cell}>mesures</DataTable.Title>
+                      <DataTable.Title style={styles.cell}>en place</DataTable.Title>
+                      <DataTable.Title style={styles.cell}>supprimer</DataTable.Title>
+                    </DataTable.Header>
 
-                contentStyle={{ flexDirection: 'row-reverse' }}
-                labelStyle={{
-                  color: theme.colors.secondary, // Manually set to theme contrast color
-                  fontSize: 16
-                }}
-              >
-                valider
-              </Button>
 
+                    {listMesure.map((mesure: any) => (
+                      <DataTable.Row style={styles.trow} key={mesure.mesure_controle_id}>
+                        <DataTable.Cell style={styles.cell}>
+                          <Image
+                            source={imagePathMapping(mesure.pictogramme)}
+                            style={{ width: 30, height: 30 }}
+                          />
+                        </DataTable.Cell>
+                        <DataTable.Cell style={styles.cell}>
+                          <IconButton
+                            icon="pen"
+                            size={24}
+                            onPress={showModal}
+                          />
+                        </DataTable.Cell>
+                        <DataTable.Cell style={styles.cell}>
+                          <Checkbox
+                            status={mesure.implemented ? "checked" : "unchecked"}
+                            onPress={() => {
+                              setChecked(!checked);
+                            }}
+                          />
+                        </DataTable.Cell>
+
+                        <DataTable.Cell style={styles.cell}>
+                          <IconButton
+                            icon="trash-can-outline"
+                            size={24}
+                            onPress={showModal}
+                          />
+                        </DataTable.Cell>
+
+                      </DataTable.Row>
+                    ))}
+
+                    {/* <DataTable.Row style={styles.trow}>
+                      <DataTable.Cell style={styles.cell}>
+                        <Image
+                          source={require("../assets/pictogram/test.jpg")}
+                          style={{ width: 30, height: 30 }}
+                        />
+                      </DataTable.Cell>
+                      <DataTable.Cell style={styles.cell}>
+                        <IconButton
+                          icon="pen"
+                          size={24}
+                          onPress={() => { }}
+                        />
+                      </DataTable.Cell>
+                      <DataTable.Cell style={styles.cell}>
+                        <Checkbox
+                          status={checked ? "checked" : "unchecked"}
+                          onPress={() => {
+                            setChecked(!checked);
+                          }}
+                        />
+                      </DataTable.Cell>
+
+                      <DataTable.Cell style={styles.cell}>
+                        <IconButton
+                          icon="trash-can-outline"
+                          size={24}
+                          onPress={() => { }}
+                        />
+                      </DataTable.Cell>
+
+                    </DataTable.Row> */}
+
+
+
+
+
+
+                  </DataTable>
+
+                </ScrollView>
+              </View>
+
+              <View>
+                <IconButton
+                  icon="plus"
+                  size={24}
+                  iconColor="white"
+                  onPress={() => { }}
+                  style={{
+                    backgroundColor: "rgba(26, 85, 161, 0.87)",
+                    width: 70,
+                    height: 70,
+                    borderRadius: 100,
+                    marginBottom: 35,
+                  }}
+                />
+                {/* "rgba(105, 146, 200, 0.87)" */}
+              </View>
             </View>
-          </Modal>
 
-          {/* also add a delete modal */}
+            {/* mesure a prendre modal */}
+            {/* HOW TO MAKE THIS SHIT REACT PROPERLY WHEN THE KEYBOARD SHOWS */}
+            <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={styles.modalStyle}>
+              <View style={{
+                flex: 1,
+                flexWrap: 'wrap',
+                flexDirection: 'column',
+                alignContent: 'center',
+                alignItems: 'center',
+                paddingTop: 15,
+                paddingBottom: 5,
+                justifyContent: 'space-around',
+                //gap: 10,
+                width: '90%'
+              }}>
+                <TextInput
+                  multiline={true}
+                  left={<TextInput.Icon icon="pen" />}
+                  label={
+                    <Text
+                      style={{ textAlign: "center", color: 'rgba(77, 77, 71, 0.87)', textAlignVertical: 'top' }}
+                      variant="titleMedium"
+                    >
+                      Mesure à prendre
+                    </Text>
+                  }
+                  style={{ width: "95%", height: "60%", backgroundColor: 'rgba(234, 235, 232, 0.87)' }}
+                  onChangeText={text => setText(text)}
+                  underlineColor='darkgrey'
+                />
 
-        </Portal>
-      </PaperProvider>
+                <Button style={{
+                  width: "95%",
+                  borderRadius: 5,
+                  backgroundColor: "rgba(26, 85, 161, 0.87)"
+                }}
+                  mode="contained"
+                  onPress={() => {
+                  }}
+
+                  //test qr
+                  //onPress = {requestPermission}
+                  //onPress = {() => {navigation.navigate('ScanQr')}}
+
+                  contentStyle={{ flexDirection: 'row-reverse' }}
+                  labelStyle={{
+                    color: theme.colors.secondary, // Manually set to theme contrast color
+                    fontSize: 18
+                  }}
+                >
+                  valider
+                </Button>
+
+                {/* <View style={styles.loadingContainer}>
+                <ActivityIndicator size="small" color={theme.colors.primary} />
+              </View> */}
+              </View>
+            </Modal>
+
+            {/* also add a delete modal */}
+
+          </Portal>
+        </PaperProvider>
+      )}
     </>
   );
 }

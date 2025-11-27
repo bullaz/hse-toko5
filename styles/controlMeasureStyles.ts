@@ -27,8 +27,20 @@ export default StyleSheet.create({
     width: "95%", 
     backgroundColor: 'ghostwhite', 
     borderRadius: 30,
-    minHeight: "40%", //currently we support only numbers in height prop warning
-    padding: 20,
-    alignSelf: 'center'
-  }
+    height: "70%", //currently we support only numbers in height prop warning
+    // padding: 20,
+    alignSelf: 'center',
+    flexDirection: 'column',
+    alignItems: 'center',
+    alignContent: 'center'
+  },
+
+  loadingContainer: {
+    flex: 1,
+    flexDirection:'column',
+    justifyContent: "center",
+    alignItems: 'center',
+    alignContent: 'center',
+    backgroundColor: 'ghostwhite',
+  },
 });

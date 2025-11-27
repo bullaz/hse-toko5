@@ -26,14 +26,15 @@ export function getLocalDateTimeISOString(): string {
 
 
 
-const getAllReponseData = async (toko5Repository: any /*should use the appropriate typing bro*/, categorie: string, toko5Id: string, withRequired: boolean, required: boolean) => {
+export const getAllData = async (toko5Repository: any /*should use the appropriate typing bro*/, categorie: string, toko5Id: string, withRequired: boolean, required: boolean) => {
   try {
     if (toko5Repository !== null) {
       let listQuestion = [];
       if (withRequired) {
         listQuestion = await toko5Repository.getAllCategorieQuestionWithRequired(categorie, required);
+        //console.log('listQuestion in organise1', listQuestion);
       } else {
-        listQuestion = await toko5Repository.getAllCategorieQuestion(categorie, required);
+        listQuestion = await toko5Repository.getAllCategorieQuestion(categorie);
       }
       //setListQuestion(list);
 
@@ -57,7 +58,7 @@ const getAllReponseData = async (toko5Repository: any /*should use the appropria
           let x: Reponse = {
             toko5_id: toko5Id,
             question_id: answer.question_id,
-            valeur: answer.valeur
+            valeur: Boolean(answer.valeur)
           };
           listRep[answer.question_id] = x;
         }

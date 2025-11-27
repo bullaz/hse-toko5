@@ -11,9 +11,11 @@ import { Button, Text } from "react-native-paper";
 import { QUESTION_CATEGORIES } from "../constants/questionTypes";
 import { imagePathMapping } from "../utils/imagePathMapping";
 
-type Props = NativeStackScreenProps<RootStackParamList>;
+type Props = NativeStackScreenProps<RootStackParamList, "Epi">;
 
-export default function Epi({ navigation }: Props) {
+export default function Epi({ navigation, route }: Props) {
+
+    const { toko5Id } = route.params;
 
     const [isChecked, setChecked] = useState(false);
 
@@ -75,7 +77,7 @@ export default function Epi({ navigation }: Props) {
                 <View>
                     <Button style={styles.bottomButton}
                         mode="contained"
-                        onPress={() => { navigation.navigate('IdentifyRisks') }}
+                        onPress={() => { navigation.navigate('IdentifyRisks',{toko5Id: toko5Id}) }}
                         icon="arrow-left"
                         labelStyle={{
                             color: theme.colors.secondary, // Manually set to theme contrast color

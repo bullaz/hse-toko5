@@ -101,7 +101,7 @@ export default function App() {
             <Stack.Screen
               name="Invalide"
               component={Invalide}
-              options={{ title: 'Votre toko5 est invalide', headerBackVisible: false }}
+              options={{ title: 'Votre toko5 est invalide', headerBackVisible: false, gestureEnabled: false }}
             />
 
             <Stack.Screen
@@ -113,7 +113,7 @@ export default function App() {
             <Stack.Screen
               name="Login"
               component={Login}
-              options={{ title: "IDENTIFICATION" }}
+              options={{ title: "IDENTIFICATION", headerBackVisible: false, gestureEnabled: false  }}
             />
             <Stack.Screen
               name="Think"
@@ -133,7 +133,7 @@ export default function App() {
 
             <Stack.Screen
               name="Organise1"
-              options={{ title: 'Organiser', gestureEnabled: false }}
+              options={{ title: 'Organiser', headerBackVisible: false, gestureEnabled: false }}
             >
               {(props: NativeStackScreenProps<RootStackParamList, 'Organise1'>) => (
                 <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
@@ -145,34 +145,60 @@ export default function App() {
 
             <Stack.Screen
               name="Organise2"
-              component={Organise2}
-              options={{ title: 'Organiser' }}
-            />
+              options={{ title: 'Organiser', headerBackVisible: false, gestureEnabled: false  }}
+            >
+              {(props: NativeStackScreenProps<RootStackParamList, 'Organise2'>) => (
+                <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
+                  <Organise2 {...props} />
+                </ProtectedToko5Route>
+              )}
+            </Stack.Screen>
+            
             <Stack.Screen
               name="IdentifyRisks"
-              component={IdentifyRisks}
-              options={{ title: 'Identifier les dangers' }}
-            />
+              options={{ title: 'Identifier les dangers', headerBackVisible: false, gestureEnabled: false  }}
+            >
+              {(props: NativeStackScreenProps<RootStackParamList, 'IdentifyRisks'>) => (
+                <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
+                  <IdentifyRisks {...props} />
+                </ProtectedToko5Route>
+              )}
+            </Stack.Screen>
+
             <Stack.Screen
               name="ControlMeasure"
-              component={ControlMeasure}
-              options={{ title: 'Prendre des mesures' }}
-            />
+              options={{ title: 'Prendre des mesures', gestureEnabled: false  }}
+            >
+              {(props: NativeStackScreenProps<RootStackParamList, 'ControlMeasure'>) => (
+                <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
+                  <ControlMeasure {...props} />
+                </ProtectedToko5Route>
+              )}
+            </Stack.Screen>
+
+
             <Stack.Screen
               name="Epi"
-              component={Epi}
-              options={{ title: 'EPI / PPE' }}
-            />
+              options={{ title: 'EPI / PPE', headerBackVisible: false, gestureEnabled: false  }}
+             >
+              {(props: NativeStackScreenProps<RootStackParamList, 'Epi'>) => (
+                <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
+                  <Epi {...props} />
+                </ProtectedToko5Route>
+              )}
+            </Stack.Screen>
+
+
             <Stack.Screen
               name="Fitness"
               component={Fitness}
-              options={{ title: 'Fitness' }}
+              options={{ title: 'Fitness', headerBackVisible: false, gestureEnabled: false  }}
             />
 
             <Stack.Screen
               name="Commentaire"
               component={Commentaire}
-              options={{ title: 'commentaires' }}
+              options={{ title: 'commentaires', headerBackVisible: false, gestureEnabled: false  }}
             />
 
           </Stack.Navigator>
