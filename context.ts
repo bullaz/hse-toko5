@@ -29,7 +29,10 @@ export type RootStackParamList = {
   Epi:{
     toko5Id: string;
   };
-  Fitness: undefined;
+  Fitness:{
+    toko5Id: string;
+  };
+  
   ScanQr: undefined;
   Commentaire: undefined;
   Recent: undefined;
@@ -55,4 +58,16 @@ export interface Reponse {
   toko5_id: string;
   question_id: number;
   valeur: boolean;
+}
+
+
+export interface ControlMeasureRisk {
+  mesure_controle_id: number,
+  toko5_id: string,
+  question_id: number,
+  implemented: boolean,
+  nom: string,
+  pictogramme: string,
+  required: boolean,
+  categorie: string
 }

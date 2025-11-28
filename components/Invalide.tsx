@@ -80,9 +80,10 @@ export default function Invalide({ navigation }: Props) {
               style={{ textAlign: "center", paddingLeft: 17 }}
               variant="titleMedium"
             >
-              Veuillez parler avec votre supersiveur car: {"\n"}
-              Vous n'avez pas de : {"\n"}
-              - [something...]
+              Veuillez parler avec votre supersiveur car {"\n"}
+              Votre toko5 est invalide
+              {/* Vous n'avez pas de : {"\n"}
+              - [something...] */}
 
             </Text>
           </View>

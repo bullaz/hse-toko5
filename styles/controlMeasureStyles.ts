@@ -35,6 +35,19 @@ export default StyleSheet.create({
     alignContent: 'center'
   },
 
+  deleteModalStyle: {
+    width: "90%", 
+    backgroundColor: 'ghostwhite', 
+    borderRadius: 30,
+    height: "25%", //currently we support only numbers in height prop warning
+    // padding: 20,
+    alignSelf: 'center',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    alignContent: 'center'
+  },
+
   loadingContainer: {
     flex: 1,
     flexDirection:'column',

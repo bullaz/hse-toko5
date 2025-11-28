@@ -17,7 +17,7 @@ import styles from "../styles/controlMeasureStyles";
 import globalStyles from "../styles";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { DatabaseContext, Reponse, RootStackParamList } from "../context";
+import { ControlMeasureRisk, DatabaseContext, Reponse, RootStackParamList } from "../context";
 import { useFocusEffect } from "@react-navigation/native";
 import { imagePathMapping } from "../utils/imagePathMapping";
 
@@ -44,8 +44,15 @@ export default function ControlMeasure({ navigation, route }: Props) {
 
   const [visible, setVisible] = useState(false);
 
+  const [deleteVisible, setDeleteVisible] = useState(false);
+
+  const [currentDeleteId, setCurrentDeleteId] = useState<number>();
+
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
+
+  const showDeleteModal = () => setDeleteVisible(true);
+  const hideDeleteModal = () => setDeleteVisible(false);
 
   const [listMesure, setListMesure] = useState<any>([]);
 
@@ -53,16 +60,35 @@ export default function ControlMeasure({ navigation, route }: Props) {
 
   const [loading, setLoading] = useState(true);
 
-  const [listReponse, setListReponse] = useState<Record<number, Reponse>>({});
-
   const [saveLoading, setSaveLoading] = useState<boolean>(false);
+
+  const [currentMesure, setCurrentMesure] = useState<any>();
+  const [currentMesureText, setCurrentMesureText] = useState<string>('')
+    ;
+  const openMesureModal = async (mesure: any) => {
+    setCurrentMesure(mesure);
+    //console.log("current mesure",mesure)
+    setCurrentMesureText(mesure.mesure_prise);
+    setVisible(true);
+  }
 
   const getAllData = async () => {
     try {
       setLoading(true);
-      const data = await toko5Repository?.getAllControlMeasure(toko5Id);
-      //console.log('list control measure', data);
-      setListMesure(data);
+      if (toko5Repository !== null) {
+        const data = await toko5Repository?.getAllControlMeasure(toko5Id);
+        //console.log('list control measure', data);
+
+        let listControl = new Map();
+
+        for (let control of data as ControlMeasureRisk[]) {
+          //console.log('conversion individual of the database answer to reponse',answer);
+          listControl.set(control.mesure_controle_id, control);
+        }
+        setListMesure(listControl);
+      } else {
+        throw new Error("toko5repository null");
+      }
     } catch (error) {
       console.log('error in getAllDAta risks', error);
     } finally {
@@ -70,9 +96,37 @@ export default function ControlMeasure({ navigation, route }: Props) {
     }
   }
 
-  useEffect(() => {
-    setPage(0);
-  }, [itemsPerPage]);
+
+  const updateListMesure = async (control_id: number, mesure: string, implemented: boolean) => {
+    //console.log('ato anh');
+    let listControl = structuredClone(listMesure);
+    //console.log('before',listControl.get(control_id));
+    let control = listControl.get(control_id);
+    control.mesure_prise = mesure;
+    control.implemented = implemented;
+    //console.log('modified',listControl.get(control_id));
+    if (toko5Repository !== null) {
+      await toko5Repository?.updateControlMesure(control_id, mesure, implemented);
+    } else {
+      throw new Error('toko5repository is null');
+    }
+    setListMesure(listControl);
+  }
+
+  const deleteControlMesure = async (control_id: number) => {
+    let listControl = structuredClone(listMesure);
+    listControl.delete(control_id);
+    if (toko5Repository !== null) {
+      await toko5Repository.deleteFromControlMeasureById(control_id);
+    } else {
+      throw new Error('toko5repository is null');
+    }
+    setListMesure(listControl);
+  }
+
+  // useEffect(() => {
+  //   setPage(0);
+  // }, [itemsPerPage]);
 
   useFocusEffect(
     useCallback(() => {
@@ -125,7 +179,7 @@ export default function ControlMeasure({ navigation, route }: Props) {
                     style={{ textAlign: "center", paddingLeft: 17 }}
                     variant="titleMedium"
                   >
-                    Pour ajouter une nouvelle ligne:{" "}
+                    Pour ajouter une nouvelle ligne: {" "}
                     {"\n"}
                     Appuyer sur le bouton en dessous
                     {/* Vous n'avez pas de : {"\n"}- [something...] */}
@@ -153,6 +207,7 @@ export default function ControlMeasure({ navigation, route }: Props) {
                     alignItems: 'center',
                     alignContent: 'center',
                   }}
+                  persistentScrollbar={true}
                 >
 
                   <DataTable style={{
@@ -175,7 +230,7 @@ export default function ControlMeasure({ navigation, route }: Props) {
                     </DataTable.Header>
 
 
-                    {listMesure.map((mesure: any) => (
+                    {Array.from(listMesure.values()).map((mesure: any) => (
                       <DataTable.Row style={styles.trow} key={mesure.mesure_controle_id}>
                         <DataTable.Cell style={styles.cell}>
                           <Image
@@ -187,14 +242,14 @@ export default function ControlMeasure({ navigation, route }: Props) {
                           <IconButton
                             icon="pen"
                             size={24}
-                            onPress={showModal}
+                            onPress={() => openMesureModal(mesure)}
                           />
                         </DataTable.Cell>
                         <DataTable.Cell style={styles.cell}>
                           <Checkbox
                             status={mesure.implemented ? "checked" : "unchecked"}
-                            onPress={() => {
-                              setChecked(!checked);
+                            onPress={async () => {
+                              await updateListMesure(mesure.mesure_controle_id, mesure.mesure_prise, !mesure.implemented);
                             }}
                           />
                         </DataTable.Cell>
@@ -203,50 +258,15 @@ export default function ControlMeasure({ navigation, route }: Props) {
                           <IconButton
                             icon="trash-can-outline"
                             size={24}
-                            onPress={showModal}
+                            onPress={() => {
+                              setDeleteVisible(true);
+                              setCurrentDeleteId(mesure.mesure_controle_id);
+                            }}
                           />
                         </DataTable.Cell>
 
                       </DataTable.Row>
                     ))}
-
-                    {/* <DataTable.Row style={styles.trow}>
-                      <DataTable.Cell style={styles.cell}>
-                        <Image
-                          source={require("../assets/pictogram/test.jpg")}
-                          style={{ width: 30, height: 30 }}
-                        />
-                      </DataTable.Cell>
-                      <DataTable.Cell style={styles.cell}>
-                        <IconButton
-                          icon="pen"
-                          size={24}
-                          onPress={() => { }}
-                        />
-                      </DataTable.Cell>
-                      <DataTable.Cell style={styles.cell}>
-                        <Checkbox
-                          status={checked ? "checked" : "unchecked"}
-                          onPress={() => {
-                            setChecked(!checked);
-                          }}
-                        />
-                      </DataTable.Cell>
-
-                      <DataTable.Cell style={styles.cell}>
-                        <IconButton
-                          icon="trash-can-outline"
-                          size={24}
-                          onPress={() => { }}
-                        />
-                      </DataTable.Cell>
-
-                    </DataTable.Row> */}
-
-
-
-
-
 
                   </DataTable>
 
@@ -297,8 +317,11 @@ export default function ControlMeasure({ navigation, route }: Props) {
                       Mesure à prendre
                     </Text>
                   }
+                  value={currentMesureText}
                   style={{ width: "95%", height: "60%", backgroundColor: 'rgba(234, 235, 232, 0.87)' }}
-                  onChangeText={text => setText(text)}
+                  onChangeText={(newValue) => {
+                    setCurrentMesureText(newValue);
+                  }}
                   underlineColor='darkgrey'
                 />
 
@@ -308,7 +331,9 @@ export default function ControlMeasure({ navigation, route }: Props) {
                   backgroundColor: "rgba(26, 85, 161, 0.87)"
                 }}
                   mode="contained"
-                  onPress={() => {
+                  onPress={async () => {
+                    await updateListMesure(currentMesure.mesure_controle_id, currentMesureText, currentMesure.implemented);
+                    setVisible(false);
                   }}
 
                   //test qr
@@ -331,6 +356,46 @@ export default function ControlMeasure({ navigation, route }: Props) {
             </Modal>
 
             {/* also add a delete modal */}
+            <Modal visible={deleteVisible} onDismiss={hideDeleteModal} contentContainerStyle={styles.deleteModalStyle}>
+                <Text style={{ textAlign: "center", paddingLeft: 17 }}
+                  variant="titleMedium">
+                    Voulez-vous vraiment supprimer cette mesure de controle?
+                </Text>
+                <View style={{flexDirection: 'row', justifyContent: 'space-around', gap:30}}>
+                  <Button style={{
+                    width: "30%",
+                    borderRadius: 5,
+                    backgroundColor: "rgba(161, 26, 26, 0.87)"
+                  }}
+                    mode="contained"
+                    onPress={async () => {
+                    }}
+                    //contentStyle={{ flexDirection: 'row-reverse' }}
+                    labelStyle={{
+                      color: theme.colors.secondary,
+                      fontSize: 18
+                    }}
+                  >
+                    oui
+                  </Button>
+                  <Button style={{
+                    width: "30%",
+                    borderRadius: 5,
+                    backgroundColor: "rgba(26, 85, 161, 0.87)"
+                  }}
+                    mode="contained"
+                    onPress={async () => {
+                    }}
+                    //contentStyle={{ flexDirection: 'row-reverse' }}
+                    labelStyle={{
+                      color: theme.colors.secondary,
+                      fontSize: 18
+                    }}
+                  >
+                    non
+                  </Button>
+                </View>
+            </Modal>
 
           </Portal>
         </PaperProvider>

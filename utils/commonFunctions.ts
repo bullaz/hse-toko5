@@ -53,9 +53,9 @@ export const getAllData = async (toko5Repository: any /*should use the appropria
       if (listAnswer.length > 0) {
         let listRep: Record<number, Reponse> = {};
 
-        for (let answer of listAnswer as Reponse[]) {
+        for (let answer of listAnswer as Reponse[]) { 
           //console.log('conversion individual of the database answer to reponse',answer);
-          let x: Reponse = {
+          let x: Reponse = { ///don't even need that .. xD xD xD 
             toko5_id: toko5Id,
             question_id: answer.question_id,
             valeur: Boolean(answer.valeur)

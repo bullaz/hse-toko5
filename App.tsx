@@ -191,9 +191,14 @@ export default function App() {
 
             <Stack.Screen
               name="Fitness"
-              component={Fitness}
-              options={{ title: 'Fitness', headerBackVisible: false, gestureEnabled: false  }}
-            />
+              options={{ title: 'Fitness', gestureEnabled: false  }}
+           >
+              {(props: NativeStackScreenProps<RootStackParamList, 'Fitness'>) => (
+                <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
+                  <Fitness {...props} />
+                </ProtectedToko5Route>
+              )}
+            </Stack.Screen>
 
             <Stack.Screen
               name="Commentaire"

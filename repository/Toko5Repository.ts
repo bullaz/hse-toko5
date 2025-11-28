@@ -352,6 +352,16 @@ class Toko5Repository {
         } throw new Error('Database not initiliazed')
     }
 
+    async validateToko5(toko5Id: string) {
+        if (this.db !== null) {
+            try {
+                await this.db.runAsync("UPDATE TOKO5 set etat = 'valide' where toko5_id = ?", toko5Id);
+            } catch (error) {
+                console.log('error in validateToko5', error);
+            }
+        } throw new Error('Database not initiliazed')
+    }
+
 
     async getAllReponseToko5Categorie(toko5Id: string, categorie: string) {
         if (this.db !== null) {
@@ -404,6 +414,14 @@ class Toko5Repository {
         }
     }
 
+    async deleteFromControlMeasureById(controlId: number) {
+        if (this.db !== null) {
+            await this.db.runAsync('DELETE FROM mesure_controle where mesure_controle_id = ?', controlId);
+        } else {
+            throw new Error('Database not initialized');
+        }
+    }
+
     async insertIntoControlMeasure(toko5Id: string, questionId: number, mesure: string, implemented: boolean) {
         if (this.db !== null) {
             await this.db.runAsync('INSERT INTO mesure_controle(toko5_id, question_id, mesure_prise, implemented) values (?,?,?,?)', toko5Id, questionId, mesure, implemented);
@@ -414,7 +432,7 @@ class Toko5Repository {
 
     async updateControlMesure(controleMesureId: number, mesure: string, implemented: boolean) {
         if (this.db !== null) {
-            await this.db.runAsync('UPDATE mesure_controle set mesure = ?, implemented = ? where mesure_controle_id = ?', controleMesureId, mesure, implemented);
+            await this.db.runAsync('UPDATE mesure_controle set mesure_prise = ?, implemented = ? where mesure_controle_id = ?', mesure, implemented, controleMesureId);
         } else {
             throw new Error('Database not initialized');
         }
@@ -433,6 +451,8 @@ class Toko5Repository {
         }
         throw new Error('Database not initialized');
     }
+
+
 
 
 

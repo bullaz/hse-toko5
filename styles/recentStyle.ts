@@ -46,6 +46,8 @@ export default StyleSheet.create({
     borderRadius: 10,
   },
 
+  
+
   //   box: {
   //     width: 90,
   //     height: 90,

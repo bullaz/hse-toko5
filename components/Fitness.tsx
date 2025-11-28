@@ -1,16 +1,21 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { DatabaseContext, RootStackParamList } from "../context";
+import { DatabaseContext, Reponse, RootStackParamList } from "../context";
 import { Image, View } from "react-native";
-import { ActivityIndicator, Button, Checkbox, Divider, Modal, PaperProvider, Portal, Text, useTheme } from "react-native-paper";
+import { ActivityIndicator, Button, Divider, Modal, PaperProvider, Portal, Text, useTheme } from "react-native-paper";
 import styles from "../styles";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { QUESTION_CATEGORIES } from "../constants/questionTypes";
+import { useFocusEffect } from "@react-navigation/native";
+import { getAllData } from "../utils/commonFunctions";
+import Checkbox from "expo-checkbox";
 
 
 
-type Props = NativeStackScreenProps<RootStackParamList>;
+type Props = NativeStackScreenProps<RootStackParamList, 'Fitness'>;
 
-export default function Fitness({ navigation }: Props) {
+export default function Fitness({ navigation, route }: Props) {
+
+    const { toko5Id } = route.params;
 
     const [isChecked, setChecked] = useState(false);
 
@@ -24,27 +29,84 @@ export default function Fitness({ navigation }: Props) {
 
     const [visible, setVisible] = useState(false);
 
+    const [listReponse, setListReponse] = useState<Record<number, Reponse>>({});
+
+    const [saveLoading, setSaveLoading] = useState<boolean>(false);
+
     const showModal = () => setVisible(true);
     const hideModal = () => setVisible(false);
 
-    useEffect(() => {
-        const getAllSafetyQuestions = async () => {
-            try {
-                setLoading(true);
-                if (toko5Repository !== null) {
-                    let list = await toko5Repository.getAllCategorieQuestion(QUESTION_CATEGORIES.SAFETY);
-                    setListQuestion(list);
-                    //console.log(list)
-                }
-            } catch (error) {
-                console.error('Error in the component think while retrieving list of questions ', error);
-            } finally {
-                setLoading(false);
-            }
-        };
+    const getData = async () => {
+        try {
+            setLoading(true);
+            const data = await getAllData(toko5Repository, QUESTION_CATEGORIES.SAFETY, toko5Id, false, false);
+            setListQuestion(data?.listQuestion);
+            setListReponse(data?.listReponse);
 
-        getAllSafetyQuestions();
-    }, []);
+        } catch (error) {
+            console.log('error in getAllDAta organise1', error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const saveAllReponse = async () => {
+        try {
+            setSaveLoading(true);
+            if (toko5Repository !== null) {
+                await toko5Repository.insertListReponse(Object.values(listReponse));
+            } else {
+                throw new Error('toko5Repository not initialized');
+            }
+        } catch (error) {
+            console.log('error in saveAllReponse Organise1', error);
+        } finally {
+            setSaveLoading(false);
+        }
+    }
+
+    const updateListReponse = (question_id: number, valeur: boolean) => {
+        let list: Record<number, Reponse> = JSON.parse(JSON.stringify(listReponse));
+        list[question_id].valeur = valeur;
+        setListReponse(list);
+    }
+
+
+    const handleFinishToko5 = async () => {
+        setSaveLoading(true);
+        try {
+            if (toko5Repository !== null) {
+                await saveAllReponse();
+                const isValid = await toko5Repository.getValidityToko5(toko5Id);
+                if (isValid) {
+                    //const etat = toko
+                    await toko5Repository.validateToko5(toko5Id);
+                    setVisible(true);
+                } else {
+                    navigation.navigate('Invalide');
+                }
+            }
+            throw new Error('toko5repository not initialized');
+        } catch (error) {
+            console.error('useValidity verifyValidity error:', error);
+            return false;
+        }
+        finally{
+            setSaveLoading(false);
+        }
+    }
+
+    // useEffect(() => {
+    //     getAllRequiredOrganiseQuestions();
+    // }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+            getData();
+            return () => {
+            };
+        }, [])
+    );
 
     return (
 
@@ -68,8 +130,7 @@ export default function Fitness({ navigation }: Props) {
                                     <Text style={{ textAlign: 'center', }} variant="titleMedium">{question.nom}</Text>
                                     <View style={styles.checkboxContainer}>
                                         <Checkbox
-                                            status={isChecked ? 'checked' : 'unchecked'}
-                                            onPress={() => { }}
+                                            value={listReponse[question.question_id].valeur} onValueChange={() => { updateListReponse(question.question_id, !listReponse[question.question_id].valeur) }}
                                         />
                                     </View>
                                     <Divider style={{ height: '0.5%', backgroundColor: 'black' }} />
@@ -82,7 +143,7 @@ export default function Fitness({ navigation }: Props) {
                                 backgroundColor: theme.colors.primary
                             }}
                                 mode="contained"
-                                onPress={showModal}
+                                onPress={handleFinishToko5}
                                 icon="check-circle-outline"
                                 contentStyle={{ flexDirection: 'row-reverse' }}
                                 labelStyle={{
@@ -93,6 +154,12 @@ export default function Fitness({ navigation }: Props) {
 
                                 J'ai fini mon toko5
                             </Button>
+
+                            {saveLoading && (
+                                <View style={styles.loadingContainer}>
+                                    <ActivityIndicator size="small" color={theme.colors.primary} />
+                                </View>
+                            )}
 
 
                             <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={styles.modalStyle}>
@@ -110,7 +177,7 @@ export default function Fitness({ navigation }: Props) {
                                     </View>
 
                                     <Text
-                                        style={{ textAlign: "center"}}
+                                        style={{ textAlign: "center" }}
                                         variant="titleMedium"
                                     >
                                         Merci d'avoir pris le temps de finir votre toko5 !!!

@@ -108,7 +108,7 @@ export default function IdentifyRisks({ navigation, route }: Props) {
         //console.log('list reponse after checkbox', test);
         if (valeur) {
             // insert in controlMeasure;
-            await toko5Repository?.insertIntoControlMeasure(toko5Id,questionId,"",false);
+            await toko5Repository?.insertIntoControlMeasure(toko5Id,questionId,'',false);
             navigation.navigate('ControlMeasure', { toko5Id: toko5Id, questionId: questionId });
 
         } else {

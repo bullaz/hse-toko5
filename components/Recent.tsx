@@ -3,13 +3,15 @@
 
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { DatabaseContext, RootStackParamList } from "../context";
-import { Image, Platform, Pressable, StatusBar, View } from "react-native";
+import { Image, Platform, Pressable, ScrollView, StatusBar, View } from "react-native";
 import {
   ActivityIndicator,
   Button,
   Checkbox,
   Divider,
   IconButton,
+  PaperProvider,
+  Portal,
   Text,
   useTheme,
 } from "react-native-paper";
@@ -89,29 +91,56 @@ export default function Recent({ navigation }: Props) {
           <ActivityIndicator size="large" color={theme.colors.primary} />
         </View>
       ) : (
-        <View style={styles.container}>
+        <PaperProvider>
+          <Portal>
+            <View style={styles.container}>
 
-          {listToko5.length > 0 ?
+              {listToko5.length > 0 ?
+                <View style={{
+                  marginTop: 30,
+                  flex: 1,
+                  flexDirection: 'column',
+                  alignContent: 'center',
+                  gap: 14
+                }}>
+                  <ScrollView
+                    keyboardShouldPersistTaps="handled"
+                    style={{
+                      width: '88%', // 90% of parent width
+                      maxHeight: '80%', // 60% of screen height
+                      alignSelf: 'center',
+                      backgroundColor: 'ghostwhite',
+                      borderRadius: 10,
+                      // borderEndColor: 'ghostwhite',
+                      // shadowColor: "black",
+                      // shadowOpacity: 0.26,
+                      // shadowOffset: { width: 0, height: 2 },
+                      // shadowRadius: 8,
+                      // elevation: 5,
+                    }}
+                    contentContainerStyle={{
+                      flexGrow: 1,
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      alignContent: 'center',
+                      gap:15,
+                      paddingBottom: 10,
+                    }}
+                    persistentScrollbar={true}
+                  >
+                    {listToko5.map((toko5: any, index: number) => (
 
-            <View style={{
-              marginTop: 30,
-              flex: 1,
-              flexDirection: 'column',
-              alignContent: 'center',
-              gap: 14
-            }}>
-              {listToko5.map((toko5: any, index: number) => (
+                      // make sure that pressable doesn't change height or width when the name is too long.. It should only show part of it in that case
 
-                // make sure that pressable doesn't change height or width when the name is too long.. It should only show part of it in that case
-
-                <Pressable key={toko5.toko5_id} style={({ pressed }) => [
-                  styles.toko5,
-                  {
-                    backgroundColor: pressed ? 'rgba(148, 203, 224, 1)' : 'rgba(213, 238, 248, 1)',
-                    borderRadius: 8, // Add borderRadius for better visual effect
-                  }
-                ]} onPress={()=>{navigation.navigate('Think',{toko5Id: toko5.toko5_id})}}>
-                  {/* <View style={{ flexDirection: 'column', flexWrap: 'wrap' }}>
+                      <Pressable key={toko5.toko5_id} style={({ pressed }) => [
+                        styles.toko5,
+                        {
+                          width:"100%",
+                          backgroundColor: pressed ? 'rgba(148, 203, 224, 1)' : 'rgba(230, 241, 255, 1)',
+                          borderRadius: 8, // Add borderRadius for better visual effect
+                        }
+                      ]} onPress={() => { navigation.navigate('Think', { toko5Id: toko5.toko5_id }) }}>
+                        {/* <View style={{ flexDirection: 'column', flexWrap: 'wrap' }}>
                     <Text
                       style={{ textAlign: "center", paddingLeft: 17 }}
                       variant="titleMedium"
@@ -125,84 +154,85 @@ export default function Recent({ navigation }: Props) {
                       {toko5.date_heure.split("T")[0]}
                     </Text>
                   </View> */}
+                        <Text
+                          style={{
+                            textAlign: "center", paddingLeft: 17, flex: 1, // Add this
+                            flexWrap: 'wrap', // Add this
+                            flexShrink: 1,
+                          }}
+                          variant="titleMedium"
+                        >
+                          TOKO5 de {toko5.prenom_contractant.slice(0, 22)}...  {"\n"}
+                          <Text style={{ color: 'rgba(49, 108, 184, 0.85)', fontWeight: 'bold' }}>
+                            {toko5.date_heure.split("T")[0].replaceAll("-", "/")}
+                          </Text>
+                        </Text>
+                        <View
+                          style={{ flexDirection: "row", justifyContent: "flex-start" }}
+                        >
+                          <IconButton
+                            icon="trash-can-outline"
+                            size={24}
+                            onPress={() => setChecked(!isChecked)}
+                          />
+                          <IconButton
+                            icon="qrcode"
+                            size={24}
+                            onPress={() => setChecked(!isChecked)}
+                          />
+
+                          {toko5.etat === ETAT.valide && (
+                            <IconButton
+                              //disabled={true}
+                              icon="check"
+                              iconColor="green"
+                              size={24}
+                            />
+                          )}
+
+                          {toko5.etat === ETAT.invalide && (
+                            <IconButton
+                              //disabled={true}
+                              icon="close"
+                              iconColor="red"
+                              size={24}
+                            />
+                          )}
+
+                          {toko5.etat === ETAT.ongoing && (
+                            <IconButton
+                              icon="progress-helper"
+                              // or use that image in the pictogram folder
+                              iconColor={theme.colors.primary}
+                              size={24}
+                            />
+                          )}
+
+                        </View>
+                      </Pressable>
+                    ))}
+                  </ScrollView>
+                </View>
+                :
+                (<View style={{ flex: 1, flexWrap: 'wrap', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', alignContent: 'center' }}>
+                  <MaterialDesignIcons
+                    name="lightbulb-on-outline"
+                    size={30}
+                    style={{}}
+                  />
                   <Text
-                    style={{
-                      textAlign: "center", paddingLeft: 17, flex: 1, // Add this
-                      flexWrap: 'wrap', // Add this
-                      flexShrink: 1,
-                    }}
+                    style={{ textAlign: "center", padding: 10 }}
                     variant="titleMedium"
                   >
-                    TOKO5 de {toko5.prenom_contractant.slice(0, 22)}...  {"\n"}
-                    <Text style={{ color: 'rgba(26, 85, 161, 0.87)', fontWeight: 'bold'}}>
-                      {toko5.date_heure.split("T")[0].replaceAll("-","/")}
-                    </Text>
+                    Vous n'avez pas de toko5 {"\n"}
+                    Veuillez presser le bouton en dessous pour en initier un!
                   </Text>
-                  <View
-                    style={{ flexDirection: "row", justifyContent: "flex-start" }}
-                  >
-                    <IconButton
-                      icon="trash-can-outline"
-                      size={24}
-                      onPress={() => setChecked(!isChecked)}
-                    />
-                    <IconButton
-                      icon="qrcode"
-                      size={24}
-                      onPress={() => setChecked(!isChecked)}
-                    />
-
-                    {toko5.etat === ETAT.valide && (
-                      <IconButton
-                        //disabled={true}
-                        icon="check"
-                        iconColor="green"
-                        size={24}
-                      />
-                    )}
-
-                    {toko5.etat === ETAT.invalide && (
-                      <IconButton
-                        //disabled={true}
-                        icon="close"
-                        iconColor="red"
-                        size={24}
-                      />
-                    )}
-
-                    {toko5.etat === ETAT.ongoing && (
-                      <IconButton
-                        icon="progress-helper"
-                        // or use that image in the pictogram folder
-                        iconColor={theme.colors.primary}
-                        size={24}
-                      />
-                    )}
-
-                  </View>
-                </Pressable>
-              ))}
-            </View> :
-
-            <View style={{ flex: 1, flexWrap: 'wrap', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', alignContent: 'center' }}>
-              <MaterialDesignIcons
-                name="lightbulb-on-outline"
-                size={30}
-                style={{}}
-              />
-              <Text
-                style={{ textAlign: "center", padding: 10 }}
-                variant="titleMedium"
-              >
-                Vous n'avez pas de toko5 {"\n"}
-                Veuillez presser le bouton en dessous pour en initier un!
-              </Text>
-            </View>}
+                </View>)}
 
 
 
 
-          {/* <View style={{
+              {/* <View style={{
             marginTop:30,
             flex:1,
             flexDirection: 'column',
@@ -240,23 +270,25 @@ export default function Recent({ navigation }: Props) {
             </Pressable>
           </View> */}
 
-          <View>
-            <IconButton
-              icon="plus"
-              size={24}
-              iconColor="white"
-              onPress={() => navigation.navigate("Login")}
-              style={{
-                backgroundColor: "rgba(26, 85, 161, 0.87)",
-                width: 70,
-                height: 70,
-                borderRadius: 100,
-                marginBottom: 35,
-              }}
-            />
-            {/* "rgba(105, 146, 200, 0.87)" */}
-          </View>
-        </View >
+              <View>
+                <IconButton
+                  icon="plus"
+                  size={24}
+                  iconColor="white"
+                  onPress={() => navigation.navigate("Login")}
+                  style={{
+                    backgroundColor: "rgba(26, 85, 161, 0.87)",
+                    width: 70,
+                    height: 70,
+                    borderRadius: 100,
+                    marginBottom: 35,
+                  }}
+                />
+                {/* "rgba(105, 146, 200, 0.87)" */}
+              </View>
+            </View >
+          </Portal>
+        </PaperProvider>
       )
       }
     </>

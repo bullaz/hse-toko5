@@ -17,8 +17,9 @@ export const useValidity = (toko5Id: string) => {
     try {
       if (toko5Repository !== null) {
         return await toko5Repository?.getValidityToko5(toko5Id);
+      }else{
+        throw new Error('toko5repository not initialized');
       }
-      throw new Error('toko5repository not initialized');
     } catch (error) {
       console.error('useValidity verifyValidity error:', error);
       return false;

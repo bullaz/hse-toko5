@@ -1,15 +1,17 @@
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { View, TouchableOpacity, StatusBar, Pressable, Modal, Alert, Image } from "react-native";
 import styles from "../styles";
 import AnonymousHotSurfaceDanger from "../assets/Anonymous-hot-surface-danger.svg";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { DatabaseContext, RootStackParamList } from "../context";
+import { DatabaseContext, Reponse, RootStackParamList } from "../context";
 import Checkbox from "expo-checkbox";
 import { ActivityIndicator, IconButton } from "react-native-paper";
 import { useTheme } from "react-native-paper";
 import { Button, Text } from "react-native-paper";
 import { QUESTION_CATEGORIES } from "../constants/questionTypes";
 import { imagePathMapping } from "../utils/imagePathMapping";
+import { useFocusEffect } from "@react-navigation/native";
+import { getAllData } from "../utils/commonFunctions";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Epi">;
 
@@ -27,25 +29,56 @@ export default function Epi({ navigation, route }: Props) {
 
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const getAllThinkQuestions = async () => {
-            try {
-                setLoading(true);
-                if (toko5Repository !== null) {
-                    let list = await toko5Repository.getAllCategorieQuestion(QUESTION_CATEGORIES.EPI);
-                    setListQuestion(list);
-                    //console.log(list)
-                }
-            } catch (error) {
-                console.error('Error in the component while retrieving list of questions ', error);
-            } finally {
-                setLoading(false);
+    const [listReponse, setListReponse] = useState<Record<number, Reponse>>({});
+
+    const [saveLoading, setSaveLoading] = useState<boolean>(false);
+
+    const getData = async () => {
+        try {
+            setLoading(true);
+            const data = await getAllData(toko5Repository, QUESTION_CATEGORIES.EPI, toko5Id, false, false);
+            setListQuestion(data?.listQuestion);
+            setListReponse(data?.listReponse);
+
+        } catch (error) {
+            console.log('error in getAllDAta organise1', error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const saveAllReponse = async () => {
+        try {
+            setSaveLoading(true);
+            if (toko5Repository !== null) {
+                await toko5Repository.insertListReponse(Object.values(listReponse));
+            } else {
+                throw new Error('toko5Repository not initialized');
             }
-        };
+        } catch (error) {
+            console.log('error in saveAllReponse Organise1', error);
+        } finally {
+            setSaveLoading(false);
+        }
+    }
 
-        getAllThinkQuestions();
-    }, []);
+    const updateListReponse = (question_id: number, valeur: boolean) => {
+        let list: Record<number, Reponse> = JSON.parse(JSON.stringify(listReponse));
+        list[question_id].valeur = valeur;
+        setListReponse(list);
+    }
 
+    // useEffect(() => {
+    //     getAllRequiredOrganiseQuestions();
+    // }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+            getData();
+            return () => {
+            };
+        }, [])
+    );
     return (
         <>
             {loading ? (
@@ -58,7 +91,7 @@ export default function Epi({ navigation, route }: Props) {
                     {listQuestion.map((question: any, index: number) => (
                         <View key={question.question_id} style={styles.single}>
                             <Pressable
-                                onPress={() => navigation.navigate('SinglePicto',{question: question})}
+                                onPress={() => navigation.navigate('SinglePicto', { question: question })}
                                 style={({ pressed }) => [
                                     styles.box,
                                     pressed && styles.pressedBox,
@@ -67,7 +100,7 @@ export default function Epi({ navigation, route }: Props) {
                                 <Image source={imagePathMapping(question.pictogramme)} style={{ width: 80, height: 80 }}></Image>
                             </Pressable>
                             <View style={styles.checkboxContainer}>
-                                <Checkbox value={isChecked} onValueChange={setChecked} />
+                                <Checkbox value={listReponse[question.question_id].valeur} onValueChange={() => { updateListReponse(question.question_id, !listReponse[question.question_id].valeur) }} />
                             </View>
                         </View>
                     ))}
@@ -77,7 +110,7 @@ export default function Epi({ navigation, route }: Props) {
                 <View>
                     <Button style={styles.bottomButton}
                         mode="contained"
-                        onPress={() => { navigation.navigate('IdentifyRisks',{toko5Id: toko5Id}) }}
+                        onPress={async () => { await saveAllReponse(); navigation.navigate('IdentifyRisks', { toko5Id: toko5Id }); }}
                         icon="arrow-left"
                         labelStyle={{
                             color: theme.colors.secondary, // Manually set to theme contrast color
@@ -90,7 +123,7 @@ export default function Epi({ navigation, route }: Props) {
                 <View>
                     <Button style={styles.bottomButton}
                         mode="contained"
-                        onPress={() => { navigation.navigate('Fitness') }}
+                        onPress={async () => { await saveAllReponse(); navigation.navigate('Fitness', { toko5Id: toko5Id }); }}
                         icon="arrow-right"
                         contentStyle={{ flexDirection: 'row-reverse' }}
                         labelStyle={{
