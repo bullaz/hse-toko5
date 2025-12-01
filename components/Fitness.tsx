@@ -3,11 +3,12 @@ import { DatabaseContext, Reponse, RootStackParamList } from "../context";
 import { Image, View } from "react-native";
 import { ActivityIndicator, Button, Divider, Modal, PaperProvider, Portal, Text, useTheme } from "react-native-paper";
 import styles from "../styles";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import { QUESTION_CATEGORIES } from "../constants/questionTypes";
 import { useFocusEffect } from "@react-navigation/native";
 import { getAllData } from "../utils/commonFunctions";
 import Checkbox from "expo-checkbox";
+import { StatusBar } from "expo-status-bar";
 
 
 
@@ -16,8 +17,6 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Fitness'>;
 export default function Fitness({ navigation, route }: Props) {
 
     const { toko5Id } = route.params;
-
-    const [isChecked, setChecked] = useState(false);
 
     const theme = useTheme();
 
@@ -85,14 +84,14 @@ export default function Fitness({ navigation, route }: Props) {
                 } else {
                     navigation.navigate('Invalide');
                 }
-            }else{
+            } else {
                 throw new Error('toko5repository not initialized');
             }
         } catch (error) {
             console.error('handleFinishToko5 error:', error);
             return false;
         }
-        finally{
+        finally {
             setSaveLoading(false);
         }
     }
@@ -112,6 +111,7 @@ export default function Fitness({ navigation, route }: Props) {
     return (
 
         <>
+            <StatusBar hidden={false} backgroundColor="black" />
             {loading ? (
                 <View style={styles.loadingContainer}>
                     <ActivityIndicator size="large" color={theme.colors.primary} />

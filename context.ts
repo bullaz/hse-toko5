@@ -37,6 +37,8 @@ export type RootStackParamList = {
   Commentaire: undefined;
   Recent: undefined;
   Invalide: undefined;
+  Home: undefined;
+  LoginSup: undefined;
 };
 
 

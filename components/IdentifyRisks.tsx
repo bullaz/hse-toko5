@@ -1,13 +1,11 @@
-import { useCallback, useContext, useEffect, useState } from "react";
-import { View, TouchableOpacity, StatusBar, Pressable, Modal, Alert, Image } from "react-native";
+import { useCallback, useContext, useState } from "react";
+import { View, StatusBar, Pressable, Image } from "react-native";
 import styles from "../styles";
-import AnonymousHotSurfaceDanger from "../assets/Anonymous-hot-surface-danger.svg";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { DatabaseContext, Reponse, RootStackParamList } from "../context";
-import { ActivityIndicator, Checkbox, MD3Colors } from 'react-native-paper';
-import { IconButton } from "react-native-paper";
+import { ActivityIndicator, Checkbox } from 'react-native-paper';
 import { useTheme } from "react-native-paper";
-import { Button, Text } from "react-native-paper";
+import { Button} from "react-native-paper";
 import { QUESTION_CATEGORIES } from "../constants/questionTypes";
 import { imagePathMapping } from "../utils/imagePathMapping";
 import { useFocusEffect } from "@react-navigation/native";
@@ -108,7 +106,7 @@ export default function IdentifyRisks({ navigation, route }: Props) {
         //console.log('list reponse after checkbox', test);
         if (valeur) {
             // insert in controlMeasure;
-            await toko5Repository?.insertIntoControlMeasure(toko5Id,questionId,'',false);
+            await toko5Repository?.insertIntoControlMeasure(toko5Id, questionId, '', false);
             navigation.navigate('ControlMeasure', { toko5Id: toko5Id, questionId: questionId });
 
         } else {
@@ -134,13 +132,14 @@ export default function IdentifyRisks({ navigation, route }: Props) {
 
     return (
         <>
+            <StatusBar hidden={false} backgroundColor="black" />
             {loading ? (
                 <View style={styles.loadingContainer}>
                     <ActivityIndicator size="large" color={theme.colors.primary} />
                 </View>
             ) : (
                 <View style={styles.pictoContainer}>
-                    <StatusBar hidden={false} />
+                    {/* <StatusBar hidden={false} /> */}
                     {listQuestion.map((question: any, index: string) => (
                         <View key={question.question_id} style={styles.single}>
                             <Pressable

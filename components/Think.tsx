@@ -1,26 +1,18 @@
 /////there is a visual problem during the first second when we still retrieving the list question : the two buttons go bellow the end of the screen.. only part of it is visible and then after we get the data the buttons are placed on the right place
 
-
-
 ///////////////////// WHY IS EXPO CRASHING EACH TIME I ENTER THAT COMPONENTS EVER SINCE I IMPLEMENTED THAT IMAGE MAPPING 
 
-
-import { useCallback, useContext, useEffect, useState } from "react";
-import { View, TouchableOpacity, StatusBar, Pressable, Modal, Alert, Image } from "react-native";
+import { useCallback, useContext, useState } from "react";
+import { View, StatusBar, Pressable, Image } from "react-native";
 import styles from "../styles";
-import AnonymousHotSurfaceDanger from "../assets/Anonymous-hot-surface-danger.svg";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { DatabaseContext, Question, ReponseInterfaceView, Reponse, RootStackParamList } from "../context";
-import Checkbox from "expo-checkbox";
 import { ActivityIndicator, IconButton } from "react-native-paper";
 import { useTheme } from "react-native-paper";
-import { Button, Text } from "react-native-paper";
-import Toko5Repository from "../repository/Toko5Repository";
+import { Button} from "react-native-paper";
 import { imagePathMapping } from "../utils/imagePathMapping";
 import { QUESTION_CATEGORIES } from "../constants/questionTypes";
 import { useFocusEffect } from "@react-navigation/native";
-import { BackHandler } from 'react-native';
-import { useValidity } from "../hooks/useValidity";
 
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Think'>;
@@ -53,12 +45,10 @@ export default function Think({ navigation, route }: Props) {
                 setListQuestion(list);
                 // find a cleaner way to achieve this .. I think this is too dirty ... maybe
                 let listAnswer = await toko5Repository.getAllReponseToko5Categorie(toko5Id, QUESTION_CATEGORIES.THINK);
-                //console.log('saved list answer', listAnswer);
                 if (listAnswer.length > 0) {
                     let listRep: Record<number, ReponseInterfaceView> = {};
 
                     for (let answer of listAnswer as Reponse[]) {
-                        //console.log('conversion individual of the database answer to reponse',answer);
                         let x: ReponseInterfaceView = {
                             toko5_id: toko5Id,
                             question_id: answer.question_id,
@@ -71,20 +61,16 @@ export default function Think({ navigation, route }: Props) {
                 } else {
                     let listRep: Record<number, ReponseInterfaceView> = {};
                     for (let question of list as Question[]) {
-                        //console.log('question',question);
                         let reponse: ReponseInterfaceView = {
                             toko5_id: toko5Id,
                             question_id: question.question_id,
                             valeur: false,
                             pressed: false
                         };
-                        //console.log('reponse',reponse);
                         listRep[question.question_id] = reponse;
                     }
-                    //console.log('listRep',listRep);
                     setListReponse(listRep)
 
-                    //console.log(listRep)
                 }
             }
         } catch (error) {
@@ -97,11 +83,8 @@ export default function Think({ navigation, route }: Props) {
     const saveAllReponse = async () => {
         try {
             setSaveLoading(true);
-            //console.log(Object.values(listReponse));
             if (toko5Repository !== null) {
-                //console.log('Think saveAllReponse toko5Repository not null');
                 await toko5Repository.insertListReponse(Object.values(listReponse));
-                //console.log('here2');
             }else{
                 throw new Error('toko5Repository not initialized saveAllReponse function!')
             }
@@ -117,8 +100,6 @@ export default function Think({ navigation, route }: Props) {
         list[question_id].valeur = valeur;
         list[question_id].pressed = !(list[question_id].pressed);
         setListReponse(list);
-        //console.log(list[question_id].question_id,'valeur',list[question_id].valeur);
-        //console.log(list[question_id].question_id,'valeur',list[question_id].valeur,'pressed',list[question_id].pressed);
     }
 
     // does this happen 2 times in the first mounting if i use both useEffect and useFocusEffect or not .. Should I use only useFocusEffect ??!!
@@ -161,9 +142,6 @@ export default function Think({ navigation, route }: Props) {
                                 <Image source={imagePathMapping(question.pictogramme)} style={{ width: 70, height: 70 }}></Image>
                             </Pressable>
                             <View style={styles.checkboxContainer}>
-
-                                {/* {<Text>X.{i}.V</Text>} 
-                            <Checkbox value={isChecked} onValueChange={setChecked} />*/}
 
                                 {!(listReponse[question.question_id].pressed) && (
                                     <>

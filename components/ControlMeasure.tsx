@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { Image, KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
+import { Image, ScrollView, View } from "react-native";
 import {
   Button,
   Checkbox,
@@ -14,12 +14,13 @@ import {
   ActivityIndicator,
 } from "react-native-paper";
 import styles from "../styles/controlMeasureStyles";
-import globalStyles from "../styles";
+//import globalStyles from "../styles";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { ControlMeasureRisk, DatabaseContext, Reponse, RootStackParamList } from "../context";
 import { useFocusEffect } from "@react-navigation/native";
 import { imagePathMapping } from "../utils/imagePathMapping";
+import { StatusBar } from "expo-status-bar";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ControlMeasure'>;
 
@@ -32,14 +33,6 @@ export default function ControlMeasure({ navigation, route }: Props) {
   const [numberOfItemsPerPageList] = useState([2, 3, 4]);
   const [itemsPerPage, onItemsPerPageChange] = useState(
     numberOfItemsPerPageList[0]
-  );
-  /* const from = page * itemsPerPage;
-    const to = Math.min((page + 1) * itemsPerPage, items.length); */
-
-  const [checked, setChecked] = useState(false);
-
-  const [text, setText] = useState(
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eget velit mauris."
   );
 
   const [visible, setVisible] = useState(false);
@@ -67,7 +60,6 @@ export default function ControlMeasure({ navigation, route }: Props) {
     ;
   const openMesureModal = async (mesure: any) => {
     setCurrentMesure(mesure);
-    //console.log("current mesure",mesure)
     setCurrentMesureText(mesure.mesure_prise);
     setVisible(true);
   }
@@ -77,12 +69,10 @@ export default function ControlMeasure({ navigation, route }: Props) {
       setLoading(true);
       if (toko5Repository !== null) {
         const data = await toko5Repository?.getAllControlMeasure(toko5Id);
-        //console.log('list control measure', data);
 
         let listControl = new Map();
 
         for (let control of data as ControlMeasureRisk[]) {
-          //console.log('conversion individual of the database answer to reponse',answer);
           listControl.set(control.mesure_controle_id, control);
         }
         setListMesure(listControl);
@@ -98,13 +88,10 @@ export default function ControlMeasure({ navigation, route }: Props) {
 
 
   const updateListMesure = async (control_id: number, mesure: string, implemented: boolean) => {
-    //console.log('ato anh');
     let listControl = structuredClone(listMesure);
-    //console.log('before',listControl.get(control_id));
     let control = listControl.get(control_id);
     control.mesure_prise = mesure;
     control.implemented = implemented;
-    //console.log('modified',listControl.get(control_id));
     if (toko5Repository !== null) {
       await toko5Repository?.updateControlMesure(control_id, mesure, implemented);
     } else {
@@ -138,6 +125,7 @@ export default function ControlMeasure({ navigation, route }: Props) {
 
   return (
     <>
+      <StatusBar hidden={false} backgroundColor="black" />
       {loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={theme.colors.primary} />
@@ -336,10 +324,6 @@ export default function ControlMeasure({ navigation, route }: Props) {
                     setVisible(false);
                   }}
 
-                  //test qr
-                  //onPress = {requestPermission}
-                  //onPress = {() => {navigation.navigate('ScanQr')}}
-
                   contentStyle={{ flexDirection: 'row-reverse' }}
                   labelStyle={{
                     color: theme.colors.secondary, // Manually set to theme contrast color
@@ -357,44 +341,44 @@ export default function ControlMeasure({ navigation, route }: Props) {
 
             {/* also add a delete modal */}
             <Modal visible={deleteVisible} onDismiss={hideDeleteModal} contentContainerStyle={styles.deleteModalStyle}>
-                <Text style={{ textAlign: "center", paddingLeft: 17 }}
-                  variant="titleMedium">
-                    Voulez-vous vraiment supprimer cette mesure de controle?
-                </Text>
-                <View style={{flexDirection: 'row', justifyContent: 'space-around', gap:30}}>
-                  <Button style={{
-                    width: "30%",
-                    borderRadius: 5,
-                    backgroundColor: "rgba(161, 26, 26, 0.87)"
+              <Text style={{ textAlign: "center", paddingLeft: 17 }}
+                variant="titleMedium">
+                Voulez-vous vraiment supprimer cette mesure de controle?
+              </Text>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-around', gap: 30 }}>
+                <Button style={{
+                  width: "30%",
+                  borderRadius: 5,
+                  backgroundColor: "rgba(161, 26, 26, 0.87)"
+                }}
+                  mode="contained"
+                  onPress={async () => {
                   }}
-                    mode="contained"
-                    onPress={async () => {
-                    }}
-                    //contentStyle={{ flexDirection: 'row-reverse' }}
-                    labelStyle={{
-                      color: theme.colors.secondary,
-                      fontSize: 18
-                    }}
-                  >
-                    oui
-                  </Button>
-                  <Button style={{
-                    width: "30%",
-                    borderRadius: 5,
-                    backgroundColor: "rgba(26, 85, 161, 0.87)"
+                  //contentStyle={{ flexDirection: 'row-reverse' }}
+                  labelStyle={{
+                    color: theme.colors.secondary,
+                    fontSize: 18
                   }}
-                    mode="contained"
-                    onPress={async () => {
-                    }}
-                    //contentStyle={{ flexDirection: 'row-reverse' }}
-                    labelStyle={{
-                      color: theme.colors.secondary,
-                      fontSize: 18
-                    }}
-                  >
-                    non
-                  </Button>
-                </View>
+                >
+                  oui
+                </Button>
+                <Button style={{
+                  width: "30%",
+                  borderRadius: 5,
+                  backgroundColor: "rgba(26, 85, 161, 0.87)"
+                }}
+                  mode="contained"
+                  onPress={async () => {
+                  }}
+                  //contentStyle={{ flexDirection: 'row-reverse' }}
+                  labelStyle={{
+                    color: theme.colors.secondary,
+                    fontSize: 18
+                  }}
+                >
+                  non
+                </Button>
+              </View>
             </Modal>
 
           </Portal>
@@ -405,13 +389,13 @@ export default function ControlMeasure({ navigation, route }: Props) {
 }
 
 {/*<DataTable.Pagination
-                        page={page}
-                        numberOfPages={Math.ceil(items.length / itemsPerPage)}
-                        onPageChange={(page) => setPage(page)}
-                        label={`${from + 1}-${to} of ${items.length}`}
-                        numberOfItemsPerPageList={numberOfItemsPerPageList}
-                        numberOfItemsPerPage={itemsPerPage}
-                        onItemsPerPageChange={onItemsPerPageChange}
-                        showFastPaginationControls
-                        selectPageDropdownLabel={'Rows per page'}
-                    />*/}
+    page={page}
+    numberOfPages={Math.ceil(items.length / itemsPerPage)}
+    onPageChange={(page) => setPage(page)}
+    label={`${from + 1}-${to} of ${items.length}`}
+    numberOfItemsPerPageList={numberOfItemsPerPageList}
+    numberOfItemsPerPage={itemsPerPage}
+    onItemsPerPageChange={onItemsPerPageChange}
+    showFastPaginationControls
+    selectPageDropdownLabel={'Rows per page'}
+/>*/}

@@ -9,10 +9,12 @@ export default StyleSheet.create({
     alignContent: 'center',
     justifyContent: 'space-between',
     backgroundColor: "ghostwhite",
+
     ...Platform.select({
       ios: { paddingTop: 40 },
       android: { paddingTop: StatusBar.currentHeight }
     }),
+
   },
 
   verticalLine: {

@@ -1,11 +1,8 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { DatabaseContext, RootStackParamList } from "../context";
-import { Image, Platform, Pressable, StatusBar, View } from "react-native";
+import { Image, StatusBar, View } from "react-native";
 import {
   ActivityIndicator,
-  Button,
-  Checkbox,
-  Divider,
   IconButton,
   Text,
   useTheme,
@@ -13,51 +10,25 @@ import {
 import globalStyles from "../styles";
 import styles from "../styles/recentStyle";
 import { useContext, useEffect, useState } from "react";
-import { QUESTION_CATEGORIES } from "../constants/questionTypes";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 
 type Props = NativeStackScreenProps<RootStackParamList>;
 
 export default function Invalide({ navigation }: Props) {
-  const [isChecked, setChecked] = useState(false);
 
   const theme = useTheme();
-
-  const [listQuestion, setListQuestion] = useState<any>([]);
 
   const toko5Repository = useContext(DatabaseContext);
 
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    // const getAllSafetyQuestions = async () => {
-    //   try {
-    //     setLoading(true);
-    //     if (toko5Repository !== null) {
-    //       let list = await toko5Repository.getAllCategorieQuestion(
-    //         QUESTION_CATEGORIES.SAFETY
-    //       );
-    //       setListQuestion(list);
-    //       //console.log(list)
-    //     }
-    //   } catch (error) {
-    //     console.error(
-    //       "Error in the component think while retrieving list of questions ",
-    //       error
-    //     );
-    //   } finally {
-    //     setLoading(false);
-    //   }
-    // };
-    // getAllSafetyQuestions();
-  }, []);
-
   return (
     <>
-      <StatusBar
+      <StatusBar hidden={false} backgroundColor="black" />
+      {/* <StatusBar
         hidden={false}
         backgroundColor="black" // Android only barStyle="dark-content"/>
-      />
+      /> */}
       {loading ? (
         <View style={globalStyles.loadingContainer}>
           <ActivityIndicator size="large" color={theme.colors.primary} />
@@ -65,7 +36,7 @@ export default function Invalide({ navigation }: Props) {
       ) : (
         <View style={styles.container}>
 
-          <View style={{marginTop: 40}}>
+          <View style={{ marginTop: 40 }}>
             <Image source={require('../assets/pictogram/stop.png')} style={{ width: 240, height: 240 }}></Image>
           </View>
 

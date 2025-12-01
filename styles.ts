@@ -39,6 +39,8 @@ export default StyleSheet.create({
       ios: { paddingTop: 40 },
       android: { paddingTop: StatusBar.currentHeight }
     }),
+
+
     paddingLeft: 10,
   },
 

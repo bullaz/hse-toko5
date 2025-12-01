@@ -5,6 +5,7 @@ import { KeyboardAvoidingView, StatusBar, View } from "react-native";
 import styles from "../styles/loginStyle";
 import { TextInput } from "react-native-paper";
 import { useContext, useState } from "react";
+import { useCameraPermissions } from "expo-camera";
 
 
 //////////////////////////wrap every other components with a wrapper component that verify if the toko 5 is valid or not
@@ -12,7 +13,7 @@ import { useContext, useState } from "react";
 
 type Props = NativeStackScreenProps<RootStackParamList>;
 
-export default function Login({ navigation }: Props) {
+export default function LoginSup({ navigation }: Props) {
     const theme = useTheme();
 
     ////////qr code test
@@ -28,27 +29,9 @@ export default function Login({ navigation }: Props) {
 
     const [loading, setLoading] = useState<boolean>(false);
 
-    const newToko5 = async () => {
-        try {
-            setLoading(true)
-            if (toko5Repository !== null) {
-                const toko5Id = await toko5Repository.newToko5(nom, prenom);
-                setLoading(false)
-                navigation.navigate('Think', { toko5Id: toko5Id })
-                return
-            }
-            setLoading(false)
-            throw new Error("repository is null");
-        } catch (error) {
-            console.log("login newToko5 error: ", error);
-            setLoading(false);
-        }
-    }
-
 
     return (
         <>
-            {/* <StatusBar hidden={false} backgroundColor="black" /> */}
             <StatusBar hidden={false} backgroundColor="black" />
             <View style={styles.container}>
                 <KeyboardAvoidingView>
@@ -94,7 +77,7 @@ export default function Login({ navigation }: Props) {
                                     style={{ textAlign: "center", color: 'rgba(77, 77, 71, 0.87)' }}
                                     variant="titleMedium"
                                 >
-                                    ID permis de travail
+                                    ID
                                 </Text>
                             }
                             value={text}
@@ -104,7 +87,7 @@ export default function Login({ navigation }: Props) {
                         />
                         <Button style={styles.bottomButton}
                             mode="contained"
-                            onPress={newToko5}
+                            onPress={()=>{navigation.navigate('ScanQr')}}
 
                             //test qr
                             //onPress = {requestPermission}

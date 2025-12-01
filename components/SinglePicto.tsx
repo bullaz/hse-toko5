@@ -1,7 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { View, TouchableOpacity, StatusBar, Pressable, Modal, Button, Alert, Image, Platform } from "react-native";
-import styles from "../styles";
-import AnonymousHotSurfaceDanger from "../assets/Anonymous-hot-surface-danger.svg";
+import { View, StatusBar, Image, Platform } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { DatabaseContext, RootStackParamList } from "../context";
 import { Text, useTheme } from "react-native-paper";
@@ -40,7 +38,7 @@ export default function SinglePicto({ navigation, route }: Props) {
 
     return (
         <>
-            <StatusBar hidden={false} />
+            <StatusBar hidden={false} backgroundColor="black" />
             <View
                 style={{
                     flex: 1,

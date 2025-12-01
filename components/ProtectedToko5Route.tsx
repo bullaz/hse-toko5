@@ -5,7 +5,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../context";
 import { View } from "react-native";
 import styles from "../styles";
-import { ActivityIndicator, useTheme } from "react-native-paper";
+import { useTheme } from "react-native-paper";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 

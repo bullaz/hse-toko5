@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, KeyboardAvoidingView, Platform, View } from "react-native";
+import { Image, View } from "react-native";
 import {
   Button,
   Checkbox,
@@ -13,8 +13,9 @@ import {
   Modal,
 } from "react-native-paper";
 import styles from "../styles/controlMeasureStyles";
-import globalStyles from "../styles";
+//import globalStyles from "../styles";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
+import { StatusBar } from "expo-status-bar";
 
 export default function Commentaire() {
   const theme = useTheme();
@@ -44,6 +45,7 @@ export default function Commentaire() {
 
   return (
     <>
+      <StatusBar hidden={false} backgroundColor="black" />
       <PaperProvider>
         <Portal>
           <View style={styles.container}>

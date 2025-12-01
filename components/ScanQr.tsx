@@ -1,13 +1,11 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { DatabaseContext, RootStackParamList } from "../context";
-import { Pressable, View, StyleSheet, Platform, Image, StatusBar } from "react-native";
-import { ActivityIndicator, Button, Checkbox, Divider, Text, useTheme } from "react-native-paper";
-import styles from "../styles";
+import { View, StyleSheet, Platform, Image, StatusBar } from "react-native";
+import { useTheme } from "react-native-paper";
+//import styles from "../styles";
 import { useContext, useEffect, useState } from "react";
-import { QUESTION_CATEGORIES } from "../constants/questionTypes";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { imagePathMapping } from "../utils/imagePathMapping";
 
 
 
@@ -28,22 +26,6 @@ export default function ScanQr({ navigation }: Props) {
     ////////component
 
     useEffect(() => {
-        // const getAllSafetyQuestions = async () => {
-        //     try {
-        //         setLoading(true);
-        //         if (toko5Repository !== null) {
-        //             let list = await toko5Repository.getAllCategorieQuestion(QUESTION_CATEGORIES.SAFETY);
-        //             setListQuestion(list);
-        //             //console.log(list)
-        //         }
-        //     } catch (error) {
-        //         console.error('Error in the component think while retrieving list of questions ', error);
-        //     } finally {
-        //         setLoading(false);
-        //     }
-        // };
-
-        // getAllSafetyQuestions();
     }, []);
 
     return (

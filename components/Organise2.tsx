@@ -1,13 +1,12 @@
-import { useCallback, useContext, useEffect, useState } from "react";
-import { View, TouchableOpacity, StatusBar, Pressable, Modal, Alert, Image } from "react-native";
+import { useCallback, useContext, useState } from "react";
+import { View,  StatusBar, Pressable, Image } from "react-native";
 import styles from "../styles";
-import AnonymousHotSurfaceDanger from "../assets/Anonymous-hot-surface-danger.svg";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { DatabaseContext, Reponse, RootStackParamList } from "../context";
 import Checkbox from "expo-checkbox";
-import { ActivityIndicator, IconButton } from "react-native-paper";
+import { ActivityIndicator } from "react-native-paper";
 import { useTheme } from "react-native-paper";
-import { Button, Text } from "react-native-paper";
+import { Button } from "react-native-paper";
 import { QUESTION_CATEGORIES } from "../constants/questionTypes";
 import { imagePathMapping } from "../utils/imagePathMapping";
 import { useFocusEffect } from "@react-navigation/native";
@@ -51,7 +50,7 @@ export default function Organise2({ navigation, route }: Props) {
     const getData = async () => {
         try {
             setLoading(true);
-            const data = await getAllData(toko5Repository,QUESTION_CATEGORIES.ORGANISE, toko5Id, true, false);
+            const data = await getAllData(toko5Repository, QUESTION_CATEGORIES.ORGANISE, toko5Id, true, false);
             setListQuestion(data?.listQuestion);
             setListReponse(data?.listReponse);
 
@@ -67,7 +66,7 @@ export default function Organise2({ navigation, route }: Props) {
             setSaveLoading(true);
             if (toko5Repository !== null) {
                 await toko5Repository.insertListReponse(Object.values(listReponse));
-            } else{
+            } else {
                 throw new Error('toko5Repository not initialized');
             }
         } catch (error) {
@@ -97,13 +96,14 @@ export default function Organise2({ navigation, route }: Props) {
 
     return (
         <>
+            <StatusBar hidden={false} backgroundColor="black" />
             {loading ? (
                 <View style={styles.loadingContainer}>
                     <ActivityIndicator size="large" color={theme.colors.primary} />
                 </View>
             ) : (
                 <View style={styles.pictoContainer}>
-                    <StatusBar hidden={false} />
+                    {/* <StatusBar hidden={false} /> */}
                     {listQuestion.map((question: any, index: number) => (
                         <View key={question.question_id} style={styles.single}>
                             <Pressable
@@ -146,7 +146,7 @@ export default function Organise2({ navigation, route }: Props) {
                 <View>
                     <Button style={styles.bottomButton}
                         mode="contained"
-                        onPress={async() => { await saveAllReponse(); navigation.navigate('IdentifyRisks', {toko5Id: toko5Id}); }}
+                        onPress={async () => { await saveAllReponse(); navigation.navigate('IdentifyRisks', { toko5Id: toko5Id }); }}
                         icon="arrow-right"
                         contentStyle={{ flexDirection: 'row-reverse' }}
                         labelStyle={{

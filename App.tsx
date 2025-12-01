@@ -1,5 +1,6 @@
 import {
   AppRegistry,
+  Image,
   View,
 } from "react-native";
 import { NavigationContainer } from '@react-navigation/native';
@@ -25,6 +26,8 @@ import Commentaire from "./components/Commentaire";
 import Recent from "./components/Recent";
 import Invalide from "./components/Invalide";
 import { ProtectedToko5Route } from "./components/ProtectedToko5Route";
+import Home from "./components/Home";
+import LoginSup from "./components/LoginSup";
 
 // console.log('TEST OUTSIDE COMPONENT')
 
@@ -91,11 +94,31 @@ export default function App() {
       <PaperProvider theme={theme}>
         <NavigationContainer>
           <Stack.Navigator screenOptions={screenOptions}>
+            <Stack.Screen
+              name="Home"
+              component={Home}
+              options={{
+                title: "TOKO 5", headerBackVisible: false, gestureEnabled: false,
+                headerRight: () => (
+                  <Image
+                    source={require('./assets/stellarix.png')} // or {uri: 'https://...'}
+                    style={{ width: 120, height: 50, marginRight: 15 }}
+                    resizeMode="contain"
+                  />
+                ),
+                headerTitleStyle: {
+                  color: 'rgb(255, 255, 255)', // Change to your desired color
+                  fontSize: 24,     // Change to your desired font size
+                  fontWeight: 'bold', // Optional: change font weight
+                  fontFamily: 'YourCustomFont', // Optional: custom font
+                },
+              }}
+            />
 
             <Stack.Screen
               name="Recent"
               component={Recent}
-              options={{ title: 'toko5 recent(s)', headerBackVisible: false, gestureEnabled: false }}
+              options={{ title: 'TOKO5 RECENT(S)', headerBackVisible: false, gestureEnabled: false }}
             />
 
             <Stack.Screen
@@ -107,17 +130,23 @@ export default function App() {
             <Stack.Screen
               name="ScanQr"
               component={ScanQr}
-              options={{ title: 'scanner un toko5' }}
+              options={{ title: 'SCANNER UN TOKO5' }}
             />
 
             <Stack.Screen
               name="Login"
               component={Login}
-              options={{ title: "IDENTIFICATION", headerBackVisible: false, gestureEnabled: false  }}
+              options={{ title: "IDENTIFICATION", headerBackVisible: false, gestureEnabled: false }}
+            />
+
+            <Stack.Screen
+              name="LoginSup"
+              component={LoginSup}
+              options={{ title: "IDENTIFICATION", headerBackVisible: false, gestureEnabled: false }}
             />
             <Stack.Screen
               name="Think"
-              options={{ title: 'Penser', headerBackVisible: false, gestureEnabled: false }}
+              options={{ title: 'PENSER', headerBackVisible: false, gestureEnabled: false }}
             >
               {(props: NativeStackScreenProps<RootStackParamList, 'Think'>) => (
                 <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
@@ -133,7 +162,7 @@ export default function App() {
 
             <Stack.Screen
               name="Organise1"
-              options={{ title: 'Organiser', headerBackVisible: false, gestureEnabled: false }}
+              options={{ title: 'ORGANISER', headerBackVisible: false, gestureEnabled: false }}
             >
               {(props: NativeStackScreenProps<RootStackParamList, 'Organise1'>) => (
                 <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
@@ -145,7 +174,7 @@ export default function App() {
 
             <Stack.Screen
               name="Organise2"
-              options={{ title: 'Organiser', headerBackVisible: false, gestureEnabled: false  }}
+              options={{ title: 'ORGANISER', headerBackVisible: false, gestureEnabled: false }}
             >
               {(props: NativeStackScreenProps<RootStackParamList, 'Organise2'>) => (
                 <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
@@ -153,10 +182,10 @@ export default function App() {
                 </ProtectedToko5Route>
               )}
             </Stack.Screen>
-            
+
             <Stack.Screen
               name="IdentifyRisks"
-              options={{ title: 'Identifier les dangers', headerBackVisible: false, gestureEnabled: false  }}
+              options={{ title: 'Identifier les dangers', headerBackVisible: false, gestureEnabled: false }}
             >
               {(props: NativeStackScreenProps<RootStackParamList, 'IdentifyRisks'>) => (
                 <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
@@ -167,7 +196,7 @@ export default function App() {
 
             <Stack.Screen
               name="ControlMeasure"
-              options={{ title: 'Prendre des mesures', gestureEnabled: false  }}
+              options={{ title: 'PRENDRE DES MESURES', gestureEnabled: false }}
             >
               {(props: NativeStackScreenProps<RootStackParamList, 'ControlMeasure'>) => (
                 <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
@@ -179,8 +208,8 @@ export default function App() {
 
             <Stack.Screen
               name="Epi"
-              options={{ title: 'EPI / PPE', headerBackVisible: false, gestureEnabled: false  }}
-             >
+              options={{ title: 'EPI / PPE', headerBackVisible: false, gestureEnabled: false }}
+            >
               {(props: NativeStackScreenProps<RootStackParamList, 'Epi'>) => (
                 <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
                   <Epi {...props} />
@@ -191,8 +220,8 @@ export default function App() {
 
             <Stack.Screen
               name="Fitness"
-              options={{ title: 'Fitness', gestureEnabled: false  }}
-           >
+              options={{ title: 'Fitness', gestureEnabled: false }}
+            >
               {(props: NativeStackScreenProps<RootStackParamList, 'Fitness'>) => (
                 <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
                   <Fitness {...props} />
@@ -203,7 +232,7 @@ export default function App() {
             <Stack.Screen
               name="Commentaire"
               component={Commentaire}
-              options={{ title: 'commentaires', headerBackVisible: false, gestureEnabled: false  }}
+              options={{ title: 'commentaires', headerBackVisible: false, gestureEnabled: false }}
             />
 
           </Stack.Navigator>
