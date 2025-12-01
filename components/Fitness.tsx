@@ -85,10 +85,11 @@ export default function Fitness({ navigation, route }: Props) {
                 } else {
                     navigation.navigate('Invalide');
                 }
+            }else{
+                throw new Error('toko5repository not initialized');
             }
-            throw new Error('toko5repository not initialized');
         } catch (error) {
-            console.error('useValidity verifyValidity error:', error);
+            console.error('handleFinishToko5 error:', error);
             return false;
         }
         finally{
@@ -155,11 +156,11 @@ export default function Fitness({ navigation, route }: Props) {
                                 J'ai fini mon toko5
                             </Button>
 
-                            {saveLoading && (
+                            {/* {saveLoading && (
                                 <View style={styles.loadingContainer}>
                                     <ActivityIndicator size="small" color={theme.colors.primary} />
                                 </View>
-                            )}
+                            )} */}
 
 
                             <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={styles.modalStyle}>

@@ -21,7 +21,7 @@ export const useValidity = (toko5Id: string) => {
         throw new Error('toko5repository not initialized');
       }
     } catch (error) {
-      console.error('useValidity verifyValidity error:', error);
+      console.error('useValidity getValidity error:', error);
       return false;
     }
   }
@@ -38,6 +38,7 @@ export const useValidity = (toko5Id: string) => {
       // }else{
 
       // }
+      //console.log('here wtf');
     } catch (error) {
       console.log('error in useValidity verifyValidity', error);
     }

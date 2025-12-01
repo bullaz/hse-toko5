@@ -151,11 +151,17 @@ class Toko5Repository {
 
                         
                         ('swp',  'swp', 'organise', 1),
-                        ('ast', 'document', 'organise', 1),
+                        ('ast', 'ast', 'organise', 1),
                         ('permis de travail', 'workpermit', 'organise', 1),
                         ('attention eboulement', 'falling-rock', 'organise', 0),
                         ('pelle', 'pelle', 'organise', 0),
                         ('attention feu', 'fire_warning', 'organise', 0),
+                        ('test1', 'organise22', 'organise', 0),
+                        ('test5', 'organise23', 'organise', 0),
+                        ('test2', 'organise24', 'organise', 0),
+                        ('test3', 'organise211', 'organise', 0),
+                        ('test4', 'organiselast', 'organise', 0),
+
 
 
                         ('biohazard', 'biohazard', 'risk', 0),
@@ -212,8 +218,9 @@ class Toko5Repository {
                 console.log("error getAllCategorieQuestion", error);
                 throw error;
             }
+        }else{
+            throw new Error('Database not initialized');
         }
-        throw new Error('Database not initialized')
     }
 
     async getAllCategorieQuestionWithRequired(categorie: string, required: boolean) {
@@ -226,8 +233,9 @@ class Toko5Repository {
                 console.log("error getAllCategorieQuestionWithRequired", error);
                 throw error;
             }
+        }else{
+            throw new Error('Database not initialized');
         }
-        throw new Error('Database not initialized')
     }
 
     async getAllRequiredOrganise() {
@@ -239,10 +247,11 @@ class Toko5Repository {
                 console.log("error getAllRequiredOrganise", error);
                 throw error;
             }
+        } else {
+            // console.log("db null")
+            // return null
+            throw new Error('Database not initialized');
         }
-        // console.log("db null")
-        // return null
-        throw new Error('Database not initialized')
     }
 
     async getAllNotRequiredOrganise() {
@@ -255,9 +264,11 @@ class Toko5Repository {
                 throw error;
             }
         }
-        // console.log("db null")
-        // return null
-        throw new Error('Database not initialized')
+        else {
+            // console.log("db null")
+            // return null
+            throw new Error('Database not initialized')
+        }
     }
 
     async getQuestion(idQuestion: number) {
@@ -269,8 +280,9 @@ class Toko5Repository {
                 console.log("error getQuestion", error);
                 throw error;
             }
+        } else {
+            throw new Error('Database not initialized');
         }
-        throw new Error('Database not initialized')
     }
 
 
@@ -283,8 +295,9 @@ class Toko5Repository {
                 console.log("error getAllToko5", error);
                 throw error;
             }
+        } else {
+            throw new Error('Database not initialized');
         }
-        throw new Error('Database not initialized');
     }
 
 
@@ -301,8 +314,9 @@ class Toko5Repository {
                 console.log("error newToko5", error);
                 throw error;
             }
+        } else {
+            throw new Error('Database not initialized');
         }
-        throw new Error('Database not initialized');
     }
 
     async insertListReponse(list: any[]) {
@@ -348,8 +362,11 @@ class Toko5Repository {
                 return etat;
             } catch (error) {
                 console.log('error in updateValidityToko5', error);
+                throw error;
             }
-        } throw new Error('Database not initiliazed')
+        } else {
+            throw new Error('Database not initiliazed');
+        }
     }
 
     async validateToko5(toko5Id: string) {
@@ -358,8 +375,11 @@ class Toko5Repository {
                 await this.db.runAsync("UPDATE TOKO5 set etat = 'valide' where toko5_id = ?", toko5Id);
             } catch (error) {
                 console.log('error in validateToko5', error);
+                throw error;
             }
-        } throw new Error('Database not initiliazed')
+        } else {
+            throw new Error('Database not initiliazed')
+        }
     }
 
 
@@ -373,8 +393,9 @@ class Toko5Repository {
                 console.log("error getAllReponseToko5Categorie", error);
                 throw error;
             }
+        } else {
+            throw new Error('Database not initialized');
         }
-        throw new Error('Database not initialized')
     }
 
     async getAllReponseToko5CategorieWithRequired(toko5Id: string, categorie: string, required: boolean) {
@@ -387,8 +408,9 @@ class Toko5Repository {
                 console.log("error getAllReponseToko5CategorieWithRequired", error);
                 throw error;
             }
+        } else {
+            throw new Error('Database not initialized')
         }
-        throw new Error('Database not initialized')
     }
 
     async getValidityToko5(toko5Id: string): Promise<boolean> {
@@ -401,10 +423,18 @@ class Toko5Repository {
                 console.log("error getValidity", error);
                 throw error;
             }
+        } else {
+            throw new Error('Database not initialized')
         }
-        throw new Error('Database not initialized')
     }
 
+    async deleteFromToko5(toko5Id: string) {
+        if (this.db !== null) {
+            await this.db.runAsync('DELETE FROM toko5 where toko5_id = ?', toko5Id);
+        } else {
+            throw new Error('Database not initialized');
+        }
+    }
 
     async deleteFromControlMeasure(toko5Id: string, questionId: number) {
         if (this.db !== null) {
@@ -448,8 +478,9 @@ class Toko5Repository {
                 console.log("error getAllControlMeasure", error);
                 throw error;
             }
+        } else {
+            throw new Error('Database not initialized');
         }
-        throw new Error('Database not initialized');
     }
 
 

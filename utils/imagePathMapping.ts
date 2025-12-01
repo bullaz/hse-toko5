@@ -1,19 +1,24 @@
 export const imagePathMapping = (imageName: string) => {
     const imageMap: { [key: string]: any } = {
         //think
-        'alcohol': require('../assets/pictogram/think/alcohol.png'),
-        'competency': require('../assets/pictogram/think/competency.png'),
-        'formation': require('../assets/pictogram/think/formation.png'),
+        'alcohol': require('../assets/pictogram/think/alcool3.png'),
+        'competency': require('../assets/pictogram/think/competency2.png'),
+        'formation': require('../assets/pictogram/think/formation2.png'),
         'materiel': require('../assets/pictogram/think/materiel.png'),
         'people': require('../assets/pictogram/think/people.png'),
 
         //organise
         'swp': require('../assets/pictogram/organise/swp.png'),
-        'document': require('../assets/pictogram/organise/document.png'),
-        'workpermit': require('../assets/pictogram/organise/workpermit.png'),
+        'ast': require('../assets/pictogram/organise/ast.png'),
+        'workpermit': require('../assets/pictogram/organise/permit.png'),
         'falling-rock': require('../assets/pictogram/organise/falling-rock.png'),
         'fire_warning': require('../assets/pictogram/organise/fire_warning.png'),
         'pelle': require('../assets/pictogram/organise/pelle.png'),
+        'organise22': require('../assets/pictogram/organise/organise22.png'),
+        'organise23': require('../assets/pictogram/organise/organise23.png'),
+        'organise24': require('../assets/pictogram/organise/organise24.png'),
+        'organise211': require('../assets/pictogram/organise/organise211.png'),
+        'organiselast': require('../assets/pictogram/organise/organiselast.png'),
 
         //risk
         'biohazard': require('../assets/pictogram/hazard/biohazard.png'),

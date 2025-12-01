@@ -10,6 +10,7 @@ import {
   Checkbox,
   Divider,
   IconButton,
+  Modal,
   PaperProvider,
   Portal,
   Text,
@@ -22,6 +23,8 @@ import { QUESTION_CATEGORIES } from "../constants/questionTypes";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { ETAT } from "../constants/commonConstants";
 import { useFocusEffect } from "@react-navigation/native";
+import QRCode from 'react-native-qrcode-svg';
+
 
 type Props = NativeStackScreenProps<RootStackParamList>;
 
@@ -42,6 +45,33 @@ export default function Recent({ navigation }: Props) {
   const toko5Repository = useContext(DatabaseContext);
 
   const [loading, setLoading] = useState(false);
+
+  const [deleteVisible, setDeleteVisible] = useState(false);
+
+  const [currentDeleteId, setCurrentDeleteId] = useState<string>("");
+
+  const showDeleteModal = () => setDeleteVisible(true);
+  const hideDeleteModal = () => setDeleteVisible(false);
+
+  const [codeVisible, setCodeVisible] = useState(false);
+
+  const [currentCodeId, setCurrentCodeId] = useState<string>("");
+
+  const showCodeModal = () => setCodeVisible(true);
+  const hideCodeModal = () => setCodeVisible(false);
+
+  const handleDeleteToko5 = async () => {
+    if (toko5Repository !== null) {
+      await toko5Repository.deleteFromToko5(currentDeleteId);
+
+      //don't use this.. just delete from the list
+      await getAllToko5();
+      setDeleteVisible(false);
+    } else {
+      //console.log('toko5repository null');
+      throw new Error('toko5repository null recent handledeletetoko5');
+    }
+  };
 
   const getAllToko5 = async () => {
     try {
@@ -123,7 +153,7 @@ export default function Recent({ navigation }: Props) {
                       flexDirection: 'column',
                       alignItems: 'center',
                       alignContent: 'center',
-                      gap:15,
+                      gap: 15,
                       paddingBottom: 10,
                     }}
                     persistentScrollbar={true}
@@ -135,7 +165,7 @@ export default function Recent({ navigation }: Props) {
                       <Pressable key={toko5.toko5_id} style={({ pressed }) => [
                         styles.toko5,
                         {
-                          width:"100%",
+                          width: "100%",
                           backgroundColor: pressed ? 'rgba(148, 203, 224, 1)' : 'rgba(230, 241, 255, 1)',
                           borderRadius: 8, // Add borderRadius for better visual effect
                         }
@@ -173,12 +203,15 @@ export default function Recent({ navigation }: Props) {
                           <IconButton
                             icon="trash-can-outline"
                             size={24}
-                            onPress={() => setChecked(!isChecked)}
+                            onPress={() => {
+                              setDeleteVisible(true);
+                              setCurrentDeleteId(toko5.toko5_id);
+                            }}
                           />
                           <IconButton
                             icon="qrcode"
                             size={24}
-                            onPress={() => setChecked(!isChecked)}
+                            onPress={() => { setCurrentCodeId(toko5.toko5_id), setCodeVisible(true) }}
                           />
 
                           {toko5.etat === ETAT.valide && (
@@ -287,6 +320,65 @@ export default function Recent({ navigation }: Props) {
                 {/* "rgba(105, 146, 200, 0.87)" */}
               </View>
             </View >
+
+            <Modal visible={deleteVisible} onDismiss={hideDeleteModal} contentContainerStyle={styles.deleteModalStyle}>
+              <Text style={{ textAlign: "center", paddingLeft: 17 }}
+                variant="titleMedium">
+                Voulez-vous vraiment supprimer ce TOKO5?
+              </Text>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-around', gap: 30 }}>
+                <Button style={{
+                  width: "30%",
+                  borderRadius: 5,
+                  backgroundColor: "rgba(161, 26, 26, 0.87)"
+                }}
+                  mode="contained"
+                  onPress={handleDeleteToko5}
+                  //contentStyle={{ flexDirection: 'row-reverse' }}
+                  labelStyle={{
+                    color: theme.colors.secondary,
+                    fontSize: 18
+                  }}
+                >
+                  oui
+                </Button>
+                <Button style={{
+                  width: "30%",
+                  borderRadius: 5,
+                  backgroundColor: "rgba(16, 81, 165, 1)"
+                }}
+                  mode="contained"
+                  onPress={async () => {
+                    setDeleteVisible(false);
+                  }}
+                  //contentStyle={{ flexDirection: 'row-reverse' }}
+                  labelStyle={{
+                    color: theme.colors.secondary,
+                    fontSize: 18
+                  }}
+                >
+                  non
+                </Button>
+              </View>
+            </Modal>
+
+            <Modal visible={codeVisible} onDismiss={hideCodeModal} contentContainerStyle={styles.codeModalStyle}>
+              {/* <Text style={{ textAlign: "center", paddingLeft: 17 }}
+                variant="titleMedium">
+              </Text> */}
+              {/* <View style={{ flexDirection: 'column', justifyContent: 'center', alignContent: 'center', alignItems: 'center'}}>
+              </View> */}
+              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <QRCode
+                  value={currentCodeId} 
+                  size={230}          // Size of the QR code in pixels
+                  color="black"        
+                  backgroundColor="white"
+                />
+              </View>
+            </Modal>
+
+
           </Portal>
         </PaperProvider>
       )

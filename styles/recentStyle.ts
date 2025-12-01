@@ -46,6 +46,31 @@ export default StyleSheet.create({
     borderRadius: 10,
   },
 
+  deleteModalStyle: {
+    width: "90%", 
+    backgroundColor: 'ghostwhite', 
+    borderRadius: 30,
+    height: "25%", //currently we support only numbers in height prop warning
+    // padding: 20,
+    alignSelf: 'center',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    alignContent: 'center'
+  },
+
+  codeModalStyle: {
+    width: "80%", 
+    backgroundColor: 'ghostwhite', 
+    borderRadius: 30,
+    height: "45%", //currently we support only numbers in height prop warning
+    // padding: 20,
+    alignSelf: 'center',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    alignContent: 'center'
+  },
   
 
   //   box: {

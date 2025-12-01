@@ -220,7 +220,7 @@ export default function Think({ navigation, route }: Props) {
                 <View>
                     <Button style={styles.bottomButton}
                         mode="contained"
-                        onPress={async () => { await saveAllReponse(); navigation.navigate('Recent')}}
+                        onPress={async () => {navigation.navigate('Recent')}}
                         icon="home"
                         labelStyle={{
                             color: theme.colors.secondary, // Manually set to theme contrast color
@@ -249,7 +249,6 @@ export default function Think({ navigation, route }: Props) {
                             fontSize: 16
                         }}
                     >
-
                         suivant
                     </Button>
                 </View>
