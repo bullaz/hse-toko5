@@ -14,6 +14,6 @@ export default StyleSheet.create({
     // }),
   },
   bottomButton: {
-    width: '90%',
+    width: '90%'
   },
 });

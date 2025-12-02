@@ -37,7 +37,8 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const theme = {
   ...DefaultTheme,
   colors: {
-    primary: 'rgba(16, 81, 165, 1)',
+    // primary: 'rgba(16, 81, 165, 1)',
+    primary: "rgba(26, 85, 161, 0.87)",
     //primary: '',
     secondary: 'white'
   },

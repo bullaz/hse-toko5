@@ -73,3 +73,11 @@ export interface ControlMeasureRisk {
   required: boolean,
   categorie: string
 }
+
+export interface Toko5 {
+  toko5_id: string,
+  nom_contractant: string,
+  prenom_contractant: string,
+  date_heure: string,
+  etat: string
+}

@@ -2,7 +2,7 @@
 
 
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { DatabaseContext, RootStackParamList } from "../context";
+import { DatabaseContext, RootStackParamList, Toko5 } from "../context";
 import { Pressable, ScrollView, StatusBar, View } from "react-native";
 import {
   ActivityIndicator,
@@ -37,7 +37,7 @@ export default function Recent({ navigation }: Props) {
 
   const theme = useTheme();
 
-  const [listToko5, setListToko5] = useState<any[]>([]);
+  const [listToko5, setListToko5] = useState<any>([]);
 
   const toko5Repository = useContext(DatabaseContext);
 
@@ -62,7 +62,11 @@ export default function Recent({ navigation }: Props) {
       await toko5Repository.deleteFromToko5(currentDeleteId);
 
       //don't use this.. just delete from the list
-      await getAllToko5();
+      //await getAllToko5();
+
+      let newList = structuredClone(listToko5);
+      newList.delete(currentDeleteId);
+      setListToko5(newList);
       setDeleteVisible(false);
     } else {
       //console.log('toko5repository null');
@@ -75,9 +79,15 @@ export default function Recent({ navigation }: Props) {
       setLoading(true);
       if (toko5Repository !== null) {
         let list = await toko5Repository.getAllToko5()
-        //console.log('list toko5', list);
-        setListToko5(list);
-        //console.log(list)
+      
+        let mapToko5 = new Map();
+
+        for (let toko5 of list as Toko5[]) {
+          mapToko5.set(toko5.toko5_id, toko5);
+        }
+
+        setListToko5(mapToko5);
+        
       } else {
         throw new Error('no repository')
       }
@@ -109,7 +119,7 @@ export default function Recent({ navigation }: Props) {
 
   return (
     <>
-     <StatusBar hidden={false} backgroundColor="black" />
+      <StatusBar hidden={false} backgroundColor="black" />
       {/* <StatusBar
         hidden={false}
         backgroundColor="black" // Android only barStyle="dark-content"/>
@@ -121,9 +131,8 @@ export default function Recent({ navigation }: Props) {
       ) : (
         <PaperProvider>
           <Portal>
-            <View style={styles.container}>
-
-              {listToko5.length > 0 ?
+            <View style={styles.container}> 
+              {(Array.from(listToko5.values())).length > 0 ?
                 <View style={{
                   marginTop: 30,
                   flex: 1,
@@ -156,7 +165,7 @@ export default function Recent({ navigation }: Props) {
                     }}
                     persistentScrollbar={true}
                   >
-                    {listToko5.map((toko5: any, index: number) => (
+                    {Array.from(listToko5.values()).map((toko5: any, index: number) => (
 
                       // make sure that pressable doesn't change height or width when the name is too long.. It should only show part of it in that case
 
@@ -368,9 +377,9 @@ export default function Recent({ navigation }: Props) {
               </View> */}
               <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <QRCode
-                  value={currentCodeId} 
+                  value={currentCodeId}
                   size={230}          // Size of the QR code in pixels
-                  color="black"        
+                  color="black"
                   backgroundColor="white"
                 />
               </View>

@@ -52,7 +52,7 @@ export default StyleSheet.create({
     width: "90%", 
     backgroundColor: 'ghostwhite', 
     borderRadius: 30,
-    height: "25%", //currently we support only numbers in height prop warning
+    height: "23%", //currently we support only numbers in height prop warning
     // padding: 20,
     alignSelf: 'center',
     flexDirection: 'column',

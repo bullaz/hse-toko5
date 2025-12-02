@@ -112,6 +112,7 @@ export default function IdentifyRisks({ navigation, route }: Props) {
         } else {
             // delete from measureControl
             // stop using that ? syntax xD 
+            //add delete from question
             await toko5Repository?.deleteFromControlMeasure(toko5Id, questionId);
         }
         setSaveLoading(false);
