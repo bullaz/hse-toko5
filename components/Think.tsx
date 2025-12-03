@@ -2,6 +2,8 @@
 
 ///////////////////// WHY IS EXPO CRASHING EACH TIME I ENTER THAT COMPONENTS EVER SINCE I IMPLEMENTED THAT IMAGE MAPPING 
 
+//// add icon and text for all think, organise
+
 import { useCallback, useContext, useState } from "react";
 import { View, StatusBar, Pressable, Image } from "react-native";
 import styles from "../styles";
@@ -139,7 +141,7 @@ export default function Think({ navigation, route }: Props) {
                                     pressed && styles.pressedBox,
                                 ]}
                             >
-                                <Image source={imagePathMapping(question.pictogramme)} style={{ width: 70, height: 70 }}></Image>
+                                <Image source={imagePathMapping(question.pictogramme)} style={{ width: 80, height: 80 }}></Image>
                             </Pressable>
                             <View style={styles.checkboxContainer}>
 

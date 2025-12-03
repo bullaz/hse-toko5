@@ -7,6 +7,9 @@
 
 ///// USE PREPARED STATEMENT LATER, TRY TO FIND SOME ROOM FOR OPTIMIZATION 
 
+
+//// get list toko5 recent gotta be order by dateheure
+
 import * as SQLite from 'expo-sqlite';
 import { SQLiteDatabase } from 'expo-sqlite';
 import { QUESTION_CATEGORIES } from '../constants/questionTypes';
@@ -286,7 +289,7 @@ class Toko5Repository {
     }
 
 
-    async getAllToko5() {
+    async getAllToko5() { 
         if (this.db !== null) {
             try {
                 const listToko5 = await this.db.getAllAsync('SELECT * FROM toko5');

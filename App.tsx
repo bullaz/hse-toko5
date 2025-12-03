@@ -119,19 +119,19 @@ export default function App() {
             <Stack.Screen
               name="Recent"
               component={Recent}
-              options={{ title: 'TOKO5 RECENT(S)', headerBackVisible: false, gestureEnabled: false }}
+              options={{ title: 'TOKO 5 RECENT(S)', headerBackVisible: false, gestureEnabled: false }}
             />
 
             <Stack.Screen
               name="Invalide"
               component={Invalide}
-              options={{ title: 'Votre toko5 est invalide', headerBackVisible: false, gestureEnabled: false }}
+              options={{ title: 'TOKO 5 INVALIDE', headerBackVisible: false, gestureEnabled: false }}
             />
 
             <Stack.Screen
               name="ScanQr"
               component={ScanQr}
-              options={{ title: 'SCANNER UN TOKO5' }}
+              options={{ title: 'SCANNER UN TOKO 5' }}
             />
 
             <Stack.Screen
@@ -186,7 +186,7 @@ export default function App() {
 
             <Stack.Screen
               name="IdentifyRisks"
-              options={{ title: 'Identifier les dangers', headerBackVisible: false, gestureEnabled: false }}
+              options={{ title: 'IDENTIFIER LES DANGERS', headerBackVisible: false, gestureEnabled: false }}
             >
               {(props: NativeStackScreenProps<RootStackParamList, 'IdentifyRisks'>) => (
                 <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
@@ -221,7 +221,7 @@ export default function App() {
 
             <Stack.Screen
               name="Fitness"
-              options={{ title: 'Fitness', gestureEnabled: false }}
+              options={{ title: 'MON ETAT', gestureEnabled: false }}
             >
               {(props: NativeStackScreenProps<RootStackParamList, 'Fitness'>) => (
                 <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
@@ -233,7 +233,7 @@ export default function App() {
             <Stack.Screen
               name="Commentaire"
               component={Commentaire}
-              options={{ title: 'commentaires', headerBackVisible: false, gestureEnabled: false }}
+              options={{ title: 'COMMENTAIRES', headerBackVisible: false, gestureEnabled: false }}
             />
 
           </Stack.Navigator>

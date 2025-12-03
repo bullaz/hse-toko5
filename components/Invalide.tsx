@@ -3,6 +3,7 @@ import { DatabaseContext, RootStackParamList } from "../context";
 import { Image, StatusBar, View } from "react-native";
 import {
   ActivityIndicator,
+  Icon,
   IconButton,
   Text,
   useTheme,
@@ -37,15 +38,19 @@ export default function Invalide({ navigation }: Props) {
         <View style={styles.container}>
 
           <View style={{ marginTop: 40 }}>
-            <Image source={require('../assets/pictogram/stop.png')} style={{ width: 240, height: 240 }}></Image>
+            <Image source={require('../assets/pictogram/stop2.png')} style={{ width: 240, height: 240 }}></Image>
           </View>
 
 
-          <View style={{ flex: 1, flexWrap: 'wrap', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', alignContent: 'center' }}>
-            <MaterialDesignIcons
+          <View style={{ flex: 1, flexWrap: 'wrap', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', alignContent: 'center', gap:10 }}>
+            {/* <MaterialDesignIcons
               name="lightbulb-on-outline"
               size={30}
               style={{}}
+            /> */}
+            <Icon
+              source={require('../assets/pictogram/bulb.png')}
+              size={45}
             />
             <Text
               style={{ textAlign: "center", paddingLeft: 17 }}

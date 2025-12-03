@@ -111,7 +111,7 @@ export default function Organise1({ navigation, route }: Props) {
                                     pressed && styles.pressedBox,
                                 ]}
                             >
-                                <Image source={imagePathMapping(question.pictogramme)} style={{ width: 80, height: 80 }}></Image>
+                                <Image source={imagePathMapping(question.pictogramme)} style={{ width: 90, height: 90 }}></Image>
                             </Pressable>
                             <View style={styles.checkboxContainer}>
                                 <Checkbox value={listReponse[question.question_id].valeur} onValueChange={() => { updateListReponse(question.question_id, !listReponse[question.question_id].valeur) }} />

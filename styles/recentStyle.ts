@@ -38,7 +38,7 @@ export default StyleSheet.create({
     shadowOpacity: 0.26,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 8,
-    elevation: 5,
+    elevation: 7,
   },
 
   pressableToko5: {
@@ -52,7 +52,7 @@ export default StyleSheet.create({
     width: "90%", 
     backgroundColor: 'ghostwhite', 
     borderRadius: 30,
-    height: "23%", //currently we support only numbers in height prop warning
+    height: "25%", //currently we support only numbers in height prop warning
     // padding: 20,
     alignSelf: 'center',
     flexDirection: 'column',

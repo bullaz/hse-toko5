@@ -1,12 +1,16 @@
 ///// VERIFY WHY SOMETIMES THE PADDING ON THAT HEADER ON THAT RECENT COMPONENT IS LARGER THAN OTHERS AND SOMETIMES THE PADDING IS NORMAL XD XD XD XD XD
 
 
+///// disable delete for invalid toko5s
+
+
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { DatabaseContext, RootStackParamList, Toko5 } from "../context";
 import { Pressable, ScrollView, StatusBar, View } from "react-native";
 import {
   ActivityIndicator,
   Button,
+  Icon,
   IconButton,
   Modal,
   PaperProvider,
@@ -79,7 +83,7 @@ export default function Recent({ navigation }: Props) {
       setLoading(true);
       if (toko5Repository !== null) {
         let list = await toko5Repository.getAllToko5()
-      
+
         let mapToko5 = new Map();
 
         for (let toko5 of list as Toko5[]) {
@@ -87,7 +91,7 @@ export default function Recent({ navigation }: Props) {
         }
 
         setListToko5(mapToko5);
-        
+
       } else {
         throw new Error('no repository')
       }
@@ -131,7 +135,7 @@ export default function Recent({ navigation }: Props) {
       ) : (
         <PaperProvider>
           <Portal>
-            <View style={styles.container}> 
+            <View style={styles.container}>
               {(Array.from(listToko5.values())).length > 0 ?
                 <View style={{
                   marginTop: 30,
@@ -144,7 +148,7 @@ export default function Recent({ navigation }: Props) {
                     keyboardShouldPersistTaps="handled"
                     style={{
                       width: '88%', // 90% of parent width
-                      maxHeight: '80%', // 60% of screen height
+                      maxHeight: '70%', // 60% of screen height
                       alignSelf: 'center',
                       backgroundColor: 'ghostwhite',
                       borderRadius: 10,
@@ -252,19 +256,41 @@ export default function Recent({ navigation }: Props) {
                       </Pressable>
                     ))}
                   </ScrollView>
-                </View>
-                :
-                (<View style={{ flex: 1, flexWrap: 'wrap', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', alignContent: 'center' }}>
-                  <MaterialDesignIcons
+                  <View style={{ flex: 1, flexWrap: 'wrap', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', alignContent: 'center' }}>
+                    {/* <MaterialDesignIcons
                     name="lightbulb-on-outline"
                     size={30}
                     style={{}}
+                  /> */}
+                    <Icon
+                      source={require('../assets/pictogram/bulb.png')}
+                      size={45}
+                    />
+                    <Text
+                      style={{ textAlign: "center", padding: 10 }}
+                      variant="titleMedium"
+                    >
+                      {/* Vous n'avez pas de toko 5 {"\n"} */}
+                      Veuillez presser le bouton en dessous pour initier un nouveau TOKO 5 !
+                    </Text>
+                  </View>
+                </View>
+                :
+                (<View style={{ flex: 1, flexWrap: 'wrap', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', alignContent: 'center' }}>
+                  {/* <MaterialDesignIcons
+                    name="lightbulb-on-outline"
+                    size={30}
+                    style={{}}
+                  /> */}
+                  <Icon
+                    source={require('../assets/pictogram/bulb.png')}
+                    size={45}
                   />
                   <Text
                     style={{ textAlign: "center", padding: 10 }}
                     variant="titleMedium"
                   >
-                    Vous n'avez pas de toko5 {"\n"}
+                    Vous n'avez pas de toko 5 {"\n"}
                     Veuillez presser le bouton en dessous pour en initier un!
                   </Text>
                 </View>)}
@@ -331,13 +357,15 @@ export default function Recent({ navigation }: Props) {
             <Modal visible={deleteVisible} onDismiss={hideDeleteModal} contentContainerStyle={styles.deleteModalStyle}>
               <Text style={{ textAlign: "center", paddingLeft: 17 }}
                 variant="titleMedium">
-                Voulez-vous vraiment supprimer ce TOKO5?
+                Voulez-vous vraiment supprimer ce  TOKO 5?
               </Text>
               <View style={{ flexDirection: 'row', justifyContent: 'space-around', gap: 30 }}>
                 <Button style={{
                   width: "30%",
                   borderRadius: 5,
-                  backgroundColor: "rgba(161, 26, 26, 0.87)"
+                  borderWidth: 1,
+                  borderColor: 'black',
+                  backgroundColor: "rgba(26, 85, 161, 0.87)"
                 }}
                   mode="contained"
                   onPress={handleDeleteToko5}
@@ -352,7 +380,9 @@ export default function Recent({ navigation }: Props) {
                 <Button style={{
                   width: "30%",
                   borderRadius: 5,
-                  backgroundColor: "rgba(16, 81, 165, 1)"
+                  backgroundColor: "ghostwhite",
+                  borderWidth: 1,
+                  borderColor: 'black'
                 }}
                   mode="contained"
                   onPress={async () => {
@@ -360,7 +390,7 @@ export default function Recent({ navigation }: Props) {
                   }}
                   //contentStyle={{ flexDirection: 'row-reverse' }}
                   labelStyle={{
-                    color: theme.colors.secondary,
+                    color: 'black',
                     fontSize: 18
                   }}
                 >

@@ -62,7 +62,7 @@ export default function Login({ navigation }: Props) {
                                     style={{ textAlign: "center", color: 'rgba(77, 77, 71, 0.87)' }}
                                     variant="titleMedium"
                                 >
-                                    Nom
+                                    Votre nom
                                 </Text>
                             }
                             value={nom}
@@ -78,7 +78,7 @@ export default function Login({ navigation }: Props) {
                                     style={{ textAlign: "center", color: 'rgba(77, 77, 71, 0.87)' }}
                                     variant="titleMedium"
                                 >
-                                    Prenom
+                                    Votre prenom
                                 </Text>
                             }
                             value={prenom}
@@ -94,7 +94,22 @@ export default function Login({ navigation }: Props) {
                                     style={{ textAlign: "center", color: 'rgba(77, 77, 71, 0.87)' }}
                                     variant="titleMedium"
                                 >
-                                    ID permis de travail
+                                    ID de votre permis de travail
+                                </Text>
+                            }
+                            value={text}
+                            style={styles.textInput}
+                            onChangeText={text => setText(text)}
+                            underlineColor='darkgrey'
+                        />
+                        <TextInput
+                            left={<TextInput.Icon icon={require('../assets/pictogram/id.png')} />}
+                            label={
+                                <Text
+                                    style={{ textAlign: "center", color: 'rgba(77, 77, 71, 0.87)' }}
+                                    variant="titleMedium"
+                                >
+                                    Societe
                                 </Text>
                             }
                             value={text}
