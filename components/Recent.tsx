@@ -211,14 +211,16 @@ export default function Recent({ navigation }: Props) {
                         <View
                           style={{ flexDirection: "row", justifyContent: "flex-start" }}
                         >
-                          <IconButton
-                            icon="trash-can-outline"
-                            size={24}
-                            onPress={() => {
-                              setDeleteVisible(true);
-                              setCurrentDeleteId(toko5.toko5_id);
-                            }}
-                          />
+                          {toko5.etat !== ETAT.invalide && (
+                            <IconButton
+                              icon="trash-can-outline"
+                              size={24}
+                              onPress={() => {
+                                setDeleteVisible(true);
+                                setCurrentDeleteId(toko5.toko5_id);
+                              }}
+                            />
+                          )}
                           <IconButton
                             icon="qrcode"
                             size={24}

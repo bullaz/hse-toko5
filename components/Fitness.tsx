@@ -111,7 +111,6 @@ export default function Fitness({ navigation, route }: Props) {
     return (
 
         <>
-            <StatusBar hidden={false} backgroundColor="black" />
             {loading ? (
                 <View style={styles.loadingContainer}>
                     <ActivityIndicator size="large" color={theme.colors.primary} />

@@ -26,6 +26,8 @@ export default function Login({ navigation }: Props) {
 
     const [text, setText] = useState<string>("");
 
+    const [societe, setSociete] = useState<string>("");
+
     const [loading, setLoading] = useState<boolean>(false);
 
     const newToko5 = async () => {
@@ -112,9 +114,9 @@ export default function Login({ navigation }: Props) {
                                     Societe
                                 </Text>
                             }
-                            value={text}
+                            value={societe}
                             style={styles.textInput}
-                            onChangeText={text => setText(text)}
+                            onChangeText={text => setSociete(text)}
                             underlineColor='darkgrey'
                         />
                         <Button style={styles.bottomButton}

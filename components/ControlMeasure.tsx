@@ -125,7 +125,6 @@ export default function ControlMeasure({ navigation, route }: Props) {
 
   return (
     <>
-      <StatusBar hidden={false} backgroundColor="black" />
       {loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={theme.colors.primary} />
@@ -349,7 +348,9 @@ export default function ControlMeasure({ navigation, route }: Props) {
                 <Button style={{
                   width: "30%",
                   borderRadius: 5,
-                  backgroundColor: "rgba(161, 26, 26, 0.87)"
+                  borderWidth: 1,
+                  borderColor: 'black',
+                  backgroundColor: "rgba(26, 85, 161, 0.87)"
                 }}
                   mode="contained"
                   onPress={async () => {
@@ -365,14 +366,16 @@ export default function ControlMeasure({ navigation, route }: Props) {
                 <Button style={{
                   width: "30%",
                   borderRadius: 5,
-                  backgroundColor: "rgba(26, 85, 161, 0.87)"
+                  backgroundColor: "ghostwhite",
+                  borderWidth: 1,
+                  borderColor: 'black'
                 }}
                   mode="contained"
                   onPress={async () => {
                   }}
                   //contentStyle={{ flexDirection: 'row-reverse' }}
                   labelStyle={{
-                    color: theme.colors.secondary,
+                    color: 'black',
                     fontSize: 18
                   }}
                 >
