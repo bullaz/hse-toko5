@@ -28,6 +28,7 @@ import Invalide from "./components/Invalide";
 import { ProtectedToko5Route } from "./components/ProtectedToko5Route";
 import Home from "./components/Home";
 import LoginSup from "./components/LoginSup";
+import ListProblem from "./components/ListProblem";
 
 // console.log('TEST OUTSIDE COMPONENT')
 
@@ -234,6 +235,12 @@ export default function App() {
               name="Commentaire"
               component={Commentaire}
               options={{ title: 'COMMENTAIRES', headerBackVisible: false, gestureEnabled: false }}
+            />
+
+            <Stack.Screen
+              name="ListProblem"
+              component={ListProblem}
+              options={{ title: 'TOKO 5 INVALIDE', headerBackVisible: true, gestureEnabled: false }}
             />
 
           </Stack.Navigator>

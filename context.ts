@@ -32,6 +32,9 @@ export type RootStackParamList = {
   Fitness:{
     toko5Id: string;
   };
+  ListProblem:{
+    toko5: any;
+  };
   
   ScanQr: undefined;
   Commentaire: undefined;
