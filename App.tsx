@@ -234,13 +234,13 @@ export default function App() {
             <Stack.Screen
               name="Commentaire"
               component={Commentaire}
-              options={{ title: 'COMMENTAIRES', headerBackVisible: false, gestureEnabled: false }}
+              options={{ title: 'COMMENTAIRES', headerBackVisible: true, gestureEnabled: false }}
             />
 
             <Stack.Screen
               name="ListProblem"
               component={ListProblem}
-              options={{ title: 'TOKO 5 INVALIDE', headerBackVisible: true, gestureEnabled: false }}
+              options={{ title: 'TOKO 5 INFORMATIONS', headerBackVisible: true, gestureEnabled: false }}
             />
 
           </Stack.Navigator>

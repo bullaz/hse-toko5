@@ -35,9 +35,11 @@ export type RootStackParamList = {
   ListProblem:{
     toko5: any;
   };
-  
+  Commentaire: {
+    toko5: Toko5Json | null;
+  };
+
   ScanQr: undefined;
-  Commentaire: undefined;
   Recent: undefined;
   Invalide: undefined;
   Home: undefined;
@@ -83,4 +85,22 @@ export interface Toko5 {
   prenom_contractant: string,
   date_heure: string,
   etat: string
+}
+
+export interface Toko5Json {
+  toko5_id: string,
+  nom_contractant: string,
+  prenom_contractant: string,
+  date_heure: string,
+  etat: string,
+  listMesureControle: [],
+  listCommentaire: [],
+  listProblem: []
+}
+
+export interface CommentaireInterface {
+  commentaireId: number,
+  nom: string,
+  prenom: string,
+  commentaire: string
 }

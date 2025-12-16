@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { DatabaseContext, RootStackParamList } from "../context";
+import { DatabaseContext, RootStackParamList, Toko5, Toko5Json } from "../context";
 import { View, StyleSheet, Platform, Image, StatusBar, Dimensions, TouchableOpacity, Alert } from "react-native";
 import { ActivityIndicator, Button, Dialog, Icon, PaperProvider, Text, useTheme } from "react-native-paper";
 //import styles from "../styles";
@@ -84,12 +84,14 @@ export default function ScanQr({ navigation }: Props) {
     const [scannedData, setScannedData] = useState<string | null>();
     const [loading, setLoading] = useState<boolean>(true);
     const [toko5State, setToko5State] = useState<string>();
+    const [currentToko5, setCurrentToko5] = useState<Toko5Json | null>(null);
 
     const [visible, setVisible] = useState(false);
     const showDialog = () => setVisible(true);
     const hideDialog = () => {
         setVisible(false);
         setLoading(true);
+        setScanned(false);
     } 
 
     const theme = useTheme();
@@ -112,18 +114,18 @@ export default function ScanQr({ navigation }: Props) {
     const handleBarCodeScanned = async ({ data }: { data: string }) => {
         if (!scanned) {
             setVisible(true);
-            setScanned(true);
             setScannedData(data);
             try {
                 const response = await axios.get(`${BACKEND_URL}/toko5s/toko5/${data}`);
                 //console.log('response data:', response.data);
-                setToko5State(response.data.etat);
+                setCurrentToko5(response.data);
+                setToko5State(response.data.etat); //no need for this anymore
                 setLoading(false);
+                setScanned(true);
             } catch (error) {
                 console.log('error fetching toko5 data:', error);
                 //setVisible(false);
             } finally {
-                setScanned(false);
             }
             // Alert.alert(
             //     'TOKO 5 scanné',
@@ -192,7 +194,7 @@ export default function ScanQr({ navigation }: Props) {
                     <View style={styles.bottomOverlay}>
                         {scanned && (
                             <Text style={styles.bottomText}>
-                                Code scanné! Appuyez pour réessayer
+                                Code scanné!
                             </Text>
                         )}
                     </View>
@@ -231,7 +233,7 @@ export default function ScanQr({ navigation }: Props) {
                     {loading ? (
                         <ActivityIndicator size="large" color={theme.colors.primary} />
                     ) : (
-                        <Text style={{ fontSize: 20 }}>Ce toko5 est {toko5State}</Text>
+                        <Text style={{ fontSize: 20 }}>Ce toko 5 est {toko5State}</Text>
                     )}
                 </Dialog.Content>
                 <Dialog.Actions>
@@ -239,8 +241,8 @@ export default function ScanQr({ navigation }: Props) {
                         <Button onPress={hideDialog}>Annuler</Button>
                     ) : (
                         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
-                            <Button onPress={hideDialog} labelStyle={{fontSize: 16}}>plus de details</Button>
-                            <Button onPress={hideDialog} labelStyle={{fontSize: 16}}>commenter</Button>
+                            <Button onPress={()=>{navigation.navigate("ListProblem",{toko5: currentToko5}); hideDialog() }} labelStyle={{fontSize: 16}}>plus de details</Button>
+                            <Button onPress={()=>{navigation.navigate("Commentaire",{toko5: currentToko5}); hideDialog() }} labelStyle={{fontSize: 16}}>commenter</Button>
                         </View>
                     )}
                 </Dialog.Actions>
