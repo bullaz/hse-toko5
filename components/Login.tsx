@@ -1,10 +1,13 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { DatabaseContext, RootStackParamList } from "../context";
+import { DatabaseContext, RootStackParamList, Toko5Json } from "../context";
 import { ActivityIndicator, Button, Text, useTheme } from "react-native-paper";
 import { KeyboardAvoidingView, StatusBar, View } from "react-native";
 import styles from "../styles/loginStyle";
 import { TextInput } from "react-native-paper";
 import { useContext, useState } from "react";
+import NetInfo from '@react-native-community/netinfo';
+import axios from "axios";
+import { BACKEND_URL } from "../constants/commonConstants";
 
 
 //////////////////////////wrap every other components with a wrapper component that verify if the toko 5 is valid or not
@@ -30,13 +33,34 @@ export default function Login({ navigation }: Props) {
 
     const [loading, setLoading] = useState<boolean>(false);
 
+    const checkConnection = async () => {
+        const state = await NetInfo.fetch();
+        // console.log('Connection type', state.type);
+        // console.log('Is connected?', state.isConnected);
+        // console.log('Is internet reachable?', state.isInternetReachable);
+        // if (state.isInternetReachable) {
+        // } else {
+        // }
+        return state.isInternetReachable;
+    };
+
     const newToko5 = async () => {
         try {
             setLoading(true)
             if (toko5Repository !== null) {
-                const toko5Id = await toko5Repository.newToko5(nom, prenom);
+                const toko5 = await toko5Repository.newToko5(nom, prenom);
+                console.log(toko5);
+                let isInternetReachable = await checkConnection();
+                if (isInternetReachable) {
+                    let saved = await axios.post(`${BACKEND_URL}/toko5s`, toko5, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    });
+                    //console.log(saved.data);
+                }
                 setLoading(false)
-                navigation.navigate('Think', { toko5Id: toko5Id })
+                navigation.navigate('Think', { toko5Id: toko5.toko5Id })
                 return
             }
             setLoading(false)

@@ -48,7 +48,8 @@ class Toko5Repository {
                         nom_contractant TEXT NOT NULL,
                         prenom_contractant TEXT NOT NULL,
                         date_heure TEXT NOT NULL,
-                        etat TEXT NOT NULL DEFAULT 'ongoing' CHECK (etat in ('valide','invalide','ongoing'))
+                        etat TEXT NOT NULL DEFAULT 'ongoing' CHECK (etat in ('valide','invalide','ongoing')),
+                        saved INTEGER NOT NULL DEFAULT 0 CHECK (saved in (0, 1))
                     )`
                 )
                 //date time as ISO8601 string
@@ -312,7 +313,15 @@ class Toko5Repository {
                 //console.log(dateHeureNow);
                 //runAsync or execAsync ???? 
                 await this.db.runAsync("INSERT INTO toko5(toko5_id, nom_contractant, prenom_contractant, date_heure) values (?,?,?,?)", newUUID, nom, prenom, dateHeureNow);
-                return newUUID;
+                return {
+                    toko5Id: newUUID,
+                    nomContractant: nom,
+                    prenomContractant: prenom,
+                    dateHeure: dateHeureNow.split(/[+Z]/)[0],
+                    listCommentaire: [],
+                    listMesureControle: [],
+                    listProblem: []
+                };
             } catch (error) {
                 console.log("error newToko5", error);
                 throw error;
