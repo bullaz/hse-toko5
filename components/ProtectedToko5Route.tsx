@@ -1,8 +1,8 @@
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useValidity } from "../hooks/useValidity";
-import { useCallback } from "react";
+import { useCallback, useContext } from "react";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../context";
+import { DatabaseContext, RootStackParamList, Toko5, Toko5Json } from "../context";
 import { View } from "react-native";
 import styles from "../styles";
 import { useTheme } from "react-native-paper";
@@ -16,6 +16,7 @@ export const ProtectedToko5Route: React.FC<{
     const { validity, validityLoading } = useValidity(toko5Id);
     const navigation = useNavigation<NavigationProp>();
     const theme = useTheme();
+    const toko5Repository = useContext(DatabaseContext);
 
     useFocusEffect(
         useCallback(() => {
@@ -34,7 +35,7 @@ export const ProtectedToko5Route: React.FC<{
     // }, [isValid, navigation]);
 
     if (validity === null) return null; /// just test what happen
-    
+
     if (validity === false) return (
         <View style={styles.loadingContainer}>
             {/* <ActivityIndicator size="large" color={theme.colors.primary} /> */}

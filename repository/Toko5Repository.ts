@@ -17,6 +17,7 @@ import { v4 as uuidv4 } from 'uuid';
 import 'react-native-get-random-values';
 import { getLocalDateTimeISOString } from '../utils/commonFunctions';
 import { ETAT } from '../constants/commonConstants';
+import NetInfo from '@react-native-community/netinfo';
 
 
 class Toko5Repository {
@@ -41,7 +42,7 @@ class Toko5Repository {
         //try using transaction
         if (this.db !== null) {
             try {
-
+                //await this.db.execAsync("DROP TABLE toko5");
                 await this.db.execAsync(
                     `CREATE TABLE IF NOT EXISTS toko5 (
                         toko5_id TEXT PRIMARY KEY,
@@ -222,7 +223,7 @@ class Toko5Repository {
                 console.log("error getAllCategorieQuestion", error);
                 throw error;
             }
-        }else{
+        } else {
             throw new Error('Database not initialized');
         }
     }
@@ -237,7 +238,7 @@ class Toko5Repository {
                 console.log("error getAllCategorieQuestionWithRequired", error);
                 throw error;
             }
-        }else{
+        } else {
             throw new Error('Database not initialized');
         }
     }
@@ -290,7 +291,7 @@ class Toko5Repository {
     }
 
 
-    async getAllToko5() { 
+    async getAllToko5() {
         if (this.db !== null) {
             try {
                 const listToko5 = await this.db.getAllAsync('SELECT * FROM toko5');
@@ -483,7 +484,7 @@ class Toko5Repository {
     async getAllControlMeasure(toko5Id: string) {
         if (this.db !== null) {
             try {
-                const list = await this.db.getAllAsync('SELECT * FROM mesure_controle mc, question q where mc.question_id = q.question_id', toko5Id);
+                const list = await this.db.getAllAsync('SELECT * FROM mesure_controle mc, question q where mc.question_id = q.question_id and mc.toko5_id = ?', toko5Id);
                 // console.log('list control measure', list);
                 return list;
             } catch (error) {
@@ -495,8 +496,51 @@ class Toko5Repository {
         }
     }
 
+    async findToko5ById(toko5Id: string) {
+        if (this.db !== null) {
+            try {
+                const toko5: any = await this.db.getFirstAsync('SELECT * FROM toko5 where toko5_id = ?', toko5Id);
+                return {
+                    toko5Id: toko5.toko5_id,
+                    nomContractant: toko5.nom_contractant,
+                    prenomContractant: toko5.prenom_contractant,
+                    dateHeure: toko5.date_heure.split(/[+Z]/)[0],
+                    etat: toko5.etat,
+                    listMesureControle: [],
+                    listCommentaire: [],
+                    listProblem: []
+                };
+            } catch (error) {
+                console.log("error findToko5ById", error);
+                throw error;
+            }
+        } else {
+            throw new Error('Database not initialized');
+        }
+    }
+
+    async findQuestionById(questionId: number) {
+        if (this.db !== null) {
+            try {
+                const question: any = await this.db.getFirstAsync('SELECT * FROM question where question_id = ?', questionId);
+                return question;
+            } catch (error) {
+                console.log("error findQuestionById", error);
+                throw error;
+            }
+        } else {
+            throw new Error('Database not initialized');
+        }
+    }
 
 
+    async updateToko5Saved(toko5Id: string, saved: boolean) {
+        if (this.db !== null) {
+            await this.db.runAsync('UPDATE toko5 set saved = ? where toko5_id = ?', saved, toko5Id);
+        } else {
+            throw new Error('Database not initialized');
+        }
+    }
 
 
 

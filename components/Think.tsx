@@ -15,6 +15,7 @@ import { Button} from "react-native-paper";
 import { imagePathMapping } from "../utils/imagePathMapping";
 import { QUESTION_CATEGORIES } from "../constants/questionTypes";
 import { useFocusEffect } from "@react-navigation/native";
+import { updateOrAddToko5 } from "../services/ApiService";
 
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Think'>;
@@ -87,6 +88,9 @@ export default function Think({ navigation, route }: Props) {
             setSaveLoading(true);
             if (toko5Repository !== null) {
                 await toko5Repository.insertListReponse(Object.values(listReponse));
+                await toko5Repository.updateToko5Saved(toko5Id, false);
+                await updateOrAddToko5(toko5Id,toko5Repository, true, Object.values(listReponse));
+                await toko5Repository.updateToko5Saved(toko5Id, true);  
             }else{
                 throw new Error('toko5Repository not initialized saveAllReponse function!')
             }

@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import Think from "./components/Think";
 import SinglePicto from "./components/SinglePicto";
 import ControlMeasure from "./components/ControlMeasure";
-import { ActivityIndicator, DefaultTheme, PaperProvider, Text } from "react-native-paper";
+import { ActivityIndicator, Button, DefaultTheme, Icon, IconButton, PaperProvider, Text } from "react-native-paper";
 import Organise1 from "./components/Organise1";
 import IdentifyRisks from "./components/IdentifyRisks";
 import Organise2 from "./components/Organise2";
@@ -29,6 +29,7 @@ import { ProtectedToko5Route } from "./components/ProtectedToko5Route";
 import Home from "./components/Home";
 import LoginSup from "./components/LoginSup";
 import ListProblem from "./components/ListProblem";
+import { useNavigation } from '@react-navigation/native';
 
 // console.log('TEST OUTSIDE COMPONENT')
 
@@ -120,7 +121,19 @@ export default function App() {
             <Stack.Screen
               name="Recent"
               component={Recent}
-              options={{ title: 'TOKO 5 RECENT(S)', headerBackVisible: false, gestureEnabled: false }}
+              options={({ navigation }) => ({ // Use function to get navigation prop
+                title: 'TOKO 5 RECENT(S)',
+                headerBackVisible: false,
+                gestureEnabled: false,
+                headerRight: () => (
+                  <IconButton
+                    icon="home"
+                    size={30}
+                    iconColor="white"
+                    onPress={() => navigation.navigate('Home')} // Navigate to Home
+                  />
+                ),
+              })}
             />
 
             <Stack.Screen

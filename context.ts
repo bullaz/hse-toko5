@@ -8,31 +8,31 @@ export const DatabaseContext = createContext<Toko5Repository | null>(null);
 export type RootStackParamList = {
   Login: undefined;
   Think: {
-    toko5Id: string; 
+    toko5Id: string;
   };
   SinglePicto: {
     question: any;
   };
   Organise1: {
-    toko5Id: string; 
-  };
-  Organise2: {
-    toko5Id: string; 
-  };
-  IdentifyRisks:{
     toko5Id: string;
   };
-  ControlMeasure:{
+  Organise2: {
+    toko5Id: string;
+  };
+  IdentifyRisks: {
+    toko5Id: string;
+  };
+  ControlMeasure: {
     toko5Id: string;
     questionId: number;
   };
-  Epi:{
+  Epi: {
     toko5Id: string;
   };
-  Fitness:{
+  Fitness: {
     toko5Id: string;
   };
-  ListProblem:{
+  ListProblem: {
     toko5: any;
   };
   Commentaire: {
@@ -52,6 +52,11 @@ export interface Question {
   // add other properties that your question object has
   texte?: string;
   categorie?: string;
+}
+
+export interface RepDto {
+  nomQuestion: string;
+  valeur: boolean;
 }
 
 export interface ReponseInterfaceView {
@@ -88,10 +93,10 @@ export interface Toko5 {
 }
 
 export interface Toko5Json {
-  toko5_id: string,
-  nom_contractant: string,
-  prenom_contractant: string,
-  date_heure: string,
+  toko5Id: string,
+  nomContractant: string,
+  prenomContractant: string,
+  dateHeure: string,
   etat: string,
   listMesureControle: [],
   listCommentaire: [],
