@@ -9,6 +9,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { getAllData } from "../utils/commonFunctions";
 import Checkbox from "expo-checkbox";
 import { StatusBar } from "expo-status-bar";
+import { updateOrAddToko5 } from "../services/ApiService";
 
 
 
@@ -54,6 +55,9 @@ export default function Fitness({ navigation, route }: Props) {
             setSaveLoading(true);
             if (toko5Repository !== null) {
                 await toko5Repository.insertListReponse(Object.values(listReponse));
+                await toko5Repository.updateToko5Saved(toko5Id, false);
+                await updateOrAddToko5(toko5Id, toko5Repository, true, Object.values(listReponse));
+                await toko5Repository.updateToko5Saved(toko5Id, true);
             } else {
                 throw new Error('toko5Repository not initialized');
             }

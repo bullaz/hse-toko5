@@ -5,11 +5,12 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { DatabaseContext, Reponse, RootStackParamList } from "../context";
 import { ActivityIndicator, Checkbox } from 'react-native-paper';
 import { useTheme } from "react-native-paper";
-import { Button} from "react-native-paper";
+import { Button } from "react-native-paper";
 import { QUESTION_CATEGORIES } from "../constants/questionTypes";
 import { imagePathMapping } from "../utils/imagePathMapping";
 import { useFocusEffect } from "@react-navigation/native";
 import { getAllData } from "../utils/commonFunctions";
+import { addMesureControle, updateOrAddToko5 } from "../services/ApiService";
 
 
 ////one time from epi press that top button to go back here the buttons precedent and suivant was right below those pictograms not at the end of the screen ... FIND WHY
@@ -77,6 +78,9 @@ export default function IdentifyRisks({ navigation, route }: Props) {
             if (toko5Repository !== null) {
                 if (list === null) {
                     await toko5Repository.insertListReponse(Object.values(listReponse));
+                    await toko5Repository.updateToko5Saved(toko5Id, false);
+                    await updateOrAddToko5(toko5Id, toko5Repository, true, Object.values(listReponse));
+                    await toko5Repository.updateToko5Saved(toko5Id, true);
                 } else {
                     await toko5Repository.insertListReponse(Object.values(list));
                 }
@@ -106,7 +110,8 @@ export default function IdentifyRisks({ navigation, route }: Props) {
         //console.log('list reponse after checkbox', test);
         if (valeur) {
             // insert in controlMeasure;
-            await toko5Repository?.insertIntoControlMeasure(toko5Id, questionId, '', false);
+            console.log('test');
+            await addMesureControle(toko5Repository,toko5Id,questionId,'');
             navigation.navigate('ControlMeasure', { toko5Id: toko5Id, questionId: questionId });
 
         } else {

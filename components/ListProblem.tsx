@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Card, Divider, Icon, List, Text } from "react-native-paper";
+import { Card, Divider, Icon, List, Text, useTheme } from "react-native-paper";
 import { RootStackParamList } from "../context";
 import { FlatList, ScrollView, View, StyleSheet } from "react-native";
 import { useEffect, useLayoutEffect } from "react";
@@ -10,9 +10,11 @@ type Props = NativeStackScreenProps<RootStackParamList, 'ListProblem'>;
 
 export default function ListProblem({ navigation, route }: Props) {
 
-    const { toko5 } = route.params;
+  const theme = useTheme();
 
-    useLayoutEffect(() => {
+  const { toko5 } = route.params;
+
+  useLayoutEffect(() => {
     navigation.setOptions({
       title: `TOKO 5 de ${toko5.prenomContractant} ${toko5.nomContractant}`,
     });
@@ -21,20 +23,20 @@ export default function ListProblem({ navigation, route }: Props) {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return {
-      date: date.toLocaleDateString('fr-FR', { 
-        day: '2-digit', 
-        month: 'short', 
-        year: 'numeric' 
+      date: date.toLocaleDateString('fr-FR', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
       }),
-      time: date.toLocaleTimeString('fr-FR', { 
-        hour: '2-digit', 
-        minute: '2-digit' 
+      time: date.toLocaleTimeString('fr-FR', {
+        hour: '2-digit',
+        minute: '2-digit'
       })
     };
   };
 
   const getStatusConfig = (etat: string) => {
-    switch(etat?.toLowerCase()) {
+    switch (etat?.toLowerCase()) {
       case 'ongoing':
         return { color: '#FFA726', icon: 'clock-outline', label: 'En cours' };
       case 'valide':
@@ -62,7 +64,7 @@ export default function ListProblem({ navigation, route }: Props) {
                   {status.label}
                 </Text>
               </View>
-              
+
               <View style={styles.dateTimeContainer}>
                 <View style={styles.dateTimeItem}>
                   <Icon source="calendar" size={16} color="#666" />
@@ -73,9 +75,9 @@ export default function ListProblem({ navigation, route }: Props) {
                   <Text style={styles.dateTimeText}>{time}</Text>
                 </View>
               </View>
-              
+
               <View style={styles.contractorContainer}>
-                <Icon source="account-hard-hat" size={20} color="#2196F3" />
+                <Icon source="account-hard-hat" size={20} color={theme.colors.primary} />
                 <View style={styles.contractorInfo}>
                   <Text style={styles.contractorLabel}>Contractant</Text>
                   <Text style={styles.contractorName}>
@@ -83,7 +85,7 @@ export default function ListProblem({ navigation, route }: Props) {
                   </Text>
                 </View>
               </View>
-              
+
               <View style={styles.statsContainer}>
                 <View style={styles.statItem}>
                   <Text style={styles.statNumber}>{toko5.listMesureControle?.length || 0}</Text>
@@ -109,28 +111,28 @@ export default function ListProblem({ navigation, route }: Props) {
           <Card style={styles.sectionCard} mode='contained'>
             <Card.Content>
               <View style={styles.sectionHeader}>
-                <Icon source="clipboard-check" size={24} color="#2196F3" />
+                <Icon source="clipboard-check" size={24} color={theme.colors.primary} />
                 <Text style={styles.sectionTitle}>
                   Mesures de Contrôle ({toko5.listMesureControle.length})
                 </Text>
               </View>
-              
+
               <FlatList
                 data={toko5.listMesureControle}
                 scrollEnabled={false}
                 renderItem={({ item, index }) => (
                   <View style={styles.measureItem}>
                     <View style={styles.measureHeader}>
-                      <View style={styles.measureIndex}>
+                      {/* <View style={styles.measureIndex}>
                         <Text style={styles.measureIndexText}>{index + 1}</Text>
-                      </View>
+                      </View> */}
                       <View style={styles.measureTitleContainer}>
-                        <Text style={styles.measureId}>Mesure #{item.mesureControleId}</Text>
+                        {/* <Text style={styles.measureId}>Mesure #{item.mesureControleId}</Text> */}
                         <View style={styles.implementedBadge}>
-                          <Icon 
-                            source={item.implemented ? "check" : "alert-circle"} 
-                            size={12} 
-                            color="white" 
+                          <Icon
+                            source={item.implemented ? "check" : "alert-circle"}
+                            size={12}
+                            color="white"
                           />
                           <Text style={styles.implementedText}>
                             {item.implemented ? 'Implémentée' : 'En attente'}
@@ -138,9 +140,9 @@ export default function ListProblem({ navigation, route }: Props) {
                         </View>
                       </View>
                     </View>
-                    
+
                     <Text style={styles.measureDescription}>{item.mesurePrise}</Text>
-                    
+
                     {item.question && (
                       <View style={styles.questionContainer}>
                         <Text style={styles.questionLabel}>Danger/risque</Text>
@@ -148,7 +150,7 @@ export default function ListProblem({ navigation, route }: Props) {
                         <Icon source={imagePathMapping(item.question.pictogramme)} size={40} />
                       </View>
                     )}
-                    
+
                     {index < toko5.listMesureControle.length - 1 && (
                       <Divider style={styles.itemDivider} />
                     )}
@@ -164,12 +166,12 @@ export default function ListProblem({ navigation, route }: Props) {
           <Card style={styles.sectionCard} mode='contained'>
             <Card.Content>
               <View style={styles.sectionHeader}>
-                <Icon source="message-text" size={24} color="#2196F3" />
+                <Icon source="message-text" size={24} color={theme.colors.primary} />
                 <Text style={styles.sectionTitle}>
                   Commentaires ({toko5.listCommentaire.length})
                 </Text>
               </View>
-              
+
               <FlatList
                 data={toko5.listCommentaire}
                 scrollEnabled={false}
@@ -185,12 +187,12 @@ export default function ListProblem({ navigation, route }: Props) {
                         <Text style={styles.commentAuthor}>
                           {item.prenom} {item.nom}
                         </Text>
-                        <Text style={styles.commentId}>#{item.commentaireId}</Text>
+                        {/* <Text style={styles.commentId}>#{item.commentaireId}</Text> */}
                       </View>
                     </View>
-                    
+
                     <Text style={styles.commentText}>{item.commentaire}</Text>
-                    
+
                     {index < toko5.listCommentaire.length - 1 && (
                       <Divider style={styles.itemDivider} />
                     )}
@@ -202,21 +204,21 @@ export default function ListProblem({ navigation, route }: Props) {
         )}
 
         {/* Problems Section - Show even if empty for awareness */}
-        <Card style={[styles.sectionCard, 
-          toko5.listProblem?.length === 0 && styles.emptySection
+        <Card style={[styles.sectionCard,
+        toko5.listProblem?.length === 0 && styles.emptySection
         ]} mode='contained'>
           <Card.Content>
             <View style={styles.sectionHeader}>
-              <Icon 
-                source={toko5.listProblem?.length > 0 ? "alert-circle" : "check-circle"} 
-                size={24} 
-                color={toko5.listProblem?.length > 0 ? "#F44336" : "#4CAF50"} 
+              <Icon
+                source={toko5.listProblem?.length > 0 ? "alert-circle" : "check-circle"}
+                size={24}
+                color={toko5.listProblem?.length > 0 ? "#F44336" : "#4CAF50"}
               />
               <Text style={styles.sectionTitle}>
                 Problèmes ({toko5.listProblem?.length || 0})
               </Text>
             </View>
-            
+
             {toko5.listProblem?.length > 0 ? (
               <FlatList
                 data={toko5.listProblem}
@@ -228,7 +230,7 @@ export default function ListProblem({ navigation, route }: Props) {
             ) : (
               <View style={styles.emptyState}>
                 <Icon source="check" size={32} color="#4CAF50" />
-                <Text style={styles.emptyStateText}>Aucun problème signalé</Text>
+                <Text style={styles.emptyStateText}>Ce toko 5 est ok</Text>
               </View>
             )}
           </Card.Content>
@@ -313,7 +315,7 @@ const styles = StyleSheet.create({
   statNumber: {
     fontSize: 24,
     fontWeight: '700',
-    color: '#2196F3',
+    color: "rgba(26, 85, 161, 0.87)",
   },
   statLabel: {
     fontSize: 12,
@@ -360,7 +362,7 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: '#2196F3',
+    backgroundColor: "rgba(26, 85, 161, 0.87)",
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -382,7 +384,7 @@ const styles = StyleSheet.create({
   implementedBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#4CAF50',
+    backgroundColor: "rgba(26, 85, 161, 0.87)",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
@@ -432,7 +434,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#2196F3',
+    backgroundColor: "rgba(26, 85, 161, 0.87)",
     alignItems: 'center',
     justifyContent: 'center',
   },

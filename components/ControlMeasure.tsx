@@ -12,6 +12,7 @@ import {
   Portal,
   Modal,
   ActivityIndicator,
+  Icon,
 } from "react-native-paper";
 import styles from "../styles/controlMeasureStyles";
 //import globalStyles from "../styles";
@@ -21,6 +22,7 @@ import { ControlMeasureRisk, DatabaseContext, Reponse, RootStackParamList } from
 import { useFocusEffect } from "@react-navigation/native";
 import { imagePathMapping } from "../utils/imagePathMapping";
 import { StatusBar } from "expo-status-bar";
+import { updateMesureControle } from "../services/ApiService";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ControlMeasure'>;
 
@@ -87,20 +89,21 @@ export default function ControlMeasure({ navigation, route }: Props) {
   }
 
 
-  const updateListMesure = async (control_id: number, mesure: string, implemented: boolean) => {
+  const updateListMesure = async (control_id: string, mesure: string, implemented: boolean) => {
     let listControl = structuredClone(listMesure);
     let control = listControl.get(control_id);
     control.mesure_prise = mesure;
     control.implemented = implemented;
     if (toko5Repository !== null) {
-      await toko5Repository?.updateControlMesure(control_id, mesure, implemented);
+      await toko5Repository.updateControlMesure(control_id, mesure, implemented);
+      await updateMesureControle(toko5Repository,toko5Id,control_id,mesure,implemented);
     } else {
       throw new Error('toko5repository is null');
     }
     setListMesure(listControl);
   }
 
-  const deleteControlMesure = async (control_id: number) => {
+  const deleteControlMesure = async (control_id: string) => {
     let listControl = structuredClone(listMesure);
     listControl.delete(control_id);
     if (toko5Repository !== null) {
@@ -155,13 +158,10 @@ export default function ControlMeasure({ navigation, route }: Props) {
                     // alignContent: "center",
                   }}
                 >
-                  <MaterialDesignIcons
-                    name="lightbulb-on-outline"
-                    size={30}
-                    style={{
-                      color: 'black'
-                    }}
-                  />
+                  <Icon
+                      source={require('../assets/pictogram/bulb.png')}
+                      size={40}
+                    />
                   <Text
                     style={{ textAlign: "center", paddingLeft: 17 }}
                     variant="titleMedium"

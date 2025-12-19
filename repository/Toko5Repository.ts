@@ -18,6 +18,7 @@ import 'react-native-get-random-values';
 import { getLocalDateTimeISOString } from '../utils/commonFunctions';
 import { ETAT } from '../constants/commonConstants';
 import NetInfo from '@react-native-community/netinfo';
+import { v7 as uuidv7 } from 'uuid';
 
 
 class Toko5Repository {
@@ -31,8 +32,9 @@ class Toko5Repository {
 
     async init() {
         try {
-            this.db = await SQLite.openDatabaseAsync('toko5DB')
-            await this.createTables()
+            this.db = await SQLite.openDatabaseAsync('toko5DB');
+            await this.createTables();
+            this.isInitialized = true;
         } catch (error) {
             console.log('Error when opening the database: ', error)
         }
@@ -42,7 +44,9 @@ class Toko5Repository {
         //try using transaction
         if (this.db !== null) {
             try {
-                //await this.db.execAsync("DROP TABLE toko5");
+                // await this.db.execAsync("DROP TABLE toko5");
+                await this.db.execAsync("DROP TABLE commentaire");
+                await this.db.execAsync("DROP TABLE mesure_controle");
                 await this.db.execAsync(
                     `CREATE TABLE IF NOT EXISTS toko5 (
                         toko5_id TEXT PRIMARY KEY,
@@ -110,7 +114,7 @@ class Toko5Repository {
             try {
                 await this.db.execAsync(
                     `CREATE TABLE IF NOT EXISTS commentaire (
-                        commentaire_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        commentaire_id TEXT PRIMARY KEY,
                         toko5_id TEXT NOT NULL,
                         nom TEXT NOT NULL,
                         prenom TEXT NOT NULL,
@@ -126,7 +130,7 @@ class Toko5Repository {
             try {
                 await this.db.execAsync(
                     `CREATE TABLE IF NOT EXISTS mesure_controle (
-                        mesure_controle_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        mesure_controle_id TEXT PRIMARY KEY,
                         toko5_id TEXT NOT NULL,
                         question_id INTEGER NOT NULL,
                         mesure_prise TEXT NOT NULL,
@@ -309,7 +313,7 @@ class Toko5Repository {
     async newToko5(nom: string, prenom: string) {
         if (this.db !== null) {
             try {
-                const newUUID: string = uuidv4();
+                const newUUID: string = uuidv7();
                 const dateHeureNow: string = getLocalDateTimeISOString();
                 //console.log(dateHeureNow);
                 //runAsync or execAsync ???? 
@@ -457,7 +461,7 @@ class Toko5Repository {
         }
     }
 
-    async deleteFromControlMeasureById(controlId: number) {
+    async deleteFromControlMeasureById(controlId: string) {
         if (this.db !== null) {
             await this.db.runAsync('DELETE FROM mesure_controle where mesure_controle_id = ?', controlId);
         } else {
@@ -465,15 +469,18 @@ class Toko5Repository {
         }
     }
 
-    async insertIntoControlMeasure(toko5Id: string, questionId: number, mesure: string, implemented: boolean) {
+    async insertIntoControlMeasure(toko5Id: string, questionId: number, mesure: string, implemented: boolean): Promise<string> {
         if (this.db !== null) {
-            await this.db.runAsync('INSERT INTO mesure_controle(toko5_id, question_id, mesure_prise, implemented) values (?,?,?,?)', toko5Id, questionId, mesure, implemented);
+            const newUUID: string = uuidv7();
+            await this.db.runAsync('INSERT INTO mesure_controle(mesure_controle_id, toko5_id, question_id, mesure_prise, implemented) values (?,?,?,?,?)',newUUID, toko5Id, questionId, mesure, implemented);
+            console.log('icii');
+            return newUUID;
         } else {
             throw new Error('Database not initialized');
         }
     }
 
-    async updateControlMesure(controleMesureId: number, mesure: string, implemented: boolean) {
+    async updateControlMesure(controleMesureId: string, mesure: string, implemented: boolean) {
         if (this.db !== null) {
             await this.db.runAsync('UPDATE mesure_controle set mesure_prise = ?, implemented = ? where mesure_controle_id = ?', mesure, implemented, controleMesureId);
         } else {

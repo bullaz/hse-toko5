@@ -2,7 +2,7 @@ import { useCallback, useContext, useState } from "react";
 import { View, StatusBar, Pressable, Image } from "react-native";
 import styles from "../styles";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { DatabaseContext, Reponse, RootStackParamList } from "../context";
+import { DatabaseContext, Reponse, ReponseInterfaceView, RootStackParamList } from "../context";
 import Checkbox from "expo-checkbox";
 import { ActivityIndicator } from "react-native-paper";
 import { useTheme } from "react-native-paper";
@@ -11,6 +11,7 @@ import { QUESTION_CATEGORIES } from "../constants/questionTypes";
 import { imagePathMapping } from "../utils/imagePathMapping";
 import { useFocusEffect } from "@react-navigation/native";
 import { getAllData } from "../utils/commonFunctions";
+import { updateOrAddToko5 } from "../services/ApiService";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Organise1'>;
 
@@ -64,6 +65,9 @@ export default function Organise1({ navigation, route }: Props) {
             setSaveLoading(true);
             if (toko5Repository !== null) {
                 await toko5Repository.insertListReponse(Object.values(listReponse));
+                await toko5Repository.updateToko5Saved(toko5Id, false);
+                await updateOrAddToko5(toko5Id, toko5Repository, true, Object.values(listReponse));
+                await toko5Repository.updateToko5Saved(toko5Id, true);
             } else {
                 throw new Error('toko5Repository not initialized');
             }
