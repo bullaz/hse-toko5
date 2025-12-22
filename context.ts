@@ -98,13 +98,36 @@ export interface Toko5Json {
   prenomContractant: string,
   dateHeure: string,
   etat: string,
-  listMesureControle: [],
-  listCommentaire: [],
-  listProblem: []
+  listMesureControle: MesureControleDto[],
+  listCommentaire: CommentaireDto[],
+  listProblem: QuestionDto[]
 }
 
 export interface CommentaireInterface {
   commentaireId: number,
+  nom: string,
+  prenom: string,
+  commentaire: string
+}
+
+
+export interface QuestionDto {
+  questionId: number,
+  nom: string,
+  pictogramme: string,
+  categorie: string,
+  required: boolean
+}
+
+export interface MesureControleDto {
+  mesureControleId: string,
+  question: QuestionDto,
+  mesurePrise: string,
+  implemented: boolean
+}
+
+export interface CommentaireDto {
+  commentaireId: string,
   nom: string,
   prenom: string,
   commentaire: string

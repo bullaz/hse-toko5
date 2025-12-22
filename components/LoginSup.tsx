@@ -6,6 +6,7 @@ import styles from "../styles/loginStyle";
 import { TextInput } from "react-native-paper";
 import { useContext, useState } from "react";
 import { useCameraPermissions } from "expo-camera";
+import * as SecureStore from 'expo-secure-store';
 
 
 //////////////////////////wrap every other components with a wrapper component that verify if the toko 5 is valid or not
@@ -28,6 +29,14 @@ export default function LoginSup({ navigation }: Props) {
     const [text, setText] = useState<string>("");
 
     const [loading, setLoading] = useState<boolean>(false);
+
+    const handleLogin = async () => {
+        setLoading(true); //doesn't work maybe (react batching state updates)
+        await SecureStore.setItemAsync("nomSuperviseur", nom);
+        await SecureStore.setItemAsync("prenomSuperviseur", prenom);
+        setLoading(false);
+        navigation.navigate('ScanQr');
+    }
 
 
     return (
@@ -87,7 +96,7 @@ export default function LoginSup({ navigation }: Props) {
                         />
                         <Button style={styles.bottomButton}
                             mode="contained"
-                            onPress={()=>{navigation.navigate('ScanQr')}}
+                            onPress={async ()=>{await handleLogin()}}
 
                             //test qr
                             //onPress = {requestPermission}

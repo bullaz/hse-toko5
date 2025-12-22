@@ -1,10 +1,13 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Card, Divider, Icon, List, Text, useTheme } from "react-native-paper";
-import { RootStackParamList } from "../context";
+import { Card, Divider, Icon, List, Text, useTheme, Button, TextInput } from "react-native-paper";
+import { CommentaireDto, DatabaseContext, MesureControleDto, QuestionDto, RootStackParamList, Toko5Json } from "../context";
 import { FlatList, ScrollView, View, StyleSheet } from "react-native";
-import { useEffect, useLayoutEffect } from "react";
+import { useContext, useEffect, useLayoutEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { imagePathMapping } from "../utils/imagePathMapping";
+import { addCommentaire } from "../services/ApiService";
+import Toko5Repository from "../repository/Toko5Repository";
+import * as SecureStore from 'expo-secure-store';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ListProblem'>;
 
@@ -12,7 +15,13 @@ export default function ListProblem({ navigation, route }: Props) {
 
   const theme = useTheme();
 
-  const { toko5 } = route.params;
+  //const { toko5 }: { toko5: Toko5Json } = route.params;
+
+  const [toko5, setToko5] = useState<Toko5Json>(route.params.toko5);
+
+  const toko5Repository = useContext(DatabaseContext);
+
+  const [newComment, setNewComment] = useState("");
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -50,6 +59,24 @@ export default function ListProblem({ navigation, route }: Props) {
 
   const { date, time } = formatDate(toko5.dateHeure);
   const status = getStatusConfig(toko5.etat);
+
+  const handleAddComment = async () => {
+    //console.log("Add comment pressed");
+    let nom = await SecureStore.getItemAsync("nomSuperviseur");
+    let prenom = await SecureStore.getItemAsync("prenomSuperviseur");
+    if (nom && prenom) {
+      console.log(nom, prenom);
+      const commentDto: CommentaireDto = await addCommentaire(toko5Repository, toko5.toko5Id, nom, prenom, newComment);
+      let toko5copy: Toko5Json = JSON.parse(JSON.stringify(toko5));
+      toko5copy.listCommentaire.unshift(commentDto);
+      setToko5(toko5copy);
+    }
+  };
+
+
+  const handleResolveToko5 = async () => {
+    
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -117,17 +144,15 @@ export default function ListProblem({ navigation, route }: Props) {
                 </Text>
               </View>
 
-              <FlatList
-                data={toko5.listMesureControle}
-                scrollEnabled={false}
-                renderItem={({ item, index }) => (
-                  <View style={styles.measureItem}>
+              <ScrollView
+                style={styles.scrollableSection}
+                nestedScrollEnabled={true}
+                showsVerticalScrollIndicator={false}
+              >
+                {toko5.listMesureControle.map((item: MesureControleDto, index: number) => (
+                  <View key={index} style={styles.measureItem}>
                     <View style={styles.measureHeader}>
-                      {/* <View style={styles.measureIndex}>
-                        <Text style={styles.measureIndexText}>{index + 1}</Text>
-                      </View> */}
                       <View style={styles.measureTitleContainer}>
-                        {/* <Text style={styles.measureId}>Mesure #{item.mesureControleId}</Text> */}
                         <View style={styles.implementedBadge}>
                           <Icon
                             source={item.implemented ? "check" : "alert-circle"}
@@ -145,8 +170,10 @@ export default function ListProblem({ navigation, route }: Props) {
 
                     {item.question && (
                       <View style={styles.questionContainer}>
-                        <Text style={styles.questionLabel}>Danger/risque</Text>
-                        {/* <Text style={styles.questionText}>{item.question.text}</Text> */}
+                        <View style={styles.questionTextContainer}>
+                          <Text style={styles.questionLabel}>Danger/risque</Text>
+                          <Text style={styles.questionText}>{item.question.nom}</Text>
+                        </View>
                         <Icon source={imagePathMapping(item.question.pictogramme)} size={40} />
                       </View>
                     )}
@@ -155,28 +182,30 @@ export default function ListProblem({ navigation, route }: Props) {
                       <Divider style={styles.itemDivider} />
                     )}
                   </View>
-                )}
-              />
+                ))}
+              </ScrollView>
             </Card.Content>
           </Card>
         )}
 
         {/* Comments Section */}
-        {toko5.listCommentaire && toko5.listCommentaire.length > 0 && (
-          <Card style={styles.sectionCard} mode='contained'>
-            <Card.Content>
-              <View style={styles.sectionHeader}>
-                <Icon source="message-text" size={24} color={theme.colors.primary} />
-                <Text style={styles.sectionTitle}>
-                  Commentaires ({toko5.listCommentaire.length})
-                </Text>
-              </View>
+        <Card style={styles.sectionCard} mode='contained'>
+          <Card.Content>
+            <View style={styles.sectionHeader}>
+              <Icon source="message-text" size={24} color={theme.colors.primary} />
+              <Text style={styles.sectionTitle}>
+                Commentaires ({toko5.listCommentaire?.length || 0})
+              </Text>
+            </View>
 
-              <FlatList
-                data={toko5.listCommentaire}
-                scrollEnabled={false}
-                renderItem={({ item, index }) => (
-                  <View style={styles.commentItem}>
+            {toko5.listCommentaire && toko5.listCommentaire.length > 0 ? (
+              <ScrollView
+                style={styles.scrollableSection}
+                nestedScrollEnabled={true}
+                showsVerticalScrollIndicator={false}
+              >
+                {toko5.listCommentaire.map((item: CommentaireDto, index: number) => (
+                  <View key={index} style={styles.commentItem}>
                     <View style={styles.commentHeader}>
                       <View style={styles.commentAvatar}>
                         <Text style={styles.commentAvatarText}>
@@ -187,7 +216,6 @@ export default function ListProblem({ navigation, route }: Props) {
                         <Text style={styles.commentAuthor}>
                           {item.prenom} {item.nom}
                         </Text>
-                        {/* <Text style={styles.commentId}>#{item.commentaireId}</Text> */}
                       </View>
                     </View>
 
@@ -197,11 +225,51 @@ export default function ListProblem({ navigation, route }: Props) {
                       <Divider style={styles.itemDivider} />
                     )}
                   </View>
-                )}
-              />
-            </Card.Content>
-          </Card>
-        )}
+                ))}
+              </ScrollView>
+            ) : (
+              <View style={styles.noCommentsContainer}>
+                <Icon source="message-outline" size={32} color="#999" />
+                <Text style={styles.noCommentsText}>Aucun commentaire pour le moment</Text>
+              </View>
+            )}
+
+            {/* Add Comment Button */}
+            {/* <Button 
+              mode="contained" 
+              onPress={handleAddComment}
+              style={styles.addCommentButton}
+              icon="plus"
+            >
+              Ajouter un commentaire
+            </Button> */}
+          </Card.Content>
+        </Card>
+        <Card style={styles.sectionCard} mode='contained'>
+          <Card.Content>
+            <TextInput
+              mode="outlined"
+              placeholder="Écrivez votre commentaire ici..."
+              value={newComment}
+              onChangeText={setNewComment}
+              multiline
+              numberOfLines={3}
+              style={styles.commentInput}
+              outlineStyle={styles.inputOutline}
+            />
+
+            <Button
+              mode="contained"
+              onPress={handleAddComment}
+              style={styles.addButton}
+              icon="send"
+              disabled={!newComment.trim()}
+              labelStyle={{ color: "white" }}
+            >
+              commenter
+            </Button>
+          </Card.Content>
+        </Card>
 
         {/* Problems Section - Show even if empty for awareness */}
         <Card style={[styles.sectionCard,
@@ -220,13 +288,15 @@ export default function ListProblem({ navigation, route }: Props) {
             </View>
 
             {toko5.listProblem?.length > 0 ? (
-              <FlatList
-                data={toko5.listProblem}
-                scrollEnabled={false}
-                renderItem={({ item }) => (
-                  <Text style={styles.problemText}>• {item.description}</Text>
-                )}
-              />
+              <ScrollView
+                style={styles.scrollableSection}
+                nestedScrollEnabled={true}
+                showsVerticalScrollIndicator={false}
+              >
+                {toko5.listProblem.map((item: QuestionDto, index: number) => (
+                  <Text key={index} style={styles.problemText}>• {item.nom}</Text>
+                ))}
+              </ScrollView>
             ) : (
               <View style={styles.emptyState}>
                 <Icon source="check" size={32} color="#4CAF50" />
@@ -235,6 +305,23 @@ export default function ListProblem({ navigation, route }: Props) {
             )}
           </Card.Content>
         </Card>
+
+        {toko5.listProblem.length > 0 && (
+          <Card style={styles.sectionCard} mode='contained'>
+            <Card.Content>
+              <Button
+                mode="contained"
+                onPress={handleResolveToko5}
+                style={styles.addButton}
+                icon="send"
+                disabled={!newComment.trim()}
+                labelStyle={{ color: "white" }}
+              >
+                laisser continuer le toko 5
+              </Button>
+            </Card.Content>
+          </Card>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -349,6 +436,9 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#333',
   },
+  scrollableSection: {
+    maxHeight: 300, // Adjust this value as needed
+  },
   measureItem: {
     paddingVertical: 12,
   },
@@ -358,28 +448,11 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     gap: 12,
   },
-  measureIndex: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: "rgba(26, 85, 161, 0.87)",
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  measureIndexText: {
-    color: 'white',
-    fontWeight: '600',
-    fontSize: 14,
-  },
   measureTitleContainer: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-  },
-  measureId: {
-    fontSize: 14,
-    color: '#666',
   },
   implementedBadge: {
     flexDirection: 'row',
@@ -406,10 +479,15 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     padding: 12,
     borderRadius: 8,
     borderLeftWidth: 3,
     borderLeftColor: '#FF9800',
+  },
+  questionTextContainer: {
+    flex: 1,
+    marginRight: 12,
   },
   questionLabel: {
     fontSize: 12,
@@ -451,16 +529,25 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#333',
   },
-  commentId: {
-    fontSize: 12,
-    color: '#999',
-  },
   commentText: {
     fontSize: 14,
     color: '#555',
     lineHeight: 20,
     backgroundColor: '#f9f9f9',
     padding: 12,
+    borderRadius: 8,
+  },
+  noCommentsContainer: {
+    alignItems: 'center',
+    padding: 24,
+  },
+  noCommentsText: {
+    fontSize: 14,
+    color: '#999',
+    marginTop: 8,
+  },
+  addCommentButton: {
+    marginTop: 16,
     borderRadius: 8,
   },
   problemText: {
@@ -481,5 +568,18 @@ const styles = StyleSheet.create({
   itemDivider: {
     marginTop: 16,
     backgroundColor: '#eee',
+  },
+
+  commentInput: {
+    backgroundColor: 'white',
+    marginBottom: 16,
+    fontSize: 14,
+  },
+  inputOutline: {
+    borderRadius: 8,
+  },
+  addButton: {
+    borderRadius: 8,
+    backgroundColor: "rgba(26, 85, 161, 0.87)"
   },
 });

@@ -67,9 +67,9 @@ export default function Commentaire({ navigation, route }: Props) {
 
   const initialize = async () => {
     let list = new Map();
-    for (let com of toko5?.listCommentaire as CommentaireInterface[]) {
-      list.set(com.commentaireId, com);
-    }
+    // for (let com of toko5?.listCommentaire as CommentaireInterface[]) {
+    //   list.set(com.commentaireId, com);
+    // }
     setListCommentaire(list);
     setLoading(false);
   }

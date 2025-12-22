@@ -27,7 +27,7 @@ export default function Fitness({ navigation, route }: Props) {
 
     const [loading, setLoading] = useState(true);
 
-    const [visible, setVisible] = useState(false);
+    const [visible, setVisible] = useState<boolean>(false);
 
     const [listReponse, setListReponse] = useState<Record<number, Reponse>>({});
 
@@ -56,8 +56,8 @@ export default function Fitness({ navigation, route }: Props) {
             if (toko5Repository !== null) {
                 await toko5Repository.insertListReponse(Object.values(listReponse));
                 await toko5Repository.updateToko5Saved(toko5Id, false);
-                await updateOrAddToko5(toko5Id, toko5Repository, true, Object.values(listReponse));
-                await toko5Repository.updateToko5Saved(toko5Id, true);
+                // await updateOrAddToko5(toko5Id, toko5Repository, true, Object.values(listReponse));
+                //await toko5Repository.updateToko5Saved(toko5Id, true);
             } else {
                 throw new Error('toko5Repository not initialized');
             }
@@ -84,8 +84,10 @@ export default function Fitness({ navigation, route }: Props) {
                 if (isValid) {
                     //const etat = toko
                     await toko5Repository.validateToko5(toko5Id);
+                    await updateOrAddToko5(toko5Id, toko5Repository, true, Object.values(listReponse),true);
                     setVisible(true);
                 } else {
+                    await updateOrAddToko5(toko5Id, toko5Repository, true, Object.values(listReponse));
                     navigation.navigate('Invalide');
                 }
             } else {
@@ -184,7 +186,7 @@ export default function Fitness({ navigation, route }: Props) {
                                         style={{ textAlign: "center" }}
                                         variant="titleMedium"
                                     >
-                                        Merci d'avoir pris le temps de finir votre toko5 !!!
+                                        Merci d'avoir pris le temps de finir votre toko 5 !!!
                                     </Text>
 
                                     <Button style={{

@@ -151,13 +151,13 @@ export default function App() {
             <Stack.Screen
               name="Login"
               component={Login}
-              options={{ title: "IDENTIFICATION", headerBackVisible: false, gestureEnabled: false }}
+              options={{ title: "IDENTIFICATION", headerBackVisible: false, gestureEnabled: false}}
             />
 
             <Stack.Screen
               name="LoginSup"
               component={LoginSup}
-              options={{ title: "IDENTIFICATION", headerBackVisible: false, gestureEnabled: false }}
+              options={{ title: "IDENTIFICATION", headerBackVisible: false, gestureEnabled: false}}
             />
             <Stack.Screen
               name="Think"
