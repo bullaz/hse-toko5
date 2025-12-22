@@ -256,6 +256,7 @@ export default function ListProblem({ navigation, route }: Props) {
               numberOfLines={3}
               style={styles.commentInput}
               outlineStyle={styles.inputOutline}
+              outlineColor="rgba(177, 177, 177, 1)"
             />
 
             <Button
@@ -297,6 +298,35 @@ export default function ListProblem({ navigation, route }: Props) {
                   <Text key={index} style={styles.problemText}>• {item.nom}</Text>
                 ))}
               </ScrollView>
+
+              // <ScrollView
+              //   style={styles.scrollableSection}
+              //   nestedScrollEnabled={true}
+              //   showsVerticalScrollIndicator={false}
+              // >
+              //   {toko5.listCommentaire.map((item: CommentaireDto, index: number) => (
+              //     <View key={index} style={styles.commentItem}>
+              //       <View style={styles.commentHeader}>
+              //         <View style={styles.commentAvatar}>
+              //           <Text style={styles.commentAvatarText}>
+              //             {item.prenom?.charAt(0)}{item.nom?.charAt(0)}
+              //           </Text>
+              //         </View>
+              //         <View style={styles.commentInfo}>
+              //           <Text style={styles.commentAuthor}>
+              //             {item.prenom} {item.nom}
+              //           </Text>
+              //         </View>
+              //       </View>
+
+              //       <Text style={styles.commentText}>{item.commentaire}</Text>
+
+              //       {index < toko5.listCommentaire.length - 1 && (
+              //         <Divider style={styles.itemDivider} />
+              //       )}
+              //     </View>
+              //   ))}
+              // </ScrollView>
             ) : (
               <View style={styles.emptyState}>
                 <Icon source="check" size={32} color="#4CAF50" />
@@ -307,17 +337,17 @@ export default function ListProblem({ navigation, route }: Props) {
         </Card>
 
         {toko5.listProblem.length > 0 && (
-          <Card style={styles.sectionCard} mode='contained'>
+          <Card mode='contained'>
             <Card.Content>
               <Button
                 mode="contained"
                 onPress={handleResolveToko5}
                 style={styles.addButton}
-                icon="send"
+                icon="thumb-up"
                 disabled={!newComment.trim()}
                 labelStyle={{ color: "white" }}
               >
-                laisser continuer le toko 5
+                problèmes resolus 
               </Button>
             </Card.Content>
           </Card>
