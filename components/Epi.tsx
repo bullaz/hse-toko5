@@ -3,8 +3,8 @@ import { View, StatusBar, Pressable, Image } from "react-native";
 import styles from "../styles";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { DatabaseContext, Reponse, RootStackParamList } from "../context";
-import Checkbox from "expo-checkbox";
-import { ActivityIndicator } from "react-native-paper";
+//import Checkbox from "expo-checkbox";
+import { ActivityIndicator, Checkbox } from "react-native-paper";
 import { useTheme } from "react-native-paper";
 import { Button } from "react-native-paper";
 import { QUESTION_CATEGORIES } from "../constants/questionTypes";
@@ -99,10 +99,14 @@ export default function Epi({ navigation, route }: Props) {
                                     pressed && styles.pressedBox,
                                 ]}
                             >
-                                <Image source={imagePathMapping(question.pictogramme)} style={{ width: 80, height: 80 }}></Image>
+                                <Image source={imagePathMapping(question.pictogramme)} style={{ width: 78, height: 78 }}></Image>
                             </Pressable>
                             <View style={styles.checkboxContainer}>
-                                <Checkbox value={listReponse[question.question_id].valeur} onValueChange={() => { updateListReponse(question.question_id, !listReponse[question.question_id].valeur) }} />
+                                {/* <Checkbox value={listReponse[question.question_id].valeur} onValueChange={() => { updateListReponse(question.question_id, !listReponse[question.question_id].valeur) }} /> */}
+                                <Checkbox
+                                    status={listReponse[question.question_id].valeur ? 'checked' : 'unchecked'}
+                                    onPress={() => { updateListReponse(question.question_id, !listReponse[question.question_id].valeur) }}
+                                />
                             </View>
                         </View>
                     ))}

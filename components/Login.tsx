@@ -52,12 +52,11 @@ export default function Login({ navigation }: Props) {
                 console.log(toko5);
                 let isInternetReachable = await checkConnection();
                 if (isInternetReachable) {
-                    let saved = await axios.post(`${BACKEND_URL}/toko5s`, toko5, {
+                    let saved = axios.post(`${BACKEND_URL}/toko5s`, toko5, {
                         headers: {
                             'Content-Type': 'application/json',
                         }
                     });
-                    //console.log(saved.data);
                 }
                 setLoading(false)
                 navigation.navigate('Think', { toko5Id: toko5.toko5Id })

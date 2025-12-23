@@ -3,8 +3,8 @@ import { View, StatusBar, Pressable, Image } from "react-native";
 import styles from "../styles";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { DatabaseContext, Reponse, ReponseInterfaceView, RootStackParamList } from "../context";
-import Checkbox from "expo-checkbox";
-import { ActivityIndicator } from "react-native-paper";
+//import Checkbox from "expo-checkbox";
+import { ActivityIndicator, Checkbox } from "react-native-paper";
 import { useTheme } from "react-native-paper";
 import { Button } from "react-native-paper";
 import { QUESTION_CATEGORIES } from "../constants/questionTypes";
@@ -118,7 +118,11 @@ export default function Organise1({ navigation, route }: Props) {
                                 <Image source={imagePathMapping(question.pictogramme)} style={{ width: 90, height: 90 }}></Image>
                             </Pressable>
                             <View style={styles.checkboxContainer}>
-                                <Checkbox value={listReponse[question.question_id].valeur} onValueChange={() => { updateListReponse(question.question_id, !listReponse[question.question_id].valeur) }} />
+                                {/* <Checkbox value={listReponse[question.question_id].valeur} onValueChange={() => { updateListReponse(question.question_id, !listReponse[question.question_id].valeur) }} /> */}
+                                <Checkbox
+                                    status={listReponse[question.question_id].valeur ? 'checked' : 'unchecked'}
+                                    onPress={() => { updateListReponse(question.question_id, !listReponse[question.question_id].valeur) }}
+                                />
                             </View>
                         </View>
                     ))}

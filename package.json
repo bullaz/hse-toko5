@@ -15,6 +15,7 @@
     "@react-navigation/native-stack": "^7.6.3",
     "axios": "^1.13.2",
     "babel-plugin-inline-import": "^3.0.0",
+    "dayjs": "^1.11.19",
     "drizzle-orm": "^0.44.7",
     "expo": "~54.0.25",
     "expo-barcode-scanner": "^13.0.1",

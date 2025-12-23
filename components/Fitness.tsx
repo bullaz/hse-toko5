@@ -1,13 +1,13 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { DatabaseContext, Reponse, RootStackParamList } from "../context";
 import { Image, View } from "react-native";
-import { ActivityIndicator, Button, Divider, Modal, PaperProvider, Portal, Text, useTheme } from "react-native-paper";
+import { ActivityIndicator, Button, Checkbox, Divider, Modal, PaperProvider, Portal, Text, useTheme } from "react-native-paper";
 import styles from "../styles";
 import { useCallback, useContext, useState } from "react";
 import { QUESTION_CATEGORIES } from "../constants/questionTypes";
 import { useFocusEffect } from "@react-navigation/native";
 import { getAllData } from "../utils/commonFunctions";
-import Checkbox from "expo-checkbox";
+//import Checkbox from "expo-checkbox";
 import { StatusBar } from "expo-status-bar";
 import { updateOrAddToko5 } from "../services/ApiService";
 
@@ -84,7 +84,7 @@ export default function Fitness({ navigation, route }: Props) {
                 if (isValid) {
                     //const etat = toko
                     await toko5Repository.validateToko5(toko5Id);
-                    await updateOrAddToko5(toko5Id, toko5Repository, true, Object.values(listReponse),true);
+                    await updateOrAddToko5(toko5Id, toko5Repository, true, Object.values(listReponse), true);
                     setVisible(true);
                 } else {
                     await updateOrAddToko5(toko5Id, toko5Repository, true, Object.values(listReponse));
@@ -135,8 +135,12 @@ export default function Fitness({ navigation, route }: Props) {
                                 <View style={{ gap: 10 }} key={question.question_id}>
                                     <Text style={{ textAlign: 'center', }} variant="titleMedium">{question.nom}</Text>
                                     <View style={styles.checkboxContainer}>
-                                        <Checkbox
+                                        {/* <Checkbox
                                             value={listReponse[question.question_id].valeur} onValueChange={() => { updateListReponse(question.question_id, !listReponse[question.question_id].valeur) }}
+                                        /> */}
+                                        <Checkbox
+                                            status={listReponse[question.question_id].valeur ? 'checked' : 'unchecked'}
+                                            onPress={() => { updateListReponse(question.question_id, !listReponse[question.question_id].valeur) }}
                                         />
                                     </View>
                                     <Divider style={{ height: '0.5%', backgroundColor: 'black' }} />

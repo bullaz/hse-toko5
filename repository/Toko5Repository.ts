@@ -13,11 +13,10 @@
 import * as SQLite from 'expo-sqlite';
 import { SQLiteDatabase } from 'expo-sqlite';
 import { QUESTION_CATEGORIES } from '../constants/questionTypes';
-import { v4 as uuidv4 } from 'uuid';
+// import { v4 as uuidv4 } from 'uuid';
 import 'react-native-get-random-values';
 import { getLocalDateTimeISOString } from '../utils/commonFunctions';
 import { ETAT } from '../constants/commonConstants';
-import NetInfo from '@react-native-community/netinfo';
 import { v7 as uuidv7 } from 'uuid';
 
 
@@ -548,7 +547,6 @@ class Toko5Repository {
             throw new Error('Database not initialized');
         }
     }
-
 
 
 

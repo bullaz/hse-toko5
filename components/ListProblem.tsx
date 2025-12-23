@@ -1,11 +1,11 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Card, Divider, Icon, List, Text, useTheme, Button, TextInput } from "react-native-paper";
+import { Card, Divider, Icon, List, Text, useTheme, Button, TextInput, ActivityIndicator, PaperProvider, Portal, Modal } from "react-native-paper";
 import { CommentaireDto, DatabaseContext, MesureControleDto, QuestionDto, RootStackParamList, Toko5Json } from "../context";
 import { FlatList, ScrollView, View, StyleSheet } from "react-native";
 import { useContext, useEffect, useLayoutEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { imagePathMapping } from "../utils/imagePathMapping";
-import { addCommentaire } from "../services/ApiService";
+import { addCommentaire, resolveToko5 } from "../services/ApiService";
 import Toko5Repository from "../repository/Toko5Repository";
 import * as SecureStore from 'expo-secure-store';
 
@@ -22,6 +22,28 @@ export default function ListProblem({ navigation, route }: Props) {
   const toko5Repository = useContext(DatabaseContext);
 
   const [newComment, setNewComment] = useState("");
+
+  const [problemLoading, setProblemLoading] = useState<boolean>(false);
+
+  const [commentLoading, setCommentLoading] = useState<boolean>(false);
+
+  const [resolveVisible, setResolveVisible] = useState(false);
+
+  const showResolveModal = () => setResolveVisible(true);
+  const hideResolveModal = () => setResolveVisible(false);
+
+  const handleResolveToko5 = async () => {
+    hideResolveModal();
+    try {
+      setProblemLoading(true);
+      const toko = await resolveToko5(toko5.toko5Id);
+      setToko5(toko);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setProblemLoading(false);
+    }
+  };
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -62,180 +84,184 @@ export default function ListProblem({ navigation, route }: Props) {
 
   const handleAddComment = async () => {
     //console.log("Add comment pressed");
+    setCommentLoading(true);
     let nom = await SecureStore.getItemAsync("nomSuperviseur");
     let prenom = await SecureStore.getItemAsync("prenomSuperviseur");
     if (nom && prenom) {
       console.log(nom, prenom);
-      const commentDto: CommentaireDto = await addCommentaire(toko5Repository, toko5.toko5Id, nom, prenom, newComment);
-      let toko5copy: Toko5Json = JSON.parse(JSON.stringify(toko5));
-      toko5copy.listCommentaire.unshift(commentDto);
-      setToko5(toko5copy);
+      try {
+        const commentDto: CommentaireDto = await addCommentaire(toko5Repository, toko5.toko5Id, nom, prenom, newComment);
+        let toko5copy: Toko5Json = JSON.parse(JSON.stringify(toko5));
+        toko5copy.listCommentaire.unshift(commentDto);
+        setToko5(toko5copy);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setCommentLoading(false);
+      }
     }
   };
 
-
-  const handleResolveToko5 = async () => {
-    
-  }
-
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Header Card */}
-        <Card style={styles.headerCard} mode='contained'>
-          <Card.Content>
-            <View style={styles.headerContent}>
-              <View style={styles.statusContainer}>
-                <View style={[styles.statusDot, { backgroundColor: status.color }]} />
-                <Text style={[styles.statusText, { color: status.color }]}>
-                  {status.label}
-                </Text>
-              </View>
-
-              <View style={styles.dateTimeContainer}>
-                <View style={styles.dateTimeItem}>
-                  <Icon source="calendar" size={16} color="#666" />
-                  <Text style={styles.dateTimeText}>{date}</Text>
-                </View>
-                <View style={styles.dateTimeItem}>
-                  <Icon source="clock-outline" size={16} color="#666" />
-                  <Text style={styles.dateTimeText}>{time}</Text>
-                </View>
-              </View>
-
-              <View style={styles.contractorContainer}>
-                <Icon source="account-hard-hat" size={20} color={theme.colors.primary} />
-                <View style={styles.contractorInfo}>
-                  <Text style={styles.contractorLabel}>Contractant</Text>
-                  <Text style={styles.contractorName}>
-                    {toko5.prenomContractant} {toko5.nomContractant}
-                  </Text>
-                </View>
-              </View>
-
-              <View style={styles.statsContainer}>
-                <View style={styles.statItem}>
-                  <Text style={styles.statNumber}>{toko5.listMesureControle?.length || 0}</Text>
-                  <Text style={styles.statLabel}>Mesures</Text>
-                </View>
-                <View style={styles.statDivider} />
-                <View style={styles.statItem}>
-                  <Text style={styles.statNumber}>{toko5.listCommentaire?.length || 0}</Text>
-                  <Text style={styles.statLabel}>Commentaires</Text>
-                </View>
-                <View style={styles.statDivider} />
-                <View style={styles.statItem}>
-                  <Text style={styles.statNumber}>{toko5.listProblem?.length || 0}</Text>
-                  <Text style={styles.statLabel}>Problèmes</Text>
-                </View>
-              </View>
-            </View>
-          </Card.Content>
-        </Card>
-
-        {/* Control Measures Section */}
-        {toko5.listMesureControle && toko5.listMesureControle.length > 0 && (
-          <Card style={styles.sectionCard} mode='contained'>
-            <Card.Content>
-              <View style={styles.sectionHeader}>
-                <Icon source="clipboard-check" size={24} color={theme.colors.primary} />
-                <Text style={styles.sectionTitle}>
-                  Mesures de Contrôle ({toko5.listMesureControle.length})
-                </Text>
-              </View>
-
-              <ScrollView
-                style={styles.scrollableSection}
-                nestedScrollEnabled={true}
-                showsVerticalScrollIndicator={false}
-              >
-                {toko5.listMesureControle.map((item: MesureControleDto, index: number) => (
-                  <View key={index} style={styles.measureItem}>
-                    <View style={styles.measureHeader}>
-                      <View style={styles.measureTitleContainer}>
-                        <View style={styles.implementedBadge}>
-                          <Icon
-                            source={item.implemented ? "check" : "alert-circle"}
-                            size={12}
-                            color="white"
-                          />
-                          <Text style={styles.implementedText}>
-                            {item.implemented ? 'Implémentée' : 'En attente'}
-                          </Text>
-                        </View>
-                      </View>
-                    </View>
-
-                    <Text style={styles.measureDescription}>{item.mesurePrise}</Text>
-
-                    {item.question && (
-                      <View style={styles.questionContainer}>
-                        <View style={styles.questionTextContainer}>
-                          <Text style={styles.questionLabel}>Danger/risque</Text>
-                          <Text style={styles.questionText}>{item.question.nom}</Text>
-                        </View>
-                        <Icon source={imagePathMapping(item.question.pictogramme)} size={40} />
-                      </View>
-                    )}
-
-                    {index < toko5.listMesureControle.length - 1 && (
-                      <Divider style={styles.itemDivider} />
-                    )}
+    <PaperProvider>
+      <Portal>
+        <SafeAreaView style={styles.container}>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            {/* Header Card */}
+            <Card style={styles.headerCard} mode='contained'>
+              <Card.Content>
+                <View style={styles.headerContent}>
+                  <View style={styles.statusContainer}>
+                    <View style={[styles.statusDot, { backgroundColor: status.color }]} />
+                    <Text style={[styles.statusText, { color: status.color }]}>
+                      {status.label}
+                    </Text>
                   </View>
-                ))}
-              </ScrollView>
-            </Card.Content>
-          </Card>
-        )}
 
-        {/* Comments Section */}
-        <Card style={styles.sectionCard} mode='contained'>
-          <Card.Content>
-            <View style={styles.sectionHeader}>
-              <Icon source="message-text" size={24} color={theme.colors.primary} />
-              <Text style={styles.sectionTitle}>
-                Commentaires ({toko5.listCommentaire?.length || 0})
-              </Text>
-            </View>
-
-            {toko5.listCommentaire && toko5.listCommentaire.length > 0 ? (
-              <ScrollView
-                style={styles.scrollableSection}
-                nestedScrollEnabled={true}
-                showsVerticalScrollIndicator={false}
-              >
-                {toko5.listCommentaire.map((item: CommentaireDto, index: number) => (
-                  <View key={index} style={styles.commentItem}>
-                    <View style={styles.commentHeader}>
-                      <View style={styles.commentAvatar}>
-                        <Text style={styles.commentAvatarText}>
-                          {item.prenom?.charAt(0)}{item.nom?.charAt(0)}
-                        </Text>
-                      </View>
-                      <View style={styles.commentInfo}>
-                        <Text style={styles.commentAuthor}>
-                          {item.prenom} {item.nom}
-                        </Text>
-                      </View>
+                  <View style={styles.dateTimeContainer}>
+                    <View style={styles.dateTimeItem}>
+                      <Icon source="calendar" size={16} color="#666" />
+                      <Text style={styles.dateTimeText}>{date}</Text>
                     </View>
-
-                    <Text style={styles.commentText}>{item.commentaire}</Text>
-
-                    {index < toko5.listCommentaire.length - 1 && (
-                      <Divider style={styles.itemDivider} />
-                    )}
+                    <View style={styles.dateTimeItem}>
+                      <Icon source="clock-outline" size={16} color="#666" />
+                      <Text style={styles.dateTimeText}>{time}</Text>
+                    </View>
                   </View>
-                ))}
-              </ScrollView>
-            ) : (
-              <View style={styles.noCommentsContainer}>
-                <Icon source="message-outline" size={32} color="#999" />
-                <Text style={styles.noCommentsText}>Aucun commentaire pour le moment</Text>
-              </View>
+
+                  <View style={styles.contractorContainer}>
+                    <Icon source="account-hard-hat" size={20} color={theme.colors.primary} />
+                    <View style={styles.contractorInfo}>
+                      <Text style={styles.contractorLabel}>Contractant</Text>
+                      <Text style={styles.contractorName}>
+                        {toko5.prenomContractant} {toko5.nomContractant}
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View style={styles.statsContainer}>
+                    <View style={styles.statItem}>
+                      <Text style={styles.statNumber}>{toko5.listMesureControle?.length || 0}</Text>
+                      <Text style={styles.statLabel}>Mesures</Text>
+                    </View>
+                    <View style={styles.statDivider} />
+                    <View style={styles.statItem}>
+                      <Text style={styles.statNumber}>{toko5.listCommentaire?.length || 0}</Text>
+                      <Text style={styles.statLabel}>Commentaires</Text>
+                    </View>
+                    <View style={styles.statDivider} />
+                    <View style={styles.statItem}>
+                      <Text style={styles.statNumber}>{toko5.listProblem?.length || 0}</Text>
+                      <Text style={styles.statLabel}>Problèmes</Text>
+                    </View>
+                  </View>
+                </View>
+              </Card.Content>
+            </Card>
+
+            {/* Control Measures Section */}
+            {toko5.listMesureControle && toko5.listMesureControle.length > 0 && (
+              <Card style={styles.sectionCard} mode='contained'>
+                <Card.Content>
+                  <View style={styles.sectionHeader}>
+                    <Icon source="clipboard-check" size={24} color={theme.colors.primary} />
+                    <Text style={styles.sectionTitle}>
+                      Mesures de Contrôle ({toko5.listMesureControle.length})
+                    </Text>
+                  </View>
+
+                  <ScrollView
+                    style={styles.scrollableSection}
+                    nestedScrollEnabled={true}
+                    showsVerticalScrollIndicator={false}
+                  >
+                    {toko5.listMesureControle.map((item: MesureControleDto, index: number) => (
+                      <View key={index} style={styles.measureItem}>
+                        <View style={styles.measureHeader}>
+                          <View style={styles.measureTitleContainer}>
+                            <View style={styles.implementedBadge}>
+                              <Icon
+                                source={item.implemented ? "check" : "alert-circle"}
+                                size={12}
+                                color="white"
+                              />
+                              <Text style={styles.implementedText}>
+                                {item.implemented ? 'Implémentée' : 'En attente'}
+                              </Text>
+                            </View>
+                          </View>
+                        </View>
+
+                        <Text style={styles.measureDescription}>{item.mesurePrise}</Text>
+
+                        {item.question && (
+                          <View style={styles.questionContainer}>
+                            <View style={styles.questionTextContainer}>
+                              <Text style={styles.questionLabel}>Danger/risque</Text>
+                              <Text style={styles.questionText}>{item.question.nom}</Text>
+                            </View>
+                            <Icon source={imagePathMapping(item.question.pictogramme)} size={40} />
+                          </View>
+                        )}
+
+                        {index < toko5.listMesureControle.length - 1 && (
+                          <Divider style={styles.itemDivider} />
+                        )}
+                      </View>
+                    ))}
+                  </ScrollView>
+                </Card.Content>
+              </Card>
             )}
 
-            {/* Add Comment Button */}
-            {/* <Button 
+            {/* Comments Section */}
+            <Card style={styles.sectionCard} mode='contained'>
+              <Card.Content>
+                <View style={styles.sectionHeader}>
+                  <Icon source="message-text" size={24} color={theme.colors.primary} />
+                  <Text style={styles.sectionTitle}>
+                    Commentaires ({toko5.listCommentaire?.length || 0})
+                  </Text>
+                </View>
+
+                {toko5.listCommentaire && toko5.listCommentaire.length > 0 ? (
+                  <ScrollView
+                    style={styles.scrollableSection}
+                    nestedScrollEnabled={true}
+                    showsVerticalScrollIndicator={false}
+                  >
+                    {toko5.listCommentaire.map((item: CommentaireDto, index: number) => (
+                      <View key={index} style={styles.commentItem}>
+                        <View style={styles.commentHeader}>
+                          <View style={styles.commentAvatar}>
+                            <Text style={styles.commentAvatarText}>
+                              {item.prenom?.charAt(0)}{item.nom?.charAt(0)}
+                            </Text>
+                          </View>
+                          <View style={styles.commentInfo}>
+                            <Text style={styles.commentAuthor}>
+                              {item.prenom} {item.nom}
+                            </Text>
+                          </View>
+                        </View>
+
+                        <Text style={styles.commentText}>{item.commentaire}</Text>
+
+                        {index < toko5.listCommentaire.length - 1 && (
+                          <Divider style={styles.itemDivider} />
+                        )}
+                      </View>
+                    ))}
+                  </ScrollView>
+                ) : (
+                  <View style={styles.noCommentsContainer}>
+                    <Icon source="message-outline" size={32} color="#999" />
+                    <Text style={styles.noCommentsText}>Aucun commentaire pour le moment</Text>
+                  </View>
+                )}
+
+                {/* Add Comment Button */}
+                {/* <Button 
               mode="contained" 
               onPress={handleAddComment}
               style={styles.addCommentButton}
@@ -243,117 +269,167 @@ export default function ListProblem({ navigation, route }: Props) {
             >
               Ajouter un commentaire
             </Button> */}
-          </Card.Content>
-        </Card>
-        <Card style={styles.sectionCard} mode='contained'>
-          <Card.Content>
-            <TextInput
-              mode="outlined"
-              placeholder="Écrivez votre commentaire ici..."
-              value={newComment}
-              onChangeText={setNewComment}
-              multiline
-              numberOfLines={3}
-              style={styles.commentInput}
-              outlineStyle={styles.inputOutline}
-              outlineColor="rgba(177, 177, 177, 1)"
-            />
+              </Card.Content>
+            </Card>
+            <Card style={styles.sectionCard} mode='contained'>
+              <Card.Content>
+                <TextInput
+                  mode="outlined"
+                  placeholder="Écrivez votre commentaire ici..."
+                  value={newComment}
+                  onChangeText={setNewComment}
+                  multiline
+                  numberOfLines={3}
+                  style={styles.commentInput}
+                  outlineStyle={styles.inputOutline}
+                  outlineColor="rgba(177, 177, 177, 1)"
+                />
 
-            <Button
-              mode="contained"
-              onPress={handleAddComment}
-              style={styles.addButton}
-              icon="send"
-              disabled={!newComment.trim()}
-              labelStyle={{ color: "white" }}
-            >
-              commenter
-            </Button>
-          </Card.Content>
-        </Card>
+                <Button
+                  mode="contained"
+                  onPress={handleAddComment}
+                  style={styles.addButton}
+                  icon="send"
+                  disabled={!newComment.trim()}
+                  labelStyle={{ color: "white" }}
+                >
+                  commenter
+                </Button>
+                {commentLoading && (
+                  <View style={{ marginTop: 15 }}>
+                    <ActivityIndicator size={30} color={theme.colors.primary} />
+                  </View>
+                )}
+              </Card.Content>
+            </Card>
 
-        {/* Problems Section - Show even if empty for awareness */}
-        <Card style={[styles.sectionCard,
-        toko5.listProblem?.length === 0 && styles.emptySection
-        ]} mode='contained'>
-          <Card.Content>
-            <View style={styles.sectionHeader}>
-              <Icon
-                source={toko5.listProblem?.length > 0 ? "alert-circle" : "check-circle"}
-                size={24}
-                color={toko5.listProblem?.length > 0 ? "#F44336" : "#4CAF50"}
-              />
-              <Text style={styles.sectionTitle}>
-                Problèmes ({toko5.listProblem?.length || 0})
-              </Text>
-            </View>
+            {/* Problems Section - Show even if empty for awareness */}
+            <Card style={[styles.sectionCard,
+            toko5.listProblem?.length === 0 && styles.emptySection
+            ]} mode='contained'>
+              <Card.Content>
+                <View style={styles.sectionHeader}>
+                  <Icon
+                    source={toko5.listProblem?.length > 0 ? "alert-circle" : "check-circle"}
+                    size={24}
+                    color={toko5.listProblem?.length > 0 ? "#F44336" : "#4CAF50"}
+                  />
+                  <Text style={styles.sectionTitle}>
+                    Problèmes ({toko5.listProblem?.length || 0})
+                  </Text>
+                </View>
 
-            {toko5.listProblem?.length > 0 ? (
-              <ScrollView
-                style={styles.scrollableSection}
-                nestedScrollEnabled={true}
-                showsVerticalScrollIndicator={false}
-              >
-                {toko5.listProblem.map((item: QuestionDto, index: number) => (
-                  <Text key={index} style={styles.problemText}>• {item.nom}</Text>
-                ))}
-              </ScrollView>
+                {problemLoading ? (
+                  <View>
+                    <ActivityIndicator size={30} color={theme.colors.primary} />
+                  </View>
+                ) : (
+                  <>
+                    {
+                      toko5.listProblem?.length > 0 ? (
+                        <ScrollView
+                          style={styles.scrollableSection}
+                          nestedScrollEnabled={true}
+                          showsVerticalScrollIndicator={false}
+                        >
+                          {toko5.listProblem.map((item: QuestionDto, index: number) => (
+                            <View key={index} style={styles.measureItem}>
+                              <View style={styles.measureHeader}>
+                                <View style={styles.measureTitleContainer}>
+                                </View>
+                              </View>
+                              <View style={styles.questionContainer}>
+                                <View style={styles.questionTextContainer}>
+                                  <Text style={styles.questionLabel}>{item.nom}</Text>
+                                  <Text style={styles.questionText}>description</Text>
+                                </View>
+                                <Icon source={imagePathMapping(item.pictogramme)} size={40} />
+                              </View>
 
-              // <ScrollView
-              //   style={styles.scrollableSection}
-              //   nestedScrollEnabled={true}
-              //   showsVerticalScrollIndicator={false}
-              // >
-              //   {toko5.listCommentaire.map((item: CommentaireDto, index: number) => (
-              //     <View key={index} style={styles.commentItem}>
-              //       <View style={styles.commentHeader}>
-              //         <View style={styles.commentAvatar}>
-              //           <Text style={styles.commentAvatarText}>
-              //             {item.prenom?.charAt(0)}{item.nom?.charAt(0)}
-              //           </Text>
-              //         </View>
-              //         <View style={styles.commentInfo}>
-              //           <Text style={styles.commentAuthor}>
-              //             {item.prenom} {item.nom}
-              //           </Text>
-              //         </View>
-              //       </View>
+                              {index < toko5.listMesureControle.length - 1 && (
+                                <Divider style={styles.itemDivider} />
+                              )}
+                            </View>
+                          ))}
+                        </ScrollView>
+                      ) : (
+                        <View style={styles.emptyState}>
+                          <Icon source="check" size={32} color="#4CAF50" />
+                          <Text style={styles.emptyStateText}>Ce toko 5 est ok</Text>
+                        </View>
+                      )
+                    }
+                  </>
+                )}
+              </Card.Content>
+            </Card>
 
-              //       <Text style={styles.commentText}>{item.commentaire}</Text>
-
-              //       {index < toko5.listCommentaire.length - 1 && (
-              //         <Divider style={styles.itemDivider} />
-              //       )}
-              //     </View>
-              //   ))}
-              // </ScrollView>
-            ) : (
-              <View style={styles.emptyState}>
-                <Icon source="check" size={32} color="#4CAF50" />
-                <Text style={styles.emptyStateText}>Ce toko 5 est ok</Text>
-              </View>
+            {toko5.listProblem.length > 0 && (
+              <>
+                <Card mode='contained' style={{ backgroundColor: 'ghostwhite' }}>
+                  <Card.Content>
+                    <Button
+                      mode="contained"
+                      onPress={showResolveModal}
+                      style={styles.addButton}
+                      icon="thumb-up"
+                      disabled={!newComment.trim()}
+                      labelStyle={{ color: "white" }}
+                    >
+                      problèmes resolus
+                    </Button>
+                  </Card.Content>
+                </Card>
+              </>
             )}
-          </Card.Content>
-        </Card>
-
-        {toko5.listProblem.length > 0 && (
-          <Card mode='contained'>
-            <Card.Content>
-              <Button
+          </ScrollView>
+          <Modal visible={resolveVisible} onDismiss={hideResolveModal} contentContainerStyle={styles.resolveModalStyle}>
+            <Text style={{ textAlign: "center", paddingLeft: 17 }}
+              variant="titleMedium">
+              Voulez-vous vraiment laisser le contractant continuer son toko 5?
+            </Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-around', gap: 30 }}>
+              <Button style={{
+                width: "30%",
+                borderRadius: 5,
+                borderWidth: 1,
+                borderColor: 'black',
+                backgroundColor: "rgba(26, 85, 161, 0.87)"
+              }}
                 mode="contained"
                 onPress={handleResolveToko5}
-                style={styles.addButton}
-                icon="thumb-up"
-                disabled={!newComment.trim()}
-                labelStyle={{ color: "white" }}
+                //contentStyle={{ flexDirection: 'row-reverse' }}
+                labelStyle={{
+                  color: theme.colors.secondary,
+                  fontSize: 18
+                }}
               >
-                problèmes resolus 
+                oui
               </Button>
-            </Card.Content>
-          </Card>
-        )}
-      </ScrollView>
-    </SafeAreaView>
+              <Button style={{
+                width: "30%",
+                borderRadius: 5,
+                backgroundColor: "ghostwhite",
+                borderWidth: 1,
+                borderColor: 'black'
+              }}
+                mode="contained"
+                onPress={async () => {
+                  setResolveVisible(false);
+                }}
+                //contentStyle={{ flexDirection: 'row-reverse' }}
+                labelStyle={{
+                  color: 'black',
+                  fontSize: 18
+                }}
+              >
+                non
+              </Button>
+            </View>
+          </Modal>
+        </SafeAreaView>
+      </Portal>
+    </PaperProvider>
   );
 };
 
@@ -366,7 +442,8 @@ const styles = StyleSheet.create({
     margin: 16,
     marginBottom: 8,
     borderRadius: 12,
-    borderWidth: 0.2
+    borderWidth: 0.2,
+    backgroundColor: 'white'
   },
   headerContent: {
     padding: 4,
@@ -449,7 +526,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     marginBottom: 12,
     borderRadius: 12,
-    borderWidth: 0.2
+    borderWidth: 0.2,
+    backgroundColor: 'white'
   },
   emptySection: {
     borderLeftWidth: 4,
@@ -601,6 +679,7 @@ const styles = StyleSheet.create({
   },
 
   commentInput: {
+    padding: 3,
     backgroundColor: 'white',
     marginBottom: 16,
     fontSize: 14,
@@ -612,4 +691,18 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: "rgba(26, 85, 161, 0.87)"
   },
+
+  resolveModalStyle: {
+    width: "90%",
+    backgroundColor: 'ghostwhite',
+    borderRadius: 30,
+    height: "25%", //currently we support only numbers in height prop warning
+    // padding: 20,
+    alignSelf: 'center',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    alignContent: 'center'
+  },
+
 });

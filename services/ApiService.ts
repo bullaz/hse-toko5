@@ -2,8 +2,9 @@ import axios from "axios";
 import Toko5Repository from "../repository/Toko5Repository";
 import { BACKEND_URL } from "../constants/commonConstants";
 import NetInfo from '@react-native-community/netinfo';
-import { CommentaireDto, RepDto, Reponse, ReponseInterfaceView } from "../context";
+import { CommentaireDto, RepDto, Reponse, ReponseInterfaceView, Toko5Json } from "../context";
 import { v7 as uuidv7 } from 'uuid';
+import dayjs, { Dayjs } from 'dayjs';
 
 
 const axiosInstance = axios.create({
@@ -47,6 +48,26 @@ export const updateCommentaire = async (toko5Repository: Toko5Repository | null,
                 }
             });
     }
+}
+
+
+export const resolveToko5 = async (toko5Id: string): Promise<Toko5Json> => {
+    let netState = await isInternetReachable();
+    if (netState) {
+        const response = await axiosInstance.put(`/toko5s/toko5/${toko5Id}/resolve`, {}, {});
+        return response.data;
+    }
+    throw new Error("you have internet access issues");
+}
+
+export const refreshToko5s = async () => {
+    let netState = await isInternetReachable();
+    if (netState) {
+        const toko5sReponse = await axiosInstance.get("/toko5s", { params: { date: dayjs().toISOString().split('T')[0] } });
+        const listToko5: Toko5Json[] = toko5sReponse.data;
+        // return response.data;
+    }
+    throw new Error("you have internet access issues");
 }
 
 
@@ -109,12 +130,12 @@ export const updateOrAddToko5 = async (toko5Id: string, toko5Repository: Toko5Re
                 withReponse: withReponse,
                 notify: false,
             }
-            if (notify){
+            if (notify) {
                 params = {
                     withReponse: withReponse,
                     notify: true
                 }
-            }   
+            }
             console.log({
                 toko5: tk,
                 listReponseDTO: listRepDto

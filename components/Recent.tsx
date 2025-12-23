@@ -142,8 +142,29 @@ export default function Recent({ navigation }: Props) {
                   flex: 1,
                   flexDirection: 'column',
                   alignContent: 'center',
+                  alignItems: 'center',
                   gap: 14
                 }}>
+
+                  <View>
+                    <IconButton
+                      icon="refresh"
+                      size={24}
+                      onPress={() => { console.log('test') }}
+                      style = {{borderWidth:1}}
+                    //style={{backgroundColor: 'rgba(230, 241, 255, 1) '}}
+                    />
+                    {/* <Text
+                      style={{
+                        textAlign: "center",
+                      }}
+                      variant="titleMedium"
+                    >
+                      recharger
+                    </Text> */}
+                  </View>
+
+
                   <ScrollView
                     keyboardShouldPersistTaps="handled"
                     style={{
@@ -203,7 +224,7 @@ export default function Recent({ navigation }: Props) {
                           }}
                           variant="titleMedium"
                         >
-                          TOKO5 de {toko5.prenom_contractant.slice(0, 22)}...  {"\n"}
+                          TOKO 5 de {toko5.prenom_contractant.slice(0, 22)}...  {"\n"}
                           <Text style={{ color: 'rgba(49, 108, 184, 0.85)', fontWeight: 'bold' }}>
                             {toko5.date_heure.split("T")[0].replaceAll("-", "/")}
                           </Text>
