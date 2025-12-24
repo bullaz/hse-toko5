@@ -5,6 +5,7 @@ import NetInfo from '@react-native-community/netinfo';
 import { CommentaireDto, RepDto, Reponse, ReponseInterfaceView, Toko5Json } from "../context";
 import { v7 as uuidv7 } from 'uuid';
 import dayjs, { Dayjs } from 'dayjs';
+import { toko5StateDto } from "../types/domain";
 
 
 const axiosInstance = axios.create({
@@ -60,14 +61,31 @@ export const resolveToko5 = async (toko5Id: string): Promise<Toko5Json> => {
     throw new Error("you have internet access issues");
 }
 
-export const refreshToko5s = async () => {
+export const refreshToko5s = async (toko5Repository: Toko5Repository | null): Promise<toko5StateDto[]> => {
     let netState = await isInternetReachable();
-    if (netState) {
-        const toko5sReponse = await axiosInstance.get("/toko5s", { params: { date: dayjs().toISOString().split('T')[0] } });
-        const listToko5: Toko5Json[] = toko5sReponse.data;
-        // return response.data;
+    if (netState && toko5Repository) {
+        try {
+            let listToko5Today = await toko5Repository.getAllToko5Today();
+            let listToko5Ids = listToko5Today.map((toko5, index) => {
+                return toko5.toko5_id;
+            })
+            const toko5sReponse = await axiosInstance.get("/toko5s/refresh_state", {
+                params: { ids: listToko5Ids },
+                paramsSerializer: {
+                    indexes: null //This tells axios to NOT use array brackets
+                }
+            });
+            const listToko5StateDto: toko5StateDto[] = toko5sReponse.data;
+            //console.log(listToko5StateDto);
+            for (const stateDto of listToko5StateDto) {
+                await toko5Repository.updateStateToko5(stateDto.toko5Id, stateDto.etat);
+            }
+            return listToko5StateDto;
+        } catch (error) {
+            console.error(error); ///.../
+        }
     }
-    throw new Error("you have internet access issues");
+    throw new Error("you have internet access issues or internal app error"); //change that mf (separate errors..)
 }
 
 
@@ -76,9 +94,9 @@ export const addMesureControle = async (toko5Repository: Toko5Repository | null,
     if (netState && toko5Repository) {
         //console.log("add mesure controle api here");
         const controlId: string = await toko5Repository.insertIntoControlMeasure(toko5Id, questionId, '', false);
-        console.log("control Id", controlId);
+        //console.log("control Id", controlId);
         const question = await toko5Repository.findQuestionById(questionId);
-        console.log(question);
+        //console.log(question);
         await axios.post(`${BACKEND_URL}/toko5s/toko5/${toko5Id}/mesures_controle`, {
             mesureControleId: controlId,
             toko5Id: toko5Id,
@@ -136,10 +154,10 @@ export const updateOrAddToko5 = async (toko5Id: string, toko5Repository: Toko5Re
                     notify: true
                 }
             }
-            console.log({
-                toko5: tk,
-                listReponseDTO: listRepDto
-            });
+            // console.log({
+            //     toko5: tk,
+            //     listReponseDTO: listRepDto
+            // });
             await axios.put(`${BACKEND_URL}/toko5s/toko5/${toko5Id}`,
                 {
                     toko5: tk,

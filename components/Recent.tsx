@@ -25,6 +25,7 @@ import MaterialDesignIcons from "@react-native-vector-icons/material-design-icon
 import { ETAT } from "../constants/commonConstants";
 import { useFocusEffect } from "@react-navigation/native";
 import QRCode from 'react-native-qrcode-svg';
+import { refreshToko5s } from "../services/ApiService";
 
 
 type Props = NativeStackScreenProps<RootStackParamList>;
@@ -41,11 +42,13 @@ export default function Recent({ navigation }: Props) {
 
   const theme = useTheme();
 
-  const [listToko5, setListToko5] = useState<any>([]);
+  const [listToko5, setListToko5] = useState<Map<string, Toko5>>(new Map());
 
   const toko5Repository = useContext(DatabaseContext);
 
   const [loading, setLoading] = useState(false);
+
+  const [refreshLoading, setRefreshLoading] = useState<boolean>(false);
 
   const [deleteVisible, setDeleteVisible] = useState(false);
 
@@ -97,13 +100,45 @@ export default function Recent({ navigation }: Props) {
       }
     } catch (error) {
       console.error(
-        "Error in the component think while retrieving list of toko5 ",
+        "Error in the component recent while retrieving list of toko5 ",
         error
       );
     } finally {
       setLoading(false);
     }
   };
+
+  //refresh toko 5 state (etat) (from the server) for current day 
+  const handleRefresh = async () => {
+    // refactor those fn try catch later
+    try {
+      if (toko5Repository !== null) {
+        setRefreshLoading(true);
+        const listToko5StateDto = await refreshToko5s(toko5Repository);
+        let newListToko5 = structuredClone(listToko5);
+        for (const stateDto of listToko5StateDto) {
+          let toko5 = newListToko5.get(stateDto.toko5Id);
+          if (toko5) {
+            if (stateDto.etat === ETAT.ongoing) {
+              await toko5Repository?.resolveProblemListReponse(stateDto.toko5Id);
+              toko5.etat = stateDto.etat;
+              newListToko5.set(toko5.toko5_id, toko5);
+            }
+          }
+        }
+        setListToko5(newListToko5);
+      } else {
+        throw new Error('toko 5 repository null');
+      }
+    } catch (error) {
+      console.error(
+        "Error in the component recent while retrieving list of toko5 ",
+        error
+      );
+    } finally {
+      setRefreshLoading(false);
+    }
+  }
 
   useFocusEffect(
     useCallback(() => {
@@ -150,8 +185,8 @@ export default function Recent({ navigation }: Props) {
                     <IconButton
                       icon="refresh"
                       size={24}
-                      onPress={() => { console.log('test') }}
-                      style = {{borderWidth:1}}
+                      onPress={() => { handleRefresh() }}
+                      style={{ borderWidth: 1 }}
                     //style={{backgroundColor: 'rgba(230, 241, 255, 1) '}}
                     />
                     {/* <Text
@@ -190,19 +225,26 @@ export default function Recent({ navigation }: Props) {
                     }}
                     persistentScrollbar={true}
                   >
-                    {Array.from(listToko5.values()).map((toko5: any, index: number) => (
 
-                      // make sure that pressable doesn't change height or width when the name is too long.. It should only show part of it in that case
+                    {refreshLoading ? (
+                      <View style={globalStyles.loadingContainer}>
+                        <ActivityIndicator size="large" color={theme.colors.primary} />
+                      </View>
+                    ) : (
+                      <>
+                        {Array.from(listToko5.values()).map((toko5: any, index: number) => (
 
-                      <Pressable key={toko5.toko5_id} style={({ pressed }) => [
-                        styles.toko5,
-                        {
-                          width: "100%",
-                          backgroundColor: pressed ? 'rgba(148, 203, 224, 1)' : 'rgba(230, 241, 255, 1)',
-                          borderRadius: 8, // Add borderRadius for better visual effect
-                        }
-                      ]} onPress={() => { navigation.navigate('Think', { toko5Id: toko5.toko5_id }) }}>
-                        {/* <View style={{ flexDirection: 'column', flexWrap: 'wrap' }}>
+                          // make sure that pressable doesn't change height or width when the name is too long.. It should only show part of it in that case
+
+                          <Pressable key={toko5.toko5_id} style={({ pressed }) => [
+                            styles.toko5,
+                            {
+                              width: "100%",
+                              backgroundColor: pressed ? 'rgba(148, 203, 224, 1)' : 'rgba(230, 241, 255, 1)',
+                              borderRadius: 8, // Add borderRadius for better visual effect
+                            }
+                          ]} onPress={() => { navigation.navigate('Think', { toko5Id: toko5.toko5_id }) }}>
+                            {/* <View style={{ flexDirection: 'column', flexWrap: 'wrap' }}>
                     <Text
                       style={{ textAlign: "center", paddingLeft: 17 }}
                       variant="titleMedium"
@@ -216,68 +258,70 @@ export default function Recent({ navigation }: Props) {
                       {toko5.date_heure.split("T")[0]}
                     </Text>
                   </View> */}
-                        <Text
-                          style={{
-                            textAlign: "center", paddingLeft: 17, flex: 1, // Add this
-                            flexWrap: 'wrap', // Add this
-                            flexShrink: 1,
-                          }}
-                          variant="titleMedium"
-                        >
-                          TOKO 5 de {toko5.prenom_contractant.slice(0, 22)}...  {"\n"}
-                          <Text style={{ color: 'rgba(49, 108, 184, 0.85)', fontWeight: 'bold' }}>
-                            {toko5.date_heure.split("T")[0].replaceAll("-", "/")}
-                          </Text>
-                        </Text>
-                        <View
-                          style={{ flexDirection: "row", justifyContent: "flex-start" }}
-                        >
-                          {toko5.etat !== ETAT.invalide && (
-                            <IconButton
-                              icon="trash-can-outline"
-                              size={24}
-                              onPress={() => {
-                                setDeleteVisible(true);
-                                setCurrentDeleteId(toko5.toko5_id);
+                            <Text
+                              style={{
+                                textAlign: "center", paddingLeft: 17, flex: 1, // Add this
+                                flexWrap: 'wrap', // Add this
+                                flexShrink: 1,
                               }}
-                            />
-                          )}
-                          <IconButton
-                            icon="qrcode"
-                            size={24}
-                            onPress={() => { setCurrentCodeId(toko5.toko5_id), setCodeVisible(true) }}
-                          />
+                              variant="titleMedium"
+                            >
+                              TOKO 5 de {toko5.prenom_contractant.slice(0, 22)}...  {"\n"}
+                              <Text style={{ color: 'rgba(49, 108, 184, 0.85)', fontWeight: 'bold' }}>
+                                {toko5.date_heure.split("T")[0].replaceAll("-", "/")}
+                              </Text>
+                            </Text>
+                            <View
+                              style={{ flexDirection: "row", justifyContent: "flex-start" }}
+                            >
+                              {toko5.etat !== ETAT.invalide && (
+                                <IconButton
+                                  icon="trash-can-outline"
+                                  size={24}
+                                  onPress={() => {
+                                    setDeleteVisible(true);
+                                    setCurrentDeleteId(toko5.toko5_id);
+                                  }}
+                                />
+                              )}
+                              <IconButton
+                                icon="qrcode"
+                                size={24}
+                                onPress={() => { setCurrentCodeId(toko5.toko5_id), setCodeVisible(true) }}
+                              />
 
-                          {toko5.etat === ETAT.valide && (
-                            <IconButton
-                              //disabled={true}
-                              icon="check"
-                              iconColor="green"
-                              size={24}
-                            />
-                          )}
+                              {toko5.etat === ETAT.valide && (
+                                <IconButton
+                                  //disabled={true}
+                                  icon="check"
+                                  iconColor="green"
+                                  size={24}
+                                />
+                              )}
 
-                          {toko5.etat === ETAT.invalide && (
-                            <IconButton
-                              //disabled={true}
-                              icon="close"
-                              iconColor="red"
-                              size={24}
-                            />
-                          )}
+                              {toko5.etat === ETAT.invalide && (
+                                <IconButton
+                                  //disabled={true}
+                                  icon="close"
+                                  iconColor="red"
+                                  size={24}
+                                />
+                              )}
 
-                          {toko5.etat === ETAT.ongoing && (
-                            <IconButton
-                              icon="progress-helper"
-                              // or use that image in the pictogram folder
-                              iconColor={theme.colors.primary}
-                              size={24}
-                            />
-                          )}
+                              {toko5.etat === ETAT.ongoing && (
+                                <IconButton
+                                  icon="progress-helper"
+                                  // or use that image in the pictogram folder
+                                  iconColor={theme.colors.primary}
+                                  size={24}
+                                />
+                              )}
 
-                        </View>
-                      </Pressable>
-                    ))}
+                            </View>
+                          </Pressable>
+                        ))}
+                      </>
+                    )}
                   </ScrollView>
                   <View style={{ flex: 1, flexWrap: 'wrap', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', alignContent: 'center' }}>
                     {/* <MaterialDesignIcons

@@ -11,7 +11,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { DatabaseContext, Question, ReponseInterfaceView, Reponse, RootStackParamList } from "../context";
 import { ActivityIndicator, IconButton } from "react-native-paper";
 import { useTheme } from "react-native-paper";
-import { Button} from "react-native-paper";
+import { Button } from "react-native-paper";
 import { imagePathMapping } from "../utils/imagePathMapping";
 import { QUESTION_CATEGORIES } from "../constants/questionTypes";
 import { useFocusEffect } from "@react-navigation/native";
@@ -49,6 +49,7 @@ export default function Think({ navigation, route }: Props) {
                 // find a cleaner way to achieve this .. I think this is too dirty ... maybe
                 let listAnswer = await toko5Repository.getAllReponseToko5Categorie(toko5Id, QUESTION_CATEGORIES.THINK);
                 if (listAnswer.length > 0) {
+                    //console.log("listAnswerrrrrrrrrrr",listAnswer);
                     let listRep: Record<number, ReponseInterfaceView> = {};
 
                     for (let answer of listAnswer as Reponse[]) {
@@ -59,6 +60,17 @@ export default function Think({ navigation, route }: Props) {
                             pressed: true
                         };
                         listRep[answer.question_id] = x;
+                    }
+                    for (let question of list as Question[]) {
+                        if (!listRep[question.question_id]) {
+                            let x: ReponseInterfaceView = {
+                                toko5_id: toko5Id,
+                                question_id: question.question_id,
+                                valeur: false,
+                                pressed: false
+                            };
+                            listRep[question.question_id] = x;
+                        }
                     }
                     setListReponse(listRep);
                 } else {
@@ -89,14 +101,14 @@ export default function Think({ navigation, route }: Props) {
             if (toko5Repository !== null) {
                 await toko5Repository.insertListReponse(Object.values(listReponse));
                 await toko5Repository.updateToko5Saved(toko5Id, false);
-                await updateOrAddToko5(toko5Id,toko5Repository, true, Object.values(listReponse));
+                await updateOrAddToko5(toko5Id, toko5Repository, true, Object.values(listReponse));
                 await toko5Repository.updateToko5Saved(toko5Id, true);  // those should be in the apiservice after calling the api
-            }else{
+            } else {
                 throw new Error('toko5Repository not initialized saveAllReponse function!')
             }
         } catch (error) {
-            console.log('error in saveAllReponse think here',error);
-        }finally{
+            console.log('error in saveAllReponse think here', error);
+        } finally {
             setSaveLoading(false);
         }
     }
@@ -204,7 +216,7 @@ export default function Think({ navigation, route }: Props) {
                 <View>
                     <Button style={styles.bottomButton}
                         mode="contained"
-                        onPress={async () => {navigation.navigate('Recent')}}
+                        onPress={async () => { navigation.navigate('Recent') }}
                         icon="home"
                         labelStyle={{
                             color: theme.colors.secondary, // Manually set to theme contrast color
@@ -225,7 +237,7 @@ export default function Think({ navigation, route }: Props) {
                 < View >
                     <Button style={styles.bottomButton}
                         mode="contained"
-                        onPress={async () => { await saveAllReponse(); navigation.navigate('Organise1',{toko5Id: toko5Id})}}
+                        onPress={async () => { await saveAllReponse(); navigation.navigate('Organise1', { toko5Id: toko5Id }) }}
                         icon="arrow-right"
                         contentStyle={{ flexDirection: 'row-reverse' }}
                         labelStyle={{

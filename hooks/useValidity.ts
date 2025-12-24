@@ -29,7 +29,7 @@ export const useValidity = (toko5Id: string) => {
   const verifyValidity = async (toko5Id: string) => {
     try {
       const isValid = await getValidity(toko5Id);
-      console.log("USEVALIDITY : new etat in the database :",isValid);
+      // console.log("USEVALIDITY : new etat in the database :",isValid);
       setValidity(isValid);
       setValidityLoading(false);
       // if (!isValid) {

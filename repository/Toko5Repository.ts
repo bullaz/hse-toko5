@@ -18,6 +18,7 @@ import 'react-native-get-random-values';
 import { getLocalDateTimeISOString } from '../utils/commonFunctions';
 import { ETAT } from '../constants/commonConstants';
 import { v7 as uuidv7 } from 'uuid';
+import { Toko5 } from '../context';
 
 
 class Toko5Repository {
@@ -348,7 +349,7 @@ class Toko5Repository {
             }
             try {
                 const newEtat = await this.updateValidityToko5(list[0].toko5_id);
-                console.log("AFTER INSERT OR REPLACE INTO REPONSE : new etat toko5:", newEtat)
+                //console.log("AFTER INSERT OR REPLACE INTO REPONSE : new etat toko5:", newEtat)
             } catch (error) {
                 console.log(error)
             }
@@ -471,7 +472,7 @@ class Toko5Repository {
     async insertIntoControlMeasure(toko5Id: string, questionId: number, mesure: string, implemented: boolean): Promise<string> {
         if (this.db !== null) {
             const newUUID: string = uuidv7();
-            await this.db.runAsync('INSERT INTO mesure_controle(mesure_controle_id, toko5_id, question_id, mesure_prise, implemented) values (?,?,?,?,?)',newUUID, toko5Id, questionId, mesure, implemented);
+            await this.db.runAsync('INSERT INTO mesure_controle(mesure_controle_id, toko5_id, question_id, mesure_prise, implemented) values (?,?,?,?,?)', newUUID, toko5Id, questionId, mesure, implemented);
             console.log('icii');
             return newUUID;
         } else {
@@ -543,6 +544,56 @@ class Toko5Repository {
     async updateToko5Saved(toko5Id: string, saved: boolean) {
         if (this.db !== null) {
             await this.db.runAsync('UPDATE toko5 set saved = ? where toko5_id = ?', saved, toko5Id);
+        } else {
+            throw new Error('Database not initialized');
+        }
+    }
+
+
+    async getAllToko5Today(): Promise<Toko5[]> {
+        if (this.db !== null) {
+            const today = new Date().toISOString().split('T')[0];
+            const query = `
+                SELECT * FROM toko5 
+                WHERE date(date_heure) = date(?)
+                ORDER BY date_heure DESC
+                `;
+            const results: Toko5[] = await this.db.getAllAsync(query, [today]);
+            return results;
+        } else {
+            throw new Error('Database not initialized');
+        }
+    }
+
+
+    async updateStateToko5(toko5Id: string, etat: string) {
+        if (this.db !== null) {
+            try {
+                await this.db.runAsync('UPDATE toko5 set etat = ? where toko5_id = ?', etat, toko5Id);
+            } catch (error) {
+                throw error;
+            }
+        } else {
+            throw new Error('Database not initialized');
+        }
+    }
+
+    async resolveProblemListReponse(toko5Id: string) {
+        if (this.db !== null) {
+            try {
+                await this.db.runAsync(
+                    `DELETE FROM reponse 
+                        WHERE reponse.toko5_id = ? 
+                        AND reponse.valeur = 0 
+                        AND reponse.question_id IN (
+                            SELECT question_id FROM question 
+                            WHERE required = 1
+                        )`,
+                    [toko5Id]
+                );
+            } catch (error) {
+                throw error;
+            }
         } else {
             throw new Error('Database not initialized');
         }

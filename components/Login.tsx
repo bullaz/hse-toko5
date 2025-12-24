@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { DatabaseContext, RootStackParamList, Toko5Json } from "../context";
-import { ActivityIndicator, Button, Text, useTheme } from "react-native-paper";
+import { ActivityIndicator, Button, PaperProvider, Text, useTheme } from "react-native-paper";
 import { KeyboardAvoidingView, StatusBar, View } from "react-native";
 import styles from "../styles/loginStyle";
 import { TextInput } from "react-native-paper";
@@ -8,14 +8,23 @@ import { useContext, useState } from "react";
 import NetInfo from '@react-native-community/netinfo';
 import axios from "axios";
 import { BACKEND_URL } from "../constants/commonConstants";
-
+import { Dropdown } from 'react-native-paper-dropdown';
 
 //////////////////////////wrap every other components with a wrapper component that verify if the toko 5 is valid or not
 /////////////////// if it is not valid the wrapper component just navigate to the "please talk with your supervisor" component
 
 type Props = NativeStackScreenProps<RootStackParamList>;
 
+const OPTIONS = [
+    { label: 'Male', value: 'male' },
+    { label: 'Female', value: 'female' },
+    { label: 'Other', value: 'other' },
+];
+
 export default function Login({ navigation }: Props) {
+
+    const [gender, setGender] = useState<string>();
+
     const theme = useTheme();
 
     ////////qr code test
@@ -142,6 +151,15 @@ export default function Login({ navigation }: Props) {
                             onChangeText={text => setSociete(text)}
                             underlineColor='darkgrey'
                         />
+                        {/* <PaperProvider>
+                            <Dropdown
+                                label="Gender"
+                                placeholder="Select Gender"
+                                options={OPTIONS}
+                                value={gender}
+                                onSelect={setGender}
+                            />
+                        </PaperProvider> */}
                         <Button style={styles.bottomButton}
                             mode="contained"
                             onPress={newToko5}

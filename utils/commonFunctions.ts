@@ -49,11 +49,11 @@ export const getAllData = async (toko5Repository: any /*should use the appropria
         //console.log('saved list answer', listAnswer);
       }
 
-      let listValiny:any;
+      let listValiny: any;
       if (listAnswer.length > 0) {
         let listRep: Record<number, Reponse> = {};
 
-        for (let answer of listAnswer as Reponse[]) { 
+        for (let answer of listAnswer as Reponse[]) {
           //console.log('conversion individual of the database answer to reponse',answer);
           let x: Reponse = { ///don't even need that .. xD xD xD 
             toko5_id: toko5Id,
@@ -61,6 +61,16 @@ export const getAllData = async (toko5Repository: any /*should use the appropria
             valeur: Boolean(answer.valeur)
           };
           listRep[answer.question_id] = x;
+        }
+        for (let question of listQuestion as Question[]) {
+          if (!listRep[question.question_id]) {
+            let x: Reponse = {
+              toko5_id: toko5Id,
+              question_id: question.question_id,
+              valeur: false
+            };
+            listRep[question.question_id] = x;
+          }
         }
         listValiny = listRep;
         //setListReponse(listRep);
@@ -81,8 +91,8 @@ export const getAllData = async (toko5Repository: any /*should use the appropria
 
         //console.log(listRep)
       }
-      return {listQuestion: listQuestion, listReponse: listValiny}
-    }throw new Error('getAllReponseData function : toko5repository is null');
+      return { listQuestion: listQuestion, listReponse: listValiny }
+    } throw new Error('getAllReponseData function : toko5repository is null');
   } catch (error) {
     console.error('Error in the getAllReponseData function ', error);
   } finally {
