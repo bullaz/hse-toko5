@@ -79,7 +79,7 @@ export default function LoginSup({ navigation }: Props) {
                             underlineColor='darkgrey'
                         />
 
-                        <TextInput
+                        {/* <TextInput
                             left={<TextInput.Icon icon={require('../assets/pictogram/id.png')} />}
                             label={
                                 <Text
@@ -93,7 +93,7 @@ export default function LoginSup({ navigation }: Props) {
                             style={styles.textInput}
                             onChangeText={text => setText(text)}
                             underlineColor='darkgrey'
-                        />
+                        /> */}
                         <Button style={styles.bottomButton}
                             mode="contained"
                             onPress={async ()=>{await handleLogin()}}

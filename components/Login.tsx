@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { DatabaseContext, RootStackParamList, Toko5Json } from "../context";
-import { ActivityIndicator, Button, PaperProvider, Text, useTheme } from "react-native-paper";
+import { ActivityIndicator, Button, Icon, PaperProvider, Text, useTheme } from "react-native-paper";
 import { KeyboardAvoidingView, StatusBar, View } from "react-native";
 import styles from "../styles/loginStyle";
 import { TextInput } from "react-native-paper";
@@ -8,17 +8,21 @@ import { useContext, useState } from "react";
 import NetInfo from '@react-native-community/netinfo';
 import axios from "axios";
 import { BACKEND_URL } from "../constants/commonConstants";
-import { Dropdown } from 'react-native-paper-dropdown';
+import { Dropdown } from 'react-native-element-dropdown';;
+// import AntDesign from '@expo/vector-icons/AntDesign';
 
-//////////////////////////wrap every other components with a wrapper component that verify if the toko 5 is valid or not
-/////////////////// if it is not valid the wrapper component just navigate to the "please talk with your supervisor" component
 
 type Props = NativeStackScreenProps<RootStackParamList>;
 
-const OPTIONS = [
-    { label: 'Male', value: 'male' },
-    { label: 'Female', value: 'female' },
-    { label: 'Other', value: 'other' },
+const data = [
+    { label: 'Item 1', value: '1' },
+    { label: 'Item 2', value: '2' },
+    { label: 'Item 3', value: '3' },
+    { label: 'Item 4', value: '4' },
+    { label: 'Item 5', value: '5' },
+    { label: 'Item 6', value: '6' },
+    { label: 'Item 7', value: '7' },
+    { label: 'Item 8', value: '8' },
 ];
 
 export default function Login({ navigation }: Props) {
@@ -52,6 +56,9 @@ export default function Login({ navigation }: Props) {
         // }
         return state.isInternetReachable;
     };
+
+    const [value, setValue] = useState(null);
+    const [isFocus, setIsFocus] = useState(false);
 
     const newToko5 = async () => {
         try {
@@ -136,7 +143,7 @@ export default function Login({ navigation }: Props) {
                             onChangeText={text => setText(text)}
                             underlineColor='darkgrey'
                         />
-                        <TextInput
+                        {/* <TextInput
                             left={<TextInput.Icon icon={require('../assets/pictogram/id.png')} />}
                             label={
                                 <Text
@@ -150,16 +157,73 @@ export default function Login({ navigation }: Props) {
                             style={styles.textInput}
                             onChangeText={text => setSociete(text)}
                             underlineColor='darkgrey'
+                        /> */}
+
+                        <Dropdown
+                            style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+                            placeholderStyle={styles.placeholderStyle}
+                            selectedTextStyle={styles.selectedTextStyle}
+                            inputSearchStyle={styles.inputSearchStyle}
+                            iconStyle={styles.iconStyle}
+                            data={data}
+                            search
+                            maxHeight={230}
+                            labelField="label"
+                            valueField="value"
+                            placeholder={!isFocus ? 'Societe' : 'Societe'}
+                            searchPlaceholder="Search..."
+                            value={value}
+                            onFocus={() => setIsFocus(true)}
+                            onBlur={() => setIsFocus(false)}
+                            onChange={item => {
+                                setValue(item.value);
+                                setIsFocus(false);
+                            }}
+                            renderLeftIcon={() => (
+                                // <AntDesign
+                                //     style={styles.icon}
+                                //     color={isFocus ? 'blue' : 'black'}
+                                //     name="Safety"
+                                //     size={20}
+                                // />
+                                <Icon
+                                    source=""
+                                    // color={MD3Colors.error50}
+                                    size={20}
+                                />
+                            )}
                         />
-                        {/* <PaperProvider>
-                            <Dropdown
-                                label="Gender"
-                                placeholder="Select Gender"
-                                options={OPTIONS}
-                                value={gender}
-                                onSelect={setGender}
-                            />
-                        </PaperProvider> */}
+
+                        <Dropdown
+                            style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+                            placeholderStyle={styles.placeholderStyle}
+                            selectedTextStyle={styles.selectedTextStyle}
+                            inputSearchStyle={styles.inputSearchStyle}
+                            iconStyle={styles.iconStyle}
+                            data={data}
+                            search
+                            maxHeight={230}
+                            labelField="label"
+                            valueField="value"
+                            placeholder={"Tache"}
+                            searchPlaceholder="Search..."
+                            value={value}
+                            onFocus={() => setIsFocus(true)}
+                            onBlur={() => setIsFocus(false)}
+                            onChange={item => {
+                                setValue(item.value);
+                                setIsFocus(false);
+                            }}
+                        // renderLeftIcon={() => (
+                        //     // <AntDesign
+                        //     //     style={styles.icon}
+                        //     //     color={isFocus ? 'blue' : 'black'}
+                        //     //     name="Safety"
+                        //     //     size={20}
+                        //     // />
+                        // )}
+                        />
+
                         <Button style={styles.bottomButton}
                             mode="contained"
                             onPress={newToko5}

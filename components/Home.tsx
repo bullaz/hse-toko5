@@ -73,7 +73,7 @@ export default function Home({ navigation }: Props) {
                                 <Icon source="account-hard-hat" size={23} color="ghostwhite" />
                             )}
                         >
-                            CONTRACTANT
+                            INTERVENANT
                         </Button>
                         <Button style={styles.bottomButton}
                             mode="elevated"
