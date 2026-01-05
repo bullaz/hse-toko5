@@ -30,7 +30,7 @@ export default StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    alignItems: 'flex-start', // Changed from 'center' to 'flex-start'
+    alignItems: 'stretch', // Changed from 'center' to 'flex-start'
     justifyContent: 'flex-start',
     backgroundColor: 'ghostwhite',
 
@@ -49,6 +49,7 @@ export default StyleSheet.create({
     height: 90,
     margin: 10,
     justifyContent: 'center',
+    //alignContent:'center'
     alignItems: 'center',
     alignSelf: 'stretch',
     borderWidth: 0,
@@ -72,9 +73,13 @@ export default StyleSheet.create({
     paddingBottom: 30
   },
 
+  
+
   single: {
+    flexBasis: "33.33%", 
     flexDirection: 'column',
-    alignContent: 'center',
+    //alignContent: 'center',
+    alignItems: 'center',
     borderWidth: 0,
     borderStyle: 'dashed'
   },

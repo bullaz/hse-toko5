@@ -9,13 +9,14 @@ import { View, StatusBar, Pressable, Image } from "react-native";
 import styles from "../styles";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { DatabaseContext, Question, ReponseInterfaceView, Reponse, RootStackParamList } from "../context";
-import { ActivityIndicator, IconButton } from "react-native-paper";
+import { ActivityIndicator, Icon, IconButton } from "react-native-paper";
 import { useTheme } from "react-native-paper";
 import { Button } from "react-native-paper";
 import { imagePathMapping } from "../utils/imagePathMapping";
 import { QUESTION_CATEGORIES } from "../constants/questionTypes";
 import { useFocusEffect } from "@react-navigation/native";
 import { updateOrAddToko5 } from "../services/ApiService";
+import { Text } from "react-native-paper";
 
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Think'>;
@@ -147,64 +148,107 @@ export default function Think({ navigation, route }: Props) {
                     <ActivityIndicator size="large" color={theme.colors.primary} />
                 </View>
             ) : (
-                <View style={styles.pictoContainer}>
-                    {listQuestion.map((question: any, i: number) => (
-                        <View key={question.question_id} style={styles.single}>
-                            <Pressable
-                                onPress={() => navigation.navigate('SinglePicto', { question: question })}
-                                style={({ pressed }) => [
-                                    styles.box,
-                                    pressed && styles.pressedBox,
-                                ]}
-                            >
-                                <Image source={imagePathMapping(question.pictogramme)} style={{ width: 80, height: 80 }}></Image>
-                            </Pressable>
-                            <View style={styles.checkboxContainer}>
 
-                                {!(listReponse[question.question_id].pressed) && (
-                                    <>
-                                        <IconButton
-                                            icon="close"
-                                            iconColor={theme.colors.outline}
-                                            size={24}
-                                            onPress={() => updateListReponse(question.question_id, false)}
-                                        />
-                                        <IconButton
-                                            icon="checkbox-marked-outline"
-                                            iconColor={theme.colors.outline}
-                                            size={24}
-                                            onPress={() => updateListReponse(question.question_id, true)}
-                                        />
-                                    </>
-                                )}
+                <View style={{
+                    flex: 1,
+                    flexWrap: "wrap",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    alignContent: "center",
+                    gap: 15,
+                    width: "100%",
+                    backgroundColor: "ghostwhite"
+                    // alignContent: "center",
+                }}>
 
-                                {(listReponse[question.question_id].pressed) && listReponse[question.question_id].valeur && (
-                                    <>
-                                        <IconButton
-                                            icon="checkbox-marked-outline"
-                                            iconColor='green'
-                                            size={24}
-                                            onPress={() => updateListReponse(question.question_id, false)}
-                                        />
-                                    </>
-                                )}
+                    <View
+                        style={{
+                            marginTop: 40,
+                            // flex: 1,
+                            flexWrap: "wrap",
+                            flexDirection: "row",
+                            justifyContent: 'center',
+                            alignItems: "center",
+                            // alignContent: "center",
+                        }}
+                    >
+                        <Icon
+                            source={require('../assets/pictogram/bulb.png')}
+                            size={40}
+                        />
+                        <Text
+                            style={{ textAlign: "center", paddingLeft: 17 }}
+                            variant="titleMedium"
+                        >
+                            Description-lorem ipsum {" "}
+                            {"\n"}
+                            Description lorem ipsum
+                            {/* Vous n'avez pas de : {"\n"}- [something...] */}
+                        </Text>
+                    </View>
 
-                                {(listReponse[question.question_id].pressed) && !(listReponse[question.question_id].valeur) && (
-                                    <>
-                                        <IconButton
-                                            icon="close"
-                                            iconColor='red'
-                                            size={24}
-                                            onPress={() => updateListReponse(question.question_id, false)}
-                                        />
-                                    </>
-                                )}
+                    <View style={styles.pictoContainer}>
+                        {listQuestion.map((question: any, i: number) => (
+                            <View key={question.question_id} style={styles.single}>
+                                <Pressable
+                                    onPress={() => navigation.navigate('SinglePicto', { question: question })}
+                                    style={({ pressed }) => [
+                                        styles.box,
+                                        pressed && styles.pressedBox,
+                                    ]}
+                                >
+                                    <Image source={imagePathMapping(question.pictogramme)} style={{ width: 80, height: 80, alignSelf: 'center' }}></Image>
+                                </Pressable>
+                                <View style={styles.checkboxContainer}>
+
+                                    {!(listReponse[question.question_id].pressed) && (
+                                        <>
+                                            <IconButton
+                                                icon="close"
+                                                iconColor={theme.colors.outline}
+                                                size={24}
+                                                onPress={() => updateListReponse(question.question_id, false)}
+                                            />
+                                            <IconButton
+                                                icon="checkbox-marked-outline"
+                                                iconColor={theme.colors.outline}
+                                                size={24}
+                                                onPress={() => updateListReponse(question.question_id, true)}
+                                            />
+                                        </>
+                                    )}
+
+                                    {(listReponse[question.question_id].pressed) && listReponse[question.question_id].valeur && (
+                                        <>
+                                            <IconButton
+                                                icon="checkbox-marked-outline"
+                                                iconColor='green'
+                                                size={24}
+                                                onPress={() => updateListReponse(question.question_id, false)}
+                                            />
+                                        </>
+                                    )}
+
+                                    {(listReponse[question.question_id].pressed) && !(listReponse[question.question_id].valeur) && (
+                                        <>
+                                            <IconButton
+                                                icon="close"
+                                                iconColor='red'
+                                                size={24}
+                                                onPress={() => updateListReponse(question.question_id, false)}
+                                            />
+                                        </>
+                                    )}
 
 
 
+                                </View>
+                                <View>
+                                    <Text variant="titleMedium" style={{ textAlign: 'center' }}>{question.nom}</Text>
+                                </View>
                             </View>
-                        </View>
-                    ))}
+                        ))}
+                    </View>
                 </View>
             )}
 

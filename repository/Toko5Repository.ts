@@ -78,6 +78,31 @@ class Toko5Repository {
                 console.log('Error creating table question: ', error);
             }
 
+            try {
+                await this.db.execAsync(
+                    `CREATE TABLE IF NOT EXISTS task (
+                        task_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        nom TEXT NOT NULL UNIQUE,
+                    )`
+                )
+                console.log('Table question created successfully');
+            } catch (error) {
+                console.log('Error creating table question: ', error);
+            }
+
+            try {
+                await this.db.execAsync(
+                    `CREATE TABLE IF NOT EXISTS task_question (
+                        task_id INTEGER REFERENCES task(task_id),
+                        question_id INTEGER REFERENCES question(question_id),
+                        PRIMARY KEY (task_id, question_id),
+                    )`
+                )
+                console.log('Table question created successfully');
+            } catch (error) {
+                console.log('Error creating table question: ', error);
+            }
+
 
             try {
                 await this.db.execAsync(
