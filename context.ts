@@ -38,10 +38,13 @@ export type RootStackParamList = {
   Commentaire: {
     toko5: Toko5Json | null;
   };
+  Invalide: {
+    toko5Id: string;
+    attemptNumber: number | null;
+  }
 
   ScanQr: undefined;
   Recent: undefined;
-  Invalide: undefined;
   Home: undefined;
   LoginSup: undefined;
 };

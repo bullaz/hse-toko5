@@ -1,10 +1,10 @@
 import { useCallback, useContext, useState } from "react";
-import { View, StatusBar, Pressable, Image } from "react-native";
+import { View, StatusBar, Pressable, Image, ScrollView } from "react-native";
 import styles from "../styles";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { DatabaseContext, Reponse, RootStackParamList } from "../context";
 //import Checkbox from "expo-checkbox";
-import { ActivityIndicator, Checkbox } from "react-native-paper";
+import { ActivityIndicator, Checkbox, Icon, Text } from "react-native-paper";
 import { useTheme } from "react-native-paper";
 import { Button } from "react-native-paper";
 import { QUESTION_CATEGORIES } from "../constants/questionTypes";
@@ -32,21 +32,6 @@ export default function Organise2({ navigation, route }: Props) {
     const [listReponse, setListReponse] = useState<Record<number, Reponse>>({});
 
     const [saveLoading, setSaveLoading] = useState<boolean>(false);
-
-    // const getAllRequiredOrganiseQuestions = async () => {
-    //     try {
-    //         setLoading(true);
-    //         if (toko5Repository !== null) {
-    //             let list = await toko5Repository.getAllRequiredOrganise();
-    //             setListQuestion(list);
-    //             //console.log(list)
-    //         }
-    //     } catch (error) {
-    //         console.error('Error in the component organise1 while retrieving list of questions ', error);
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
 
     const getData = async () => {
         try {
@@ -106,27 +91,78 @@ export default function Organise2({ navigation, route }: Props) {
                     <ActivityIndicator size="large" color={theme.colors.primary} />
                 </View>
             ) : (
-                <View style={styles.pictoContainer}>
-                    {/* <StatusBar hidden={false} /> */}
-                    {listQuestion.map((question: any, index: number) => (
-                        <View key={question.question_id} style={styles.single}>
-                            <Pressable
-                                onPress={() => navigation.navigate('SinglePicto', { question: question })}
-                                style={({ pressed }) => [
-                                    styles.box,
-                                    pressed && styles.pressedBox,
-                                ]}
-                            >
-                                <Image source={imagePathMapping(question.pictogramme)} style={{ width: 83, height: 83 }}></Image>
-                            </Pressable>
-                            <View style={styles.checkboxContainer}>
-                                <Checkbox
-                                    status={listReponse[question.question_id].valeur ? 'checked' : 'unchecked'}
-                                    onPress={() => { updateListReponse(question.question_id, !listReponse[question.question_id].valeur) }}
-                                />
-                            </View>
+                <View style={{
+                    flex: 1,
+                    flexWrap: "wrap",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    alignContent: "center",
+                    gap: 15,
+                    width: "100%",
+                    backgroundColor: "ghostwhite"
+                    // alignContent: "center",
+                }}>
+                    <View
+                        style={{
+                            marginTop: 40,
+                            // flex: 1,
+                            flexWrap: "wrap",
+                            flexDirection: "row",
+                            justifyContent: 'center',
+                            alignItems: "center",
+                            // alignContent: "center",
+                        }}
+                    >
+                        <Icon
+                            source={require('../assets/pictogram/bulb.png')}
+                            size={40}
+                        />
+                        <Text
+                            style={{ textAlign: "center", paddingLeft: 17 }}
+                            variant="titleMedium"
+                        >
+                            Description-lorem ipsum {" "}
+                            {"\n"}
+                            Description lorem ipsum
+                            {/* Vous n'avez pas de : {"\n"}- [something...] */}
+                        </Text>
+                    </View>
+                    <ScrollView
+                        keyboardShouldPersistTaps="handled"
+                        style={{
+                            width: '100%',
+                            maxHeight: '80%',
+                            alignSelf: 'center',
+                            backgroundColor: 'ghostwhite',
+                        }}
+                        persistentScrollbar={true}
+                    >
+                        <View style={styles.pictoContainer}>
+                            {/* <StatusBar hidden={false} /> */}
+                            {listQuestion.map((question: any, index: number) => (
+                                <View key={question.question_id} style={styles.single}>
+                                    <Pressable
+                                        onPress={() => navigation.navigate('SinglePicto', { question: question })}
+                                        style={({ pressed }) => [
+                                            styles.box,
+                                            pressed && styles.pressedBox,
+                                        ]}
+                                    >
+                                        <Image source={imagePathMapping(question.pictogramme)} style={{ width: 90, height: 90 }}></Image>
+                                    </Pressable>
+                                    <View style={styles.checkboxContainer}>
+                                        <Checkbox
+                                            status={listReponse[question.question_id].valeur ? 'checked' : 'unchecked'}
+                                            onPress={() => { updateListReponse(question.question_id, !listReponse[question.question_id].valeur) }}
+                                        />
+                                    </View>
+                                    <View>
+                                        <Text variant="titleMedium" style={{ textAlign: 'center' }}>{question.nom}</Text>
+                                    </View>
+                                </View>
+                            ))}
                         </View>
-                    ))}
+                    </ScrollView>
                 </View>
             )}
             <View style={styles.buttonContainer}>

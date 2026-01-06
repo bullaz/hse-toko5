@@ -13,7 +13,7 @@ export const ProtectedToko5Route: React.FC<{
     toko5Id: string;
     children: React.ReactNode;
 }> = ({ toko5Id, children }) => {
-    const { validity, validityLoading } = useValidity(toko5Id);
+    const { validity, validityLoading, attemptNumber } = useValidity(toko5Id);
     const navigation = useNavigation<NavigationProp>();
     const theme = useTheme();
     const toko5Repository = useContext(DatabaseContext);
@@ -21,7 +21,7 @@ export const ProtectedToko5Route: React.FC<{
     useFocusEffect(
         useCallback(() => {
             if (validity === false) {
-                navigation.navigate('Invalide');
+                navigation.navigate('Invalide',{toko5Id: toko5Id, attemptNumber: attemptNumber});
             }
             return () => {
             };

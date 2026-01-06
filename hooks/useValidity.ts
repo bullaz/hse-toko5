@@ -11,6 +11,7 @@ export const useValidity = (toko5Id: string) => {
   const navigation = useNavigation<NavigationProp>();
   const [validity, setValidity] = useState<boolean | null>(null);
   const [validityLoading, setValidityLoading] = useState<boolean>(true);
+  const [attemptNumber, setAttemptNumber] = useState<number | null>(null);
   const toko5Repository = useContext(DatabaseContext);
 
   const getValidity = async (toko5Id: string): Promise<boolean> => {
@@ -26,12 +27,27 @@ export const useValidity = (toko5Id: string) => {
     }
   }
 
+  const getAttemptNumber = async (toko5Id: string): Promise<number | null> => {
+    try {
+      if (toko5Repository !== null) {
+        return await toko5Repository.getAttemptNumberToko5(toko5Id);
+      }else{
+        throw new Error('toko5repository not initialized');
+      }
+    } catch (error) {
+      console.error('useValidity getAttemptNumber error:', error);
+      return null;
+    }
+  }
+
   const verifyValidity = async (toko5Id: string) => {
     try {
       const isValid = await getValidity(toko5Id);
+      const attemptNumber = await getAttemptNumber(toko5Id);
       // console.log("USEVALIDITY : new etat in the database :",isValid);
       setValidity(isValid);
       setValidityLoading(false);
+      setAttemptNumber(attemptNumber);
       // if (!isValid) {
       //   setValidityLoading(false);
       //   navigation.navigate('Invalide');
@@ -58,6 +74,7 @@ export const useValidity = (toko5Id: string) => {
 
   return {
     validity,
+    attemptNumber,
     validityLoading
   };
 };

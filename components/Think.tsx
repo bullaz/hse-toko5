@@ -5,7 +5,7 @@
 //// add icon and text for all think, organise
 
 import { useCallback, useContext, useState } from "react";
-import { View, StatusBar, Pressable, Image } from "react-native";
+import { View, StatusBar, Pressable, Image, ScrollView } from "react-native";
 import styles from "../styles";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { DatabaseContext, Question, ReponseInterfaceView, Reponse, RootStackParamList } from "../context";
@@ -186,69 +186,94 @@ export default function Think({ navigation, route }: Props) {
                             {/* Vous n'avez pas de : {"\n"}- [something...] */}
                         </Text>
                     </View>
+                    <ScrollView
+                        keyboardShouldPersistTaps="handled"
+                        style={{
+                            width: '100%',
+                            maxHeight: '80%',
+                            alignSelf: 'center',
+                            backgroundColor: 'ghostwhite',
+                            //borderRadius: 10,
+                            // borderEndColor: 'ghostwhite',
+                            // shadowColor: "black",
+                            // shadowOpacity: 0.26,
+                            // shadowOffset: { width: 0, height: 2 },
+                            // shadowRadius: 8,
+                            // elevation: 5,
+                        }}
+                        // contentContainerStyle={{
+                        //     flexGrow: 1,
+                        //     flexDirection: 'column',
+                        //     alignItems: 'center',
+                        //     alignContent: 'center',
+                        //     gap: 15,
+                        //     paddingBottom: 10,
+                        // }}
+                        persistentScrollbar={true}
+                    >
+                        <View style={styles.pictoContainer}>
+                            {listQuestion.map((question: any, i: number) => (
+                                <View key={question.question_id} style={styles.single}>
+                                    <Pressable
+                                        onPress={() => navigation.navigate('SinglePicto', { question: question })}
+                                        style={({ pressed }) => [
+                                            styles.box,
+                                            pressed && styles.pressedBox,
+                                        ]}
+                                    >
+                                        <Image source={imagePathMapping(question.pictogramme)} style={{ width: 80, height: 80, alignSelf: 'center' }}></Image>
+                                    </Pressable>
+                                    <View style={styles.checkboxContainer}>
 
-                    <View style={styles.pictoContainer}>
-                        {listQuestion.map((question: any, i: number) => (
-                            <View key={question.question_id} style={styles.single}>
-                                <Pressable
-                                    onPress={() => navigation.navigate('SinglePicto', { question: question })}
-                                    style={({ pressed }) => [
-                                        styles.box,
-                                        pressed && styles.pressedBox,
-                                    ]}
-                                >
-                                    <Image source={imagePathMapping(question.pictogramme)} style={{ width: 80, height: 80, alignSelf: 'center' }}></Image>
-                                </Pressable>
-                                <View style={styles.checkboxContainer}>
+                                        {!(listReponse[question.question_id].pressed) && (
+                                            <>
+                                                <IconButton
+                                                    icon="close"
+                                                    iconColor={theme.colors.outline}
+                                                    size={24}
+                                                    onPress={() => updateListReponse(question.question_id, false)}
+                                                />
+                                                <IconButton
+                                                    icon="checkbox-marked-outline"
+                                                    iconColor={theme.colors.outline}
+                                                    size={24}
+                                                    onPress={() => updateListReponse(question.question_id, true)}
+                                                />
+                                            </>
+                                        )}
 
-                                    {!(listReponse[question.question_id].pressed) && (
-                                        <>
-                                            <IconButton
-                                                icon="close"
-                                                iconColor={theme.colors.outline}
-                                                size={24}
-                                                onPress={() => updateListReponse(question.question_id, false)}
-                                            />
-                                            <IconButton
-                                                icon="checkbox-marked-outline"
-                                                iconColor={theme.colors.outline}
-                                                size={24}
-                                                onPress={() => updateListReponse(question.question_id, true)}
-                                            />
-                                        </>
-                                    )}
+                                        {(listReponse[question.question_id].pressed) && listReponse[question.question_id].valeur && (
+                                            <>
+                                                <IconButton
+                                                    icon="checkbox-marked-outline"
+                                                    iconColor='green'
+                                                    size={24}
+                                                    onPress={() => updateListReponse(question.question_id, false)}
+                                                />
+                                            </>
+                                        )}
 
-                                    {(listReponse[question.question_id].pressed) && listReponse[question.question_id].valeur && (
-                                        <>
-                                            <IconButton
-                                                icon="checkbox-marked-outline"
-                                                iconColor='green'
-                                                size={24}
-                                                onPress={() => updateListReponse(question.question_id, false)}
-                                            />
-                                        </>
-                                    )}
-
-                                    {(listReponse[question.question_id].pressed) && !(listReponse[question.question_id].valeur) && (
-                                        <>
-                                            <IconButton
-                                                icon="close"
-                                                iconColor='red'
-                                                size={24}
-                                                onPress={() => updateListReponse(question.question_id, false)}
-                                            />
-                                        </>
-                                    )}
+                                        {(listReponse[question.question_id].pressed) && !(listReponse[question.question_id].valeur) && (
+                                            <>
+                                                <IconButton
+                                                    icon="close"
+                                                    iconColor='red'
+                                                    size={24}
+                                                    onPress={() => updateListReponse(question.question_id, false)}
+                                                />
+                                            </>
+                                        )}
 
 
 
+                                    </View>
+                                    <View>
+                                        <Text variant="titleMedium" style={{ textAlign: 'center' }}>{question.nom}</Text>
+                                    </View>
                                 </View>
-                                <View>
-                                    <Text variant="titleMedium" style={{ textAlign: 'center' }}>{question.nom}</Text>
-                                </View>
-                            </View>
-                        ))}
-                    </View>
+                            ))}
+                        </View>
+                    </ScrollView>
                 </View>
             )}
 

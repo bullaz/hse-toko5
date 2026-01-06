@@ -121,6 +121,7 @@ export default function Recent({ navigation }: Props) {
           if (toko5) {
             if (stateDto.etat === ETAT.ongoing) {
               await toko5Repository?.resolveProblemListReponse(stateDto.toko5Id);
+              await toko5Repository.updateStateToko5(stateDto.toko5Id, ETAT.ongoing);
               toko5.etat = stateDto.etat;
               newListToko5.set(toko5.toko5_id, toko5);
             }

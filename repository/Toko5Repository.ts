@@ -19,6 +19,7 @@ import { getLocalDateTimeISOString } from '../utils/commonFunctions';
 import { ETAT } from '../constants/commonConstants';
 import { v7 as uuidv7 } from 'uuid';
 import { Toko5 } from '../context';
+import { Societe, Task } from '../types/domain';
 
 
 class Toko5Repository {
@@ -43,27 +44,11 @@ class Toko5Repository {
     async createTables() {
         //try using transaction
         if (this.db !== null) {
-            try {
-                // await this.db.execAsync("DROP TABLE toko5");
-                await this.db.execAsync("DROP TABLE commentaire");
-                await this.db.execAsync("DROP TABLE mesure_controle");
-                await this.db.execAsync(
-                    `CREATE TABLE IF NOT EXISTS toko5 (
-                        toko5_id TEXT PRIMARY KEY,
-                        nom_contractant TEXT NOT NULL,
-                        prenom_contractant TEXT NOT NULL,
-                        date_heure TEXT NOT NULL,
-                        etat TEXT NOT NULL DEFAULT 'ongoing' CHECK (etat in ('valide','invalide','ongoing')),
-                        saved INTEGER NOT NULL DEFAULT 0 CHECK (saved in (0, 1))
-                    )`
-                )
-                //date time as ISO8601 string
-                console.log('Table toko5 created successfully');
-            } catch (error) {
-                console.log('Error creating table toko5: ', error);
-            }
 
             try {
+                await this.db.execAsync("DROP TABLE IF EXISTS toko5");
+                await this.db.execAsync("DROP TABLE IF EXISTS commentaire");
+                await this.db.execAsync("DROP TABLE IF EXISTS mesure_controle");
                 await this.db.execAsync(
                     `CREATE TABLE IF NOT EXISTS question (
                         question_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -82,12 +67,12 @@ class Toko5Repository {
                 await this.db.execAsync(
                     `CREATE TABLE IF NOT EXISTS task (
                         task_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        nom TEXT NOT NULL UNIQUE,
+                        nom TEXT NOT NULL UNIQUE
                     )`
                 )
                 console.log('Table question created successfully');
             } catch (error) {
-                console.log('Error creating table question: ', error);
+                console.log('Error creating table task: ', error);
             }
 
             try {
@@ -95,12 +80,44 @@ class Toko5Repository {
                     `CREATE TABLE IF NOT EXISTS task_question (
                         task_id INTEGER REFERENCES task(task_id),
                         question_id INTEGER REFERENCES question(question_id),
-                        PRIMARY KEY (task_id, question_id),
+                        PRIMARY KEY (task_id, question_id)
                     )`
                 )
                 console.log('Table question created successfully');
             } catch (error) {
-                console.log('Error creating table question: ', error);
+                console.log('Error creating table task_question: ', error);
+            }
+
+            try {
+                await this.db.execAsync(
+                    `CREATE TABLE IF NOT EXISTS societe (
+                        societe_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        nom TEXT NOT NULL UNIQUE
+                    )`
+                )
+                console.log('Table question created successfully');
+            } catch (error) {
+                console.log('Error creating table societe: ', error);
+            }
+
+            try {
+                await this.db.execAsync(
+                    `CREATE TABLE toko5 (
+                        toko5_id TEXT PRIMARY KEY,
+                        nom_contractant TEXT NOT NULL,
+                        prenom_contractant TEXT NOT NULL,
+                        date_heure TEXT NOT NULL,
+                        etat TEXT NOT NULL DEFAULT 'ongoing' CHECK (etat in ('valide','invalide','ongoing')),
+                        saved INTEGER NOT NULL DEFAULT 0 CHECK (saved in (0, 1)),
+                        attempt INTEGER NOT NULL DEFAULT 2 CHECK (attempt >= 0),
+                        task_id INTEGER REFERENCES task(task_id),
+                        societe_id INTEGER REFERENCES societe(societe_id)
+                    )`
+                )
+                //date time as ISO8601 string
+                console.log('Table toko5 created successfully');
+            } catch (error) {
+                console.log('Error creating table toko5: ', error);
             }
 
 
@@ -112,7 +129,7 @@ class Toko5Repository {
                         nom TEXT NOT NULL UNIQUE,
                         description TEXT,
                         code_langue TEXT,
-                        FOREIGN_KEY question_id REFERENCES question(question_id)
+                        FOREIGN KEY (question_id) REFERENCES question(question_id)
                     )`
                 )
                 console.log('Table traduction created successfully');
@@ -225,10 +242,36 @@ class Toko5Repository {
                         ('Executer la tache en toute securite',null , 'safety', 1)
                     `
                 )
+                await this.db.runAsync(
+                    `DELETE FROM task_question`
+                )
+                await this.db.runAsync(
+                    `DELETE FROM task`
+                )
+                await this.db.runAsync(
+                    `DELETE FROM societe`
+                )
+                await this.db.runAsync(
+                    `INSERT INTO TASK(nom) VALUES ('test_task')`
+                )
+                await this.db.runAsync(
+                    `INSERT INTO societe(nom) VALUES ('societe1'),('societe2'),('societe3')`
+                )
+                await this.db.runAsync(
+                    `INSERT INTO task_question(task_id,question_id) VALUES ((select task_id from task limit 1),(select question_id from question where nom = 'uniforme'))`
+                )
+                await this.db.runAsync(
+                    `INSERT INTO task_question(task_id,question_id) VALUES ((select task_id from task limit 1),(select question_id from question where nom = 'alcool'))`
+                )
                 console.log('insert inside table question successfully');
             } catch (error) {
                 console.log('Error while inserting inside table question : ', error);
             }
+
+
+
+
+            //this.getAllTask();
         }
 
     }
@@ -242,6 +285,35 @@ class Toko5Repository {
         return this.db;
     }
 
+    async getAllTask(): Promise<Task[]> {
+        if (this.db !== null) {
+            try {
+                const listTask = await this.db.getAllAsync('SELECT * FROM task');
+                console.log(listTask);
+                return listTask as Task[];
+            } catch (error) {
+                console.log("error getAllTask", error);
+                throw error;
+            }
+        } else {
+            throw new Error('Database not initialized');
+        }
+    }
+
+    async getAllSociete(): Promise<Societe[]> {
+        if (this.db !== null) {
+            try {
+                const listSociete = await this.db.getAllAsync('SELECT * FROM Societe');
+                console.log(listSociete);
+                return listSociete as Societe[];
+            } catch (error) {
+                console.log("error getAllSociete", error);
+                throw error;
+            }
+        } else {
+            throw new Error('Database not initialized');
+        }
+    }
 
     async getAllCategorieQuestion(categorie: string) {
         if (this.db !== null) {
@@ -335,14 +407,14 @@ class Toko5Repository {
     }
 
 
-    async newToko5(nom: string, prenom: string) {
+    async newToko5(nom: string, prenom: string, task: Task, societe: Societe) {
         if (this.db !== null) {
             try {
                 const newUUID: string = uuidv7();
                 const dateHeureNow: string = getLocalDateTimeISOString();
                 //console.log(dateHeureNow);
                 //runAsync or execAsync ???? 
-                await this.db.runAsync("INSERT INTO toko5(toko5_id, nom_contractant, prenom_contractant, date_heure) values (?,?,?,?)", newUUID, nom, prenom, dateHeureNow);
+                await this.db.runAsync("INSERT INTO toko5(toko5_id, nom_contractant, prenom_contractant, date_heure, task_id, societe_id) values (?,?,?,?,?,?)", newUUID, nom, prenom, dateHeureNow, task.task_id, societe.societe_id);
                 return {
                     toko5Id: newUUID,
                     nomContractant: nom,
@@ -350,7 +422,15 @@ class Toko5Repository {
                     dateHeure: dateHeureNow.split(/[+Z]/)[0],
                     listCommentaire: [],
                     listMesureControle: [],
-                    listProblem: []
+                    listProblem: [],
+                    task: {
+                        taskId: task.task_id,
+                        nom: task.nom
+                    },
+                    societe: {
+                        societeId: societe.societe_id,
+                        nom: societe.nom
+                    }
                 };
             } catch (error) {
                 console.log("error newToko5", error);
@@ -373,7 +453,7 @@ class Toko5Repository {
                 }
             }
             try {
-                const newEtat = await this.updateValidityToko5(list[0].toko5_id);
+                await this.updateValidityToko5(list[0].toko5_id);
                 //console.log("AFTER INSERT OR REPLACE INTO REPONSE : new etat toko5:", newEtat)
             } catch (error) {
                 console.log(error)
@@ -388,6 +468,30 @@ class Toko5Repository {
         }
     }
 
+    async updateAttemptNumberToko5(toko5Id: string) {
+        if (this.db !== null) {
+            try {
+                const result: any = await this.db.getFirstAsync("SELECT attempt from toko5 where toko5_id = ?", toko5Id);
+
+                let attemptNumber: number = result.attempt;
+                if (attemptNumber > 0) {
+                    attemptNumber = attemptNumber - 1;
+
+                    await this.db.runAsync(
+                        "UPDATE TOKO5 SET attempt = ? WHERE toko5_id = ?",
+                        attemptNumber, toko5Id
+                    );
+                }
+                return attemptNumber;
+            } catch (error) {
+                console.log('error in updateAttemptNumberToko5', error);
+                throw error;
+            }
+        } else {
+            throw new Error('Database not initiliazed');
+        }
+    }
+
 
     async updateValidityToko5(toko5Id: string) {
         if (this.db !== null) {
@@ -396,12 +500,21 @@ class Toko5Repository {
 
                 const etat = (result.count == 0) ? 'ongoing' : 'invalide';
 
+                let attemptNumber: number | null = null;
+
+                if (etat === 'invalide') {
+                    attemptNumber = await this.updateAttemptNumberToko5(toko5Id);
+                }
+
                 await this.db.runAsync(
                     "UPDATE TOKO5 SET etat = ? WHERE toko5_id = ?",
                     etat, toko5Id
                 );
 
-                return etat;
+                return {
+                    etat: etat,
+                    attemptNumber: attemptNumber
+                };
             } catch (error) {
                 console.log('error in updateValidityToko5', error);
                 throw error;
@@ -463,6 +576,20 @@ class Toko5Repository {
                 return false;
             } catch (error) {
                 console.log("error getValidity", error);
+                throw error;
+            }
+        } else {
+            throw new Error('Database not initialized')
+        }
+    }
+
+    async getAttemptNumberToko5(toko5Id: string): Promise<number> {
+        if (this.db !== null) {
+            try {
+                const result: any = await this.db.getFirstAsync('SELECT attempt FROM TOKO5 where toko5_id = ?', toko5Id);
+                return result.attempt;
+            } catch (error) {
+                console.log("error getAttemptNumberToko5", error);
                 throw error;
             }
         } else {
@@ -532,12 +659,22 @@ class Toko5Repository {
         if (this.db !== null) {
             try {
                 const toko5: any = await this.db.getFirstAsync('SELECT * FROM toko5 where toko5_id = ?', toko5Id);
+
                 return {
                     toko5Id: toko5.toko5_id,
                     nomContractant: toko5.nom_contractant,
                     prenomContractant: toko5.prenom_contractant,
                     dateHeure: toko5.date_heure.split(/[+Z]/)[0],
                     etat: toko5.etat,
+                    task: {
+                        taskId: toko5.task_id,
+                        nom: null,
+                        listQuestion: null
+                    },
+                    societe: {
+                        societeId: toko5.societe_id,
+                        nom: null
+                    },
                     listMesureControle: [],
                     listCommentaire: [],
                     listProblem: []
@@ -623,17 +760,6 @@ class Toko5Repository {
             throw new Error('Database not initialized');
         }
     }
-
-
-
-
-
-
-
-
-
-
-
 }
 
 export default Toko5Repository;

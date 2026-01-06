@@ -1,9 +1,9 @@
 import { useCallback, useContext, useState } from "react";
-import { View, StatusBar, Pressable, Image } from "react-native";
+import { View, StatusBar, Pressable, Image, ScrollView } from "react-native";
 import styles from "../styles";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { DatabaseContext, Reponse, RootStackParamList } from "../context";
-import { ActivityIndicator, Checkbox } from 'react-native-paper';
+import { ActivityIndicator, Checkbox, Icon, Text } from 'react-native-paper';
 import { useTheme } from "react-native-paper";
 import { Button } from "react-native-paper";
 import { QUESTION_CATEGORIES } from "../constants/questionTypes";
@@ -111,7 +111,7 @@ export default function IdentifyRisks({ navigation, route }: Props) {
         if (valeur) {
             // insert in controlMeasure;
             console.log('test');
-            await addMesureControle(toko5Repository,toko5Id,questionId,'');
+            await addMesureControle(toko5Repository, toko5Id, questionId, '');
             navigation.navigate('ControlMeasure', { toko5Id: toko5Id, questionId: questionId });
 
         } else {
@@ -144,39 +144,106 @@ export default function IdentifyRisks({ navigation, route }: Props) {
                     <ActivityIndicator size="large" color={theme.colors.primary} />
                 </View>
             ) : (
-                <View style={styles.pictoContainer}>
-                    {/* <StatusBar hidden={false} /> */}
-                    {listQuestion.map((question: any, index: string) => (
-                        <View key={question.question_id} style={styles.single}>
-                            <Pressable
-                                onPress={() => navigation.navigate('SinglePicto', { question: question })}
-                                style={({ pressed }) => [
-                                    styles.box,
-                                    pressed && styles.pressedBox,
-                                ]}
-                            >
-                                <Image source={imagePathMapping(question.pictogramme)} style={{ width: 80, height: 80 }}></Image>
-                            </Pressable>
+                <View style={{
+                    flex: 1,
+                    flexWrap: "wrap",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    alignContent: "center",
+                    gap: 15,
+                    width: "100%",
+                    backgroundColor: "ghostwhite"
+                    // alignContent: "center",
+                }}>
+                    <View
+                        style={{
+                            marginTop: 40,
+                            // flex: 1,
+                            flexWrap: "wrap",
+                            flexDirection: "row",
+                            justifyContent: 'center',
+                            alignItems: "center",
+                            // alignContent: "center",
+                        }}
+                    >
+                        <Icon
+                            source={require('../assets/pictogram/bulb.png')}
+                            size={40}
+                        />
+                        <Text
+                            style={{ textAlign: "center", paddingLeft: 17 }}
+                            variant="titleMedium"
+                        >
+                            Description-lorem ipsum {" "}
+                            {"\n"}
+                            Description lorem ipsum
+                            {/* Vous n'avez pas de : {"\n"}- [something...] */}
+                        </Text>
+                    </View>
+                    <ScrollView
+                        keyboardShouldPersistTaps="handled"
+                        style={{
+                            width: '100%',
+                            maxHeight: '80%',
+                            alignSelf: 'center',
+                            backgroundColor: 'ghostwhite',
+                            //borderRadius: 10,
+                            // borderEndColor: 'ghostwhite',
+                            // shadowColor: "black",
+                            // shadowOpacity: 0.26,
+                            // shadowOffset: { width: 0, height: 2 },
+                            // shadowRadius: 8,
+                            // elevation: 5,
+                        }}
+                        // contentContainerStyle={{
+                        //     flexGrow: 1,
+                        //     flexDirection: 'column',
+                        //     alignItems: 'center',
+                        //     alignContent: 'center',
+                        //     gap: 15,
+                        //     paddingBottom: 10,
+                        // }}
+                        persistentScrollbar={true}
+                    >
 
-                            {(question.nom !== 'autre') ?
-                                (
-                                    <View style={styles.checkboxContainer}>
-                                        <Checkbox
-                                            status={listReponse[question.question_id].valeur ? 'checked' : 'unchecked'}
-                                            onPress={async () => { await handleCheckBoxPress(question.question_id, !(listReponse[question.question_id].valeur)) }}
-                                        //{() => { updateListReponse(question.question_id, !listReponse[question.question_id].valeur) }}
-                                        />
+                        <View style={styles.pictoContainer}>
+                            {/* <StatusBar hidden={false} /> */}
+                            {listQuestion.map((question: any, index: string) => (
+                                <View key={question.question_id} style={styles.single}>
+                                    <Pressable
+                                        onPress={() => navigation.navigate('SinglePicto', { question: question })}
+                                        style={({ pressed }) => [
+                                            styles.box,
+                                            pressed && styles.pressedBox,
+                                        ]}
+                                    >
+                                        <Image source={imagePathMapping(question.pictogramme)} style={{ width: 80, height: 80 }}></Image>
+                                    </Pressable>
+
+                                    {(question.nom !== 'autre') ?
+                                        (
+                                            <View style={styles.checkboxContainer}>
+                                                <Checkbox
+                                                    status={listReponse[question.question_id].valeur ? 'checked' : 'unchecked'}
+                                                    onPress={async () => { await handleCheckBoxPress(question.question_id, !(listReponse[question.question_id].valeur)) }}
+                                                //{() => { updateListReponse(question.question_id, !listReponse[question.question_id].valeur) }}
+                                                />
+                                            </View>
+                                        ) : (
+                                            <View style={styles.checkboxContainer}>
+                                                <Checkbox
+                                                    status='unchecked'
+                                                    onPress={async () => { await handleCheckBoxPress(question.question_id, true) }}
+                                                />
+                                            </View>
+                                        )}
+                                    <View>
+                                        <Text variant="titleMedium" style={{ textAlign: 'center' }}>{question.nom}</Text>
                                     </View>
-                                ) : (
-                                    <View style={styles.checkboxContainer}>
-                                        <Checkbox
-                                            status='unchecked'
-                                            onPress={async () => { await handleCheckBoxPress(question.question_id, true) }}
-                                        />
-                                    </View>
-                                )}
+                                </View>
+                            ))}
                         </View>
-                    ))}
+                    </ScrollView>
                 </View>
             )}
             <View style={styles.buttonContainer}>

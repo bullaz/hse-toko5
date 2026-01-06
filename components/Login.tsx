@@ -1,14 +1,16 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { DatabaseContext, RootStackParamList, Toko5Json } from "../context";
-import { ActivityIndicator, Button, Icon, PaperProvider, Text, useTheme } from "react-native-paper";
+import { ActivityIndicator, Button, Icon, IconButton, PaperProvider, Text, useTheme } from "react-native-paper";
 import { KeyboardAvoidingView, StatusBar, View } from "react-native";
 import styles from "../styles/loginStyle";
 import { TextInput } from "react-native-paper";
-import { useContext, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import NetInfo from '@react-native-community/netinfo';
 import axios from "axios";
 import { BACKEND_URL } from "../constants/commonConstants";
-import { Dropdown } from 'react-native-element-dropdown';;
+import { Dropdown } from 'react-native-element-dropdown'; import { Societe, Task } from "../types/domain";
+import { useFocusEffect } from "@react-navigation/native";
+;
 // import AntDesign from '@expo/vector-icons/AntDesign';
 
 
@@ -27,6 +29,30 @@ const data = [
 
 export default function Login({ navigation }: Props) {
 
+    const renderSocieteLeftIcon = () => {
+        return (
+            <IconButton
+                icon="office-building"
+                size={24}
+                onPress={() => { handleRefresh() }}
+                style={{ borderWidth: 0 }}
+            //style={{backgroundColor: 'rgba(230, 241, 255, 1) '}}
+            />
+        );
+    };
+
+    const renderTaskLeftIcon = () => {
+        return (
+            <IconButton
+                icon="office-building"
+                size={24}
+                onPress={() => { handleRefresh() }}
+                style={{ borderWidth: 0 }}
+            //style={{backgroundColor: 'rgba(230, 241, 255, 1) '}}
+            />
+        );
+    };
+
     const [gender, setGender] = useState<string>();
 
     const theme = useTheme();
@@ -42,9 +68,16 @@ export default function Login({ navigation }: Props) {
 
     const [text, setText] = useState<string>("");
 
-    const [societe, setSociete] = useState<string>("");
+    const [societe, setSociete] = useState<Societe>();
 
     const [loading, setLoading] = useState<boolean>(false);
+
+    const [initLoading, setInitLoading] = useState<boolean>(true);
+
+    const [listSociete, setListSociete] = useState<{ label: string; value: Societe; }[]>([]);
+    const [listTask, setListTask] = useState<{ label: string; value: Task; }[]>([]);
+
+    const [task, setTask] = useState<Task>();
 
     const checkConnection = async () => {
         const state = await NetInfo.fetch();
@@ -60,23 +93,51 @@ export default function Login({ navigation }: Props) {
     const [value, setValue] = useState(null);
     const [isFocus, setIsFocus] = useState(false);
 
+    const init = async () => {
+        if (toko5Repository !== null) {
+            const societes = await toko5Repository.getAllSociete();
+            const tasks = await toko5Repository.getAllTask();
+            let dataSociete = [];
+            let dataTask = [];
+            for (let societe of societes) {
+                dataSociete.push({
+                    label: societe.nom,
+                    value: societe
+                })
+            }
+            setListSociete(dataSociete);
+            for (let task of tasks) {
+                dataTask.push({
+                    label: task.nom,
+                    value: task
+                })
+            }
+            setListTask(dataTask);
+        } else {
+            throw new Error("internal error: repository toko5repository is null");
+        }
+        setInitLoading(false);
+    }
+
     const newToko5 = async () => {
         try {
             setLoading(true)
             if (toko5Repository !== null) {
-                const toko5 = await toko5Repository.newToko5(nom, prenom);
-                console.log(toko5);
-                let isInternetReachable = await checkConnection();
-                if (isInternetReachable) {
-                    let saved = axios.post(`${BACKEND_URL}/toko5s`, toko5, {
-                        headers: {
-                            'Content-Type': 'application/json',
-                        }
-                    });
+                if (task && societe) {
+                    const toko5 = await toko5Repository.newToko5(nom, prenom, task, societe);
+                    console.log(toko5);
+                    let isInternetReachable = await checkConnection();
+                    if (isInternetReachable) {
+                        let saved = axios.post(`${BACKEND_URL}/toko5s`, toko5, {
+                            headers: {
+                                'Content-Type': 'application/json',
+                            }
+                        });
+                    }
+                    setLoading(false)
+                    navigation.navigate('Think', { toko5Id: toko5.toko5Id })
+                    return
                 }
-                setLoading(false)
-                navigation.navigate('Think', { toko5Id: toko5.toko5Id })
-                return
             }
             setLoading(false)
             throw new Error("repository is null");
@@ -85,6 +146,19 @@ export default function Login({ navigation }: Props) {
             setLoading(false);
         }
     }
+
+    const handleRefresh = () => {
+
+    }
+
+
+    useFocusEffect(
+        useCallback(() => {
+            init();
+            return () => {
+            };
+        }, [])
+    );
 
 
     return (
@@ -165,33 +239,21 @@ export default function Login({ navigation }: Props) {
                             selectedTextStyle={styles.selectedTextStyle}
                             inputSearchStyle={styles.inputSearchStyle}
                             iconStyle={styles.iconStyle}
-                            data={data}
+                            data={listSociete}
                             search
                             maxHeight={230}
                             labelField="label"
                             valueField="value"
-                            placeholder={!isFocus ? 'Societe' : 'Societe'}
-                            searchPlaceholder="Search..."
+                            placeholder={!isFocus ? 'Société' : 'Société'}
+                            searchPlaceholder="Rechercher..."
                             value={value}
                             onFocus={() => setIsFocus(true)}
                             onBlur={() => setIsFocus(false)}
                             onChange={item => {
-                                setValue(item.value);
+                                setSociete(item.value);
                                 setIsFocus(false);
                             }}
-                            renderLeftIcon={() => (
-                                // <AntDesign
-                                //     style={styles.icon}
-                                //     color={isFocus ? 'blue' : 'black'}
-                                //     name="Safety"
-                                //     size={20}
-                                // />
-                                <Icon
-                                    source=""
-                                    // color={MD3Colors.error50}
-                                    size={20}
-                                />
-                            )}
+                            renderLeftIcon={renderSocieteLeftIcon}
                         />
 
                         <Dropdown
@@ -200,18 +262,19 @@ export default function Login({ navigation }: Props) {
                             selectedTextStyle={styles.selectedTextStyle}
                             inputSearchStyle={styles.inputSearchStyle}
                             iconStyle={styles.iconStyle}
-                            data={data}
+                            data={listTask}
+                            renderLeftIcon={renderSocieteLeftIcon}
                             search
                             maxHeight={230}
                             labelField="label"
                             valueField="value"
-                            placeholder={"Tache"}
-                            searchPlaceholder="Search..."
+                            placeholder={"tâche"}
+                            searchPlaceholder="Rechercher..."
                             value={value}
                             onFocus={() => setIsFocus(true)}
                             onBlur={() => setIsFocus(false)}
                             onChange={item => {
-                                setValue(item.value);
+                                setTask(item.value);
                                 setIsFocus(false);
                             }}
                         // renderLeftIcon={() => (
@@ -247,6 +310,25 @@ export default function Login({ navigation }: Props) {
                     </View>
 
                 </KeyboardAvoidingView>
+                <View style={{
+                    marginTop: 10
+                }}>
+                    <IconButton
+                        icon="refresh"
+                        size={24}
+                        onPress={() => { handleRefresh() }}
+                        style={{ borderWidth: 1 }}
+                    //style={{backgroundColor: 'rgba(230, 241, 255, 1) '}}
+                    />
+                    {/* <Text
+                      style={{
+                        textAlign: "center",
+                      }}
+                      variant="titleMedium"
+                    >
+                      recharger
+                    </Text> */}
+                </View>
             </View>
         </>
     )
