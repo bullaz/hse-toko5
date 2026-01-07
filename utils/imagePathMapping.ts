@@ -1,7 +1,7 @@
 export const imagePathMapping = (imageName: string) => {
     const imageMap: { [key: string]: any } = {
         //think
-        'alcohol': require('../assets/pictogram/think/alcool2.png'),
+        'alcool': require('../assets/pictogram/think/alcool2.png'),
         'competency': require('../assets/pictogram/think/competency.png'),
         'formation': require('../assets/pictogram/think/formation.png'),
         'materiel': require('../assets/pictogram/think/materiel.png'),

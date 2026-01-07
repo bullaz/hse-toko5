@@ -4,7 +4,7 @@ import styles from "../styles";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { DatabaseContext, Reponse, RootStackParamList } from "../context";
 //import Checkbox from "expo-checkbox";
-import { ActivityIndicator, Checkbox, Icon, Text } from "react-native-paper";
+import { ActivityIndicator, Checkbox, Divider, Icon, Text } from "react-native-paper";
 import { useTheme } from "react-native-paper";
 import { Button } from "react-native-paper";
 import { QUESTION_CATEGORIES } from "../constants/questionTypes";
@@ -127,14 +127,10 @@ export default function Organise2({ navigation, route }: Props) {
                             {/* Vous n'avez pas de : {"\n"}- [something...] */}
                         </Text>
                     </View>
+                    {/* <Divider style={{ width: '80%', backgroundColor: 'black', marginTop:15}}/> */}
                     <ScrollView
                         keyboardShouldPersistTaps="handled"
-                        style={{
-                            width: '100%',
-                            maxHeight: '80%',
-                            alignSelf: 'center',
-                            backgroundColor: 'ghostwhite',
-                        }}
+                        style={styles.scrollView}
                         persistentScrollbar={true}
                     >
                         <View style={styles.pictoContainer}>
@@ -148,7 +144,7 @@ export default function Organise2({ navigation, route }: Props) {
                                             pressed && styles.pressedBox,
                                         ]}
                                     >
-                                        <Image source={imagePathMapping(question.pictogramme)} style={{ width: 90, height: 90 }}></Image>
+                                        <Image source={imagePathMapping(question.pictogramme)} style={{ width: 80, height: 80 }}></Image>
                                     </Pressable>
                                     <View style={styles.checkboxContainer}>
                                         <Checkbox

@@ -194,7 +194,7 @@ class Toko5Repository {
                 await this.db.execAsync(`DELETE FROM commentaire`);
                 await this.db.runAsync(
                     `INSERT INTO question (nom, pictogramme, categorie, required) VALUES 
-                        ('alcool','alcohol', 'think', 1),
+                        ('alcool','alcool', 'think', 1),
                         ('competence', 'competency', 'think', 1),
                         ('formation', 'formation', 'think', 1),
                         ('materiel', 'materiel', 'think', 1),
@@ -255,7 +255,7 @@ class Toko5Repository {
                     `INSERT INTO TASK(nom) VALUES ('test_task')`
                 )
                 await this.db.runAsync(
-                    `INSERT INTO societe(nom) VALUES ('societe1'),('societe2'),('societe3')`
+                    `INSERT INTO societe(nom) VALUES ('Societe1'),('Societe2'),('Societe3')`
                 )
                 await this.db.runAsync(
                     `INSERT INTO task_question(task_id,question_id) VALUES ((select task_id from task limit 1),(select question_id from question where nom = 'uniforme'))`
@@ -496,7 +496,9 @@ class Toko5Repository {
     async updateValidityToko5(toko5Id: string) {
         if (this.db !== null) {
             try {
-                const result: any = await this.db.getFirstAsync("SELECT COUNT(*) as count FROM reponse, question WHERE reponse.question_id = question.question_id and question.required = 1 and reponse.toko5_id = ? and reponse.valeur = 0", toko5Id);
+                const result: any = await this.db.getFirstAsync("SELECT COUNT(*) as count FROM reponse r where r.toko5_id = ? and r.valeur = 0 and r.question_id in (select question_id from task_question tq where tq.task_id = (select task_id from toko5 where toko5.toko5_id = ?)) ", toko5Id, toko5Id);
+
+                console.log("count problem", result.count);
 
                 const etat = (result.count == 0) ? 'ongoing' : 'invalide';
 
@@ -655,11 +657,46 @@ class Toko5Repository {
         }
     }
 
+    async getToko5Societe(toko5Id: string): Promise<Societe> {
+        if (this.db !== null) {
+            try {
+                const societe: Societe | null = await this.db.getFirstAsync("select * from societe s where s.societe_id = (select societe_id from toko5 where toko5_id = ?)", toko5Id);
+                if (societe) {
+                    return societe;
+                }
+                throw new Error("societe not found");
+            } catch (error) {
+                console.log("error getToko5Societe", error);
+                throw error;
+            }
+        } else {
+            throw new Error("Database not initialized")
+        }
+    }
+
+    async getToko5Task(toko5Id: string): Promise<Task> {
+        if (this.db !== null) {
+            try {
+                const task: Task | null = await this.db.getFirstAsync("select * from task t where t.task_id = (select task_id from toko5 where toko5_id = ?)", toko5Id);
+                if (task) {
+                    return task;
+                }
+                throw new Error("task not found");
+            } catch (error) {
+                console.log("error getToko5Task", error);
+                throw error;
+            }
+        } else {
+            throw new Error("Database not initialized")
+        }
+    }
+
     async findToko5ById(toko5Id: string) {
         if (this.db !== null) {
             try {
                 const toko5: any = await this.db.getFirstAsync('SELECT * FROM toko5 where toko5_id = ?', toko5Id);
-
+                const task: Task = await this.getToko5Task(toko5.toko5_id);
+                const societe: Societe = await this.getToko5Societe(toko5.toko5_id);
                 return {
                     toko5Id: toko5.toko5_id,
                     nomContractant: toko5.nom_contractant,
@@ -668,12 +705,12 @@ class Toko5Repository {
                     etat: toko5.etat,
                     task: {
                         taskId: toko5.task_id,
-                        nom: null,
+                        nom: task.nom,
                         listQuestion: null
                     },
                     societe: {
                         societeId: toko5.societe_id,
-                        nom: null
+                        nom: societe.nom
                     },
                     listMesureControle: [],
                     listCommentaire: [],
@@ -744,16 +781,11 @@ class Toko5Repository {
         if (this.db !== null) {
             try {
                 await this.db.runAsync(
-                    `DELETE FROM reponse 
-                        WHERE reponse.toko5_id = ? 
-                        AND reponse.valeur = 0 
-                        AND reponse.question_id IN (
-                            SELECT question_id FROM question 
-                            WHERE required = 1
-                        )`,
-                    [toko5Id]
+                    `DELETE FROM reponse where reponse.toko5_id = ? and reponse.valeur = 0 and reponse.question_id in (select question_id from task_question tq where tq.task_id = (select task_id from toko5 where toko5.toko5_id = ?))`,
+                    [toko5Id, toko5Id]
                 );
             } catch (error) {
+                console.log("error in resolveProblemListReponse");
                 throw error;
             }
         } else {

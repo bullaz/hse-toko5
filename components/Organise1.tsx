@@ -142,12 +142,7 @@ export default function Organise1({ navigation, route }: Props) {
                     </View>
                     <ScrollView
                         keyboardShouldPersistTaps="handled"
-                        style={{
-                            width: '100%',
-                            maxHeight: '80%',
-                            alignSelf: 'center',
-                            backgroundColor: 'ghostwhite',
-                        }}
+                        style={styles.scrollView}
                         persistentScrollbar={true}
                     >
                         <View style={styles.pictoContainer}>

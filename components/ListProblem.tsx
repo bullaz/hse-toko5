@@ -113,7 +113,7 @@ export default function ListProblem({ navigation, route }: Props) {
                 <View style={styles.headerContent}>
                   <View style={styles.statusContainer}>
                     <View style={[styles.statusDot, { backgroundColor: status.color }]} />
-                    <Text style={[styles.statusText, { color: status.color }]}>
+                    <Text style={[styles.statusText, { color: status.color }]} variant="titleMedium">
                       {status.label}
                     </Text>
                   </View>
@@ -165,7 +165,7 @@ export default function ListProblem({ navigation, route }: Props) {
                 <Card.Content>
                   <View style={styles.sectionHeader}>
                     <Icon source="clipboard-check" size={24} color={theme.colors.primary} />
-                    <Text style={styles.sectionTitle}>
+                    <Text style={styles.sectionTitle} variant="titleMedium">
                       Mesures de Contrôle ({toko5.listMesureControle.length})
                     </Text>
                   </View>
@@ -219,7 +219,7 @@ export default function ListProblem({ navigation, route }: Props) {
               <Card.Content>
                 <View style={styles.sectionHeader}>
                   <Icon source="message-text" size={24} color={theme.colors.primary} />
-                  <Text style={styles.sectionTitle}>
+                  <Text variant="titleMedium" style={styles.sectionTitle}>
                     Commentaires ({toko5.listCommentaire?.length || 0})
                   </Text>
                 </View>
@@ -314,7 +314,7 @@ export default function ListProblem({ navigation, route }: Props) {
                     size={24}
                     color={toko5.listProblem?.length > 0 ? "#F44336" : "#4CAF50"}
                   />
-                  <Text style={styles.sectionTitle}>
+                  <Text style={styles.sectionTitle} variant="titleMedium">
                     Problèmes ({toko5.listProblem?.length || 0})
                   </Text>
                 </View>
@@ -542,7 +542,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#333',
+    color: '#666060ff',
   },
   scrollableSection: {
     maxHeight: 300, // Adjust this value as needed

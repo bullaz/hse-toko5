@@ -9,7 +9,7 @@ import { View, StatusBar, Pressable, Image, ScrollView } from "react-native";
 import styles from "../styles";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { DatabaseContext, Question, ReponseInterfaceView, Reponse, RootStackParamList } from "../context";
-import { ActivityIndicator, Icon, IconButton } from "react-native-paper";
+import { ActivityIndicator, Divider, Icon, IconButton } from "react-native-paper";
 import { useTheme } from "react-native-paper";
 import { Button } from "react-native-paper";
 import { imagePathMapping } from "../utils/imagePathMapping";
@@ -155,7 +155,7 @@ export default function Think({ navigation, route }: Props) {
                     flexDirection: "column",
                     alignItems: "center",
                     alignContent: "center",
-                    gap: 15,
+                    gap: 25,
                     width: "100%",
                     backgroundColor: "ghostwhite"
                     // alignContent: "center",
@@ -180,27 +180,16 @@ export default function Think({ navigation, route }: Props) {
                             style={{ textAlign: "center", paddingLeft: 17 }}
                             variant="titleMedium"
                         >
-                            Description-lorem ipsum {" "}
+                            Description-lorem ipsum x {" "}
                             {"\n"}
                             Description lorem ipsum
                             {/* Vous n'avez pas de : {"\n"}- [something...] */}
                         </Text>
                     </View>
+                    {/* <Divider style={{ width: '80%', backgroundColor: 'black', marginTop:15}}/> */}
                     <ScrollView
                         keyboardShouldPersistTaps="handled"
-                        style={{
-                            width: '100%',
-                            maxHeight: '80%',
-                            alignSelf: 'center',
-                            backgroundColor: 'ghostwhite',
-                            //borderRadius: 10,
-                            // borderEndColor: 'ghostwhite',
-                            // shadowColor: "black",
-                            // shadowOpacity: 0.26,
-                            // shadowOffset: { width: 0, height: 2 },
-                            // shadowRadius: 8,
-                            // elevation: 5,
-                        }}
+                        style={styles.scrollView}
                         // contentContainerStyle={{
                         //     flexGrow: 1,
                         //     flexDirection: 'column',

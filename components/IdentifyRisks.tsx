@@ -182,19 +182,7 @@ export default function IdentifyRisks({ navigation, route }: Props) {
                     </View>
                     <ScrollView
                         keyboardShouldPersistTaps="handled"
-                        style={{
-                            width: '100%',
-                            maxHeight: '80%',
-                            alignSelf: 'center',
-                            backgroundColor: 'ghostwhite',
-                            //borderRadius: 10,
-                            // borderEndColor: 'ghostwhite',
-                            // shadowColor: "black",
-                            // shadowOpacity: 0.26,
-                            // shadowOffset: { width: 0, height: 2 },
-                            // shadowRadius: 8,
-                            // elevation: 5,
-                        }}
+                        style={styles.scrollView}
                         // contentContainerStyle={{
                         //     flexGrow: 1,
                         //     flexDirection: 'column',

@@ -16,9 +16,9 @@ export default StyleSheet.create({
 
 
   loadingContainer: {
-    flex:1,
-    flexWrap:'wrap',
-    flexDirection:'column',
+    flex: 1,
+    flexWrap: 'wrap',
+    flexDirection: 'column',
     justifyContent: "center",
     alignItems: 'center',
     alignContent: 'center',
@@ -42,6 +42,24 @@ export default StyleSheet.create({
 
 
     paddingLeft: 10,
+  },
+
+  scrollView: {
+    width: '100%',
+    maxHeight: '80%',
+    alignSelf: 'center',
+    backgroundColor: 'ghostwhite',
+    //borderRadius: 10,
+    // borderEndColor: 'ghostwhite',
+    // shadowColor: "black",
+    // shadowOpacity: 0.26,
+    // shadowOffset: { width: 0, height: 2 },
+    // shadowRadius: 8,
+    // elevation: 5,
+    borderTopWidth: 0.3,
+    borderTopRightRadius: 20,
+    borderTopLeftRadius: 20,
+    borderBottomWidth: 0,
   },
 
   box: {
@@ -73,10 +91,10 @@ export default StyleSheet.create({
     paddingBottom: 30
   },
 
-  
+
 
   single: {
-    flexBasis: "33.33%", 
+    flexBasis: "33.33%",
     flexDirection: 'column',
     //alignContent: 'center',
     alignItems: 'center',
@@ -106,7 +124,7 @@ export default StyleSheet.create({
 
   modalStyle: {
     width: "95%",
-    backgroundColor: 'ghostwhite', 
+    backgroundColor: 'ghostwhite',
     borderRadius: 30,
     minHeight: "50%",
     padding: 20,

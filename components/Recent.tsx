@@ -133,7 +133,7 @@ export default function Recent({ navigation }: Props) {
       }
     } catch (error) {
       console.error(
-        "Error in the component recent while retrieving list of toko5 ",
+        "Error in the component recent while trying to refresh the list of toko5 from the server ",
         error
       );
     } finally {
@@ -355,7 +355,7 @@ export default function Recent({ navigation }: Props) {
                     size={45}
                   />
                   <Text
-                    style={{ textAlign: "center", padding: 10 }}
+                    style={{ textAlign: "center", padding: 10, color: "rgba(88, 88, 88, 1)" }}
                     variant="titleMedium"
                   >
                     Vous n'avez pas de toko 5 {"\n"}

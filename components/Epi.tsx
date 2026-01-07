@@ -126,19 +126,7 @@ export default function Epi({ navigation, route }: Props) {
                     </View>
                     <ScrollView
                         keyboardShouldPersistTaps="handled"
-                        style={{
-                            width: '100%',
-                            maxHeight: '80%',
-                            alignSelf: 'center',
-                            backgroundColor: 'ghostwhite',
-                            //borderRadius: 10,
-                            // borderEndColor: 'ghostwhite',
-                            // shadowColor: "black",
-                            // shadowOpacity: 0.26,
-                            // shadowOffset: { width: 0, height: 2 },
-                            // shadowRadius: 8,
-                            // elevation: 5,
-                        }}
+                        style={styles.scrollView}
                         // contentContainerStyle={{
                         //     flexGrow: 1,
                         //     flexDirection: 'column',
@@ -160,7 +148,7 @@ export default function Epi({ navigation, route }: Props) {
                                             pressed && styles.pressedBox,
                                         ]}
                                     >
-                                        <Image source={imagePathMapping(question.pictogramme)} style={{ width: 90, height: 90 }}></Image>
+                                        <Image source={imagePathMapping(question.pictogramme)} style={{ width: 80, height: 80 }}></Image>
                                     </Pressable>
                                     <View style={styles.checkboxContainer}>
                                         {/* <Checkbox value={listReponse[question.question_id].valeur} onValueChange={() => { updateListReponse(question.question_id, !listReponse[question.question_id].valeur) }} /> */}

@@ -40,11 +40,12 @@ export default function Invalide({ navigation, route }: Props) {
 
   if (attemptNumber === null) {
     // You could return a loading state or handle it differently
-    return (
-      <View style={globalStyles.loadingContainer}>
-        <ActivityIndicator size="large" color={theme.colors.primary} />
-      </View>
-    );
+    // return (
+    //   // <View style={globalStyles.loadingContainer}>
+    //   //   <ActivityIndicator size="large" color={theme.colors.primary} />
+    //   // </View>
+    // );
+    navigation.navigate('Recent');
   } else {
     return (
       <>
@@ -98,8 +99,11 @@ export default function Invalide({ navigation, route }: Props) {
                     <IconButton
                       icon="restart"
                       size={24}
+                      iconColor="white"
                       onPress={() => { tryAgain(toko5Id) }}
-                      style={{ borderWidth: 1 }}
+                      style={{
+                        backgroundColor: "rgba(33, 93, 172, 0.87)",
+                      }}
                     //style={{backgroundColor: 'rgba(230, 241, 255, 1) '}}
                     />
                     {/* <Text
