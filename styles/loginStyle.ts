@@ -14,7 +14,7 @@ export default StyleSheet.create({
   loginDiv: {
     borderColor: '#d8d8dfff',
     minHeight: 205,
-    minWidth: 300,
+    minWidth: "95%",
     borderWidth: 1,
     borderRadius: 50,
     padding: 10,
@@ -30,7 +30,7 @@ export default StyleSheet.create({
     elevation: 8,
   },
   bottomButton: {
-    width: 200,
+    width: "90%",
   },
   textInput: {
     width: 250,

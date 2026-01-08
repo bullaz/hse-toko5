@@ -155,6 +155,16 @@ export default function IdentifyRisks({ navigation, route }: Props) {
                     backgroundColor: "ghostwhite"
                     // alignContent: "center",
                 }}>
+                    {/* <View
+                        style={{
+                            display: 'flex',
+                            flexWrap: "wrap",
+                            flexDirection: "row",
+                            justifyContent: 'center',
+                            alignItems: "center",
+                            alignContent: "center",
+                        }}>
+                    </View> */}
                     <View
                         style={{
                             marginTop: 40,
@@ -174,12 +184,29 @@ export default function IdentifyRisks({ navigation, route }: Props) {
                             style={{ textAlign: "center", paddingLeft: 17 }}
                             variant="titleMedium"
                         >
-                            Description-lorem ipsum {" "}
+                            Identifiez les risques et {" "}
                             {"\n"}
-                            Description lorem ipsum
+                            dangers potentiels
                             {/* Vous n'avez pas de : {"\n"}- [something...] */}
                         </Text>
                     </View>
+                    <Button style={styles.controlButton}
+                        mode="contained"
+                        contentStyle={{
+                            flexDirection: 'row',
+                        }}
+                        labelStyle={{
+                            color: theme.colors.secondary, // Manually set to theme contrast color
+                            fontSize: 16
+                        }}
+                        onPress={() => { /*navigation.navigate('ControlMeasure',{toko5Id: toko5Id}) */ }}
+                        //icon="account-hard-hat"
+                        icon={({ size, color }) => (
+                            <Icon source="account-hard-hat" size={23} color="ghostwhite" />
+                        )}
+                    >
+                        mes mesures de contrôle
+                    </Button>
                     <ScrollView
                         keyboardShouldPersistTaps="handled"
                         style={styles.scrollView}

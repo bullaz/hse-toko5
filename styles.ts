@@ -62,6 +62,11 @@ export default StyleSheet.create({
     borderBottomWidth: 0,
   },
 
+  controlButton:{
+    width: '90%',
+    borderRadius: 5
+  },
+
   box: {
     width: 90,
     height: 90,

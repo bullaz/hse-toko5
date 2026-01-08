@@ -355,8 +355,8 @@ export default function Recent({ navigation }: Props) {
                     size={45}
                   />
                   <Text
-                    style={{ textAlign: "center", padding: 10, color: "rgba(88, 88, 88, 1)" }}
-                    variant="titleMedium"
+                    style={{ textAlign: "center", padding: 10, color: "rgba(88, 88, 88, 1)", fontSize:15 }}
+                    variant="titleSmall"
                   >
                     Vous n'avez pas de toko 5 {"\n"}
                     Veuillez presser le bouton en dessous pour en initier un!

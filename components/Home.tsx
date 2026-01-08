@@ -16,7 +16,7 @@ export default function Home({ navigation }: Props) {
                 <StatusBar hidden={false} backgroundColor="black" />
                 <View style={styles.container}>
 
-                    <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', alignContent: 'center',paddingTop: 20 }}>
+                    <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', alignContent: 'center', paddingTop: 20 }}>
                         {/* <ImageBackground
                             source={require('../assets/pictogram/work-safety.png')} // Replace with your image path
                             resizeMode="contain" // or "cover" depending on your preference
@@ -48,11 +48,11 @@ export default function Home({ navigation }: Props) {
                                 height: 200, // Adjust height as needed
                             }}
                         />
-                            <Text style={{ fontSize: 80, fontStyle: 'italic', fontWeight: 'bold', color: "rgba(24, 82, 158, 0.88)" }}>TOKO 5</Text>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-                                <Text variant="headlineSmall" style={{}}>Protège / Miaro / Protect</Text>
-                                <Icon source={require('../assets/pictogram/work-safety2.png')} size={35} color={theme.colors.primary} />
-                            </View>
+                        <Text style={{ fontSize: 80, fontStyle: 'italic', fontWeight: 'bold', color: "rgba(24, 82, 158, 0.88)" }}>TOKO 5</Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                            <Text variant="headlineSmall" style={{ fontWeight: 'bold', color: 'rgba(94, 94, 94, 0.87)' }}>Protège / Miaro / Protect</Text>
+                            <Icon source={require('../assets/pictogram/work-safety2.png')} size={25} color={theme.colors.primary} />
+                        </View>
                     </View>
 
 
@@ -92,6 +92,44 @@ export default function Home({ navigation }: Props) {
                         >
                             SUPERVISEUR
                         </Button>
+                        <Button style={{ borderWidth: 0}}
+                                mode="contained"
+                                contentStyle={{
+                                    flexDirection: 'row-reverse',
+                                    backgroundColor: 'white',
+                                    // flexDirection: 'row-reverse'
+                                }}
+                                labelStyle={{
+                                    color: "rgba(70, 70, 70, 0.87)",
+                                    fontSize: 16
+                                }}
+                                onPress={() => { navigation.navigate('LoginSup') }}
+                                icon={({ size, color }) => (
+                                    <Icon source="chevron-down" size={27} color="rgba(70, 70, 70, 0.87)" />
+                                )}
+                            >
+                                Français
+                            </Button>
+                        {/* <View style={{ flex: 1, flexDirection: 'column', width: '100%', justifyContent: 'center', alignItems: 'center', gap: 20 }}>
+                            <Button style={{ borderWidth: 0 }}
+                                mode="contained"
+                                contentStyle={{
+                                    flexDirection: 'row-reverse',
+                                    backgroundColor: 'ghostwhite',
+                                    // flexDirection: 'row-reverse'
+                                }}
+                                labelStyle={{
+                                    color: theme.colors.secondary,
+                                    fontSize: 16
+                                }}
+                                onPress={() => { navigation.navigate('LoginSup') }}
+                                icon={({ size, color }) => (
+                                    <Icon source="chevron-down" size={27} color="ghostwhite" />
+                                )}
+                            >
+                                Français
+                            </Button>
+                        </View> */}
                     </View>
                 </View>
             </PaperProvider>

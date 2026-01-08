@@ -203,6 +203,38 @@ export default function Login({ navigation }: Props) {
                         />
 
                         <TextInput
+                            left={<TextInput.Icon icon={require('../assets/pictogram/worker.png')} />}
+                            label={
+                                <Text
+                                    style={{ textAlign: "center", color: 'rgba(77, 77, 71, 0.87)' }}
+                                    variant="titleMedium"
+                                >
+                                    Votre email
+                                </Text>
+                            }
+                            // value={prenom}
+                            style={styles.textInput}
+                            // onChangeText={prenom => setPrenom(prenom)}
+                            underlineColor='darkgrey'
+                        />
+
+                        <TextInput
+                            left={<TextInput.Icon icon={require('../assets/pictogram/worker.png')} />}
+                            label={
+                                <Text
+                                    style={{ textAlign: "center", color: 'rgba(77, 77, 71, 0.87)' }}
+                                    variant="titleMedium"
+                                >
+                                    Votre numéro de téléphone
+                                </Text>
+                            }
+                            // value={prenom}
+                            style={styles.textInput}
+                            // onChangeText={prenom => setPrenom(prenom)}
+                            underlineColor='darkgrey'
+                        />
+
+                        <TextInput
                             left={<TextInput.Icon icon={require('../assets/pictogram/id.png')} />}
                             label={
                                 <Text
@@ -317,7 +349,11 @@ export default function Login({ navigation }: Props) {
                         icon="refresh"
                         size={24}
                         onPress={() => { handleRefresh() }}
-                        style={{ borderWidth: 1 }}
+                        iconColor='rgba(99, 99, 99, 0.87)'
+                        style={{
+                            borderWidth: 1,
+                            borderColor: 'rgba(99, 99, 99, 0.87)'
+                        }}
                     //style={{backgroundColor: 'rgba(230, 241, 255, 1) '}}
                     />
                     {/* <Text
