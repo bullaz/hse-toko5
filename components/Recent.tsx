@@ -26,6 +26,7 @@ import { ETAT } from "../constants/commonConstants";
 import { useFocusEffect } from "@react-navigation/native";
 import QRCode from 'react-native-qrcode-svg';
 import { refreshToko5s } from "../services/ApiService";
+import { useAppTranslation } from "../contexts/TranslationContext";
 
 
 type Props = NativeStackScreenProps<RootStackParamList>;
@@ -41,6 +42,8 @@ export default function Recent({ navigation }: Props) {
   const [isChecked, setChecked] = useState(false);
 
   const theme = useTheme();
+
+  const { t } = useAppTranslation();
 
   const [listToko5, setListToko5] = useState<Map<string, Toko5>>(new Map());
 
@@ -339,12 +342,12 @@ export default function Recent({ navigation }: Props) {
                       variant="titleMedium"
                     >
                       {/* Vous n'avez pas de toko 5 {"\n"} */}
-                      Veuillez presser le bouton en dessous pour initier un nouveau TOKO 5 !
+                      {t("recent.pressButtonNew")}
                     </Text>
                   </View>
                 </View>
                 :
-                (<View style={{ flex: 1, flexWrap: 'wrap', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', alignContent: 'center' }}>
+                (<View style={{ flex: 1, flexWrap: 'wrap', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', alignContent: 'center' }}>
                   {/* <MaterialDesignIcons
                     name="lightbulb-on-outline"
                     size={30}
@@ -358,8 +361,8 @@ export default function Recent({ navigation }: Props) {
                     style={{ textAlign: "center", padding: 10, color: "rgba(88, 88, 88, 1)", fontSize:15 }}
                     variant="titleSmall"
                   >
-                    Vous n'avez pas de toko 5 {"\n"}
-                    Veuillez presser le bouton en dessous pour en initier un!
+                    {t("recent.empty")} {"\n"}
+                    {t("recent.pressButtonNewEmpty")}
                   </Text>
                 </View>)}
 
@@ -425,7 +428,7 @@ export default function Recent({ navigation }: Props) {
             <Modal visible={deleteVisible} onDismiss={hideDeleteModal} contentContainerStyle={styles.deleteModalStyle}>
               <Text style={{ textAlign: "center", paddingLeft: 17 }}
                 variant="titleMedium">
-                Voulez-vous vraiment supprimer ce  TOKO 5?
+                {t("recent.delete")}
               </Text>
               <View style={{ flexDirection: 'row', justifyContent: 'space-around', gap: 30 }}>
                 <Button style={{

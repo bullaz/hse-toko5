@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { DatabaseContext, RootStackParamList, Toko5Json } from "../context";
 import { ActivityIndicator, Button, Icon, IconButton, PaperProvider, Text, useTheme } from "react-native-paper";
-import { KeyboardAvoidingView, StatusBar, View } from "react-native";
+import { KeyboardAvoidingView, ScrollView, StatusBar, View } from "react-native";
 import styles from "../styles/loginStyle";
 import { TextInput } from "react-native-paper";
 import { useCallback, useContext, useState } from "react";
@@ -28,6 +28,34 @@ const data = [
 ];
 
 export default function Login({ navigation }: Props) {
+
+    // Form state
+    const [formData, setFormData] = useState({
+        nom: "",
+        prenom: "",
+        email: "",
+        telephone: "",
+        permisId: "",
+        societe: undefined as Societe | undefined,
+        task: undefined as Task | undefined
+    });
+
+    const [dropdownFocus, setDropdownFocus] = useState({ societe: false, task: false });
+
+    // Updated form handling
+    const handleInputChange = (field: keyof typeof formData, value: any) => {
+        setFormData(prev => ({ ...prev, [field]: value }));
+    };
+
+    // Validate form before submission
+    const validateForm = () => {
+        const errors = [];
+        if (!formData.nom.trim()) errors.push("Nom est requis");
+        if (!formData.prenom.trim()) errors.push("Prénom est requis");
+        if (!formData.societe) errors.push("Société est requise");
+        if (!formData.task) errors.push("Tâche est requise");
+        return errors;
+    };
 
     const renderSocieteLeftIcon = () => {
         return (
@@ -120,32 +148,40 @@ export default function Login({ navigation }: Props) {
     }
 
     const newToko5 = async () => {
+        const errors = validateForm();
+        if (errors.length > 0) {
+            // Show errors to user
+            alert(errors.join('\n'));
+            return;
+        }
+
         try {
-            setLoading(true)
-            if (toko5Repository !== null) {
-                if (task && societe) {
-                    const toko5 = await toko5Repository.newToko5(nom, prenom, task, societe);
-                    console.log(toko5);
-                    let isInternetReachable = await checkConnection();
-                    if (isInternetReachable) {
-                        let saved = axios.post(`${BACKEND_URL}/toko5s`, toko5, {
-                            headers: {
-                                'Content-Type': 'application/json',
-                            }
-                        });
-                    }
-                    setLoading(false)
-                    navigation.navigate('Think', { toko5Id: toko5.toko5Id })
-                    return
+            setLoading(true);
+            if (toko5Repository !== null && formData.task && formData.societe) {
+                const toko5 = await toko5Repository.newToko5(
+                    formData.nom,
+                    formData.prenom,
+                    formData.task,
+                    formData.societe
+                );
+
+                const isInternetReachable = await checkConnection();
+                if (isInternetReachable) {
+                    await axios.post(`${BACKEND_URL}/toko5s`, toko5, {
+                        headers: { 'Content-Type': 'application/json' }
+                    });
                 }
+
+                navigation.navigate('Think', { toko5Id: toko5.toko5Id });
             }
-            setLoading(false)
-            throw new Error("repository is null");
         } catch (error) {
-            console.log("login newToko5 error: ", error);
+            console.error("Login error: ", error);
+            alert("Erreur lors de la connexion. Veuillez réessayer.");
+        } finally {
             setLoading(false);
         }
-    }
+    };
+
 
     const handleRefresh = () => {
 
@@ -163,109 +199,210 @@ export default function Login({ navigation }: Props) {
 
     return (
         <>
-            {/* <StatusBar hidden={false} backgroundColor="black" /> */}
-            <StatusBar hidden={false} backgroundColor="black" />
-            <View style={styles.container}>
-                <KeyboardAvoidingView>
+            <StatusBar
+            // barStyle="dark-content"
+            // backgroundColor="#F8F9FA"
+            // translucent={false}
+            />
 
-                    <View style={styles.loginDiv}>
-                        {/* <Text variant='titleLarge' style={{ fontWeight: 'bold', color: 'rgba(68, 66, 68, 0.87)' }}>Identifiez-vous</Text> */}
-                        <TextInput
-                            left={<TextInput.Icon icon={require('../assets/pictogram/worker.png')} />}
-                            label={
-                                <Text
-                                    style={{ textAlign: "center", color: 'rgba(77, 77, 71, 0.87)' }}
-                                    variant="titleMedium"
-                                >
-                                    Votre nom
-                                </Text>
-                            }
-                            value={nom}
-                            style={styles.textInput}
-                            onChangeText={nom => setNom(nom)}
-                            underlineColor='darkgrey'
+            <ScrollView
+                contentContainerStyle={styles.scrollContainer}
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+            >
+                {/* Header */}
+                <View style={styles.header}>
+                    {/* <Text style={styles.title}>Veuillez vous identifier</Text> */}
+                    {/* <Text style={styles.subtitle}>
+                        Veuillez vous identifier pour continuer
+                    </Text> */}
+                    <View
+                        style={{
+                            // flex: 1,
+                            flexWrap: "wrap",
+                            flexDirection: "row",
+                            justifyContent: 'center',
+                            alignItems: "center",
+                            alignContent: "center",
+                        }}
+                    >
+                        <Icon
+                            source="card-account-details-outline"
+                            size={52}
+                            color="rgba(56, 56, 56, 0.87)"
                         />
+                        <Text
+                            style={{ textAlign: "center", paddingLeft: 17, color: 'rgba(0, 0, 0, 0.87)' }}
+                            variant="titleMedium"
+                        >
+                            Fenoy ireny  {" "}
+                            {"\n"}
+                            hahamantarana anao
+                            {/* Vous n'avez pas de : {"\n"}- [something...] */}
+                        </Text>
+                    </View>
+                </View>
 
+                {/* Form Card */}
+                <View style={styles.card}>
+                    {/* Name Row */}
+                    {/* <View style={styles.inputRow}>
+                        <View style={styles.halfInput}>
+                            <Text style={styles.inputLabel}>
+                                Nom <Text style={styles.requiredIndicator}>*</Text>
+                            </Text>
+                            <TextInput
+                                left={<TextInput.Icon
+                                    icon="account"
+                                    color="#7F8C8D"
+                                    size={20}
+                                />}
+                                placeholder="Votre nom"
+                                value={formData.nom}
+                                style={styles.textInput}
+                                onChangeText={(value) => handleInputChange('nom', value)}
+                                mode="outlined"
+                                outlineColor="#E8ECF4"
+                                activeOutlineColor="#3498DB"
+                            />
+                        </View>
+
+                        <View style={styles.halfInput}>
+                            <Text style={styles.inputLabel}>
+                                Prénom <Text style={styles.requiredIndicator}>*</Text>
+                            </Text>
+                            <TextInput
+                                left={<TextInput.Icon
+                                    icon="account-outline"
+                                    color="#7F8C8D"
+                                    size={20}
+                                />}
+                                placeholder="Votre prénom"
+                                value={formData.prenom}
+                                style={styles.textInput}
+                                onChangeText={(value) => handleInputChange('prenom', value)}
+                                mode="outlined"
+                                outlineColor="#E8ECF4"
+                                activeOutlineColor="#3498DB"
+                            />
+                        </View>
+                    </View> */}
+
+                    <View style={styles.inputContainer}>
+                        <Text style={styles.inputLabel}>
+                            Nom <Text style={styles.requiredIndicator}>*</Text>
+                        </Text>
                         <TextInput
-                            left={<TextInput.Icon icon={require('../assets/pictogram/worker.png')} />}
-                            label={
-                                <Text
-                                    style={{ textAlign: "center", color: 'rgba(77, 77, 71, 0.87)' }}
-                                    variant="titleMedium"
-                                >
-                                    Votre prenom
-                                </Text>
-                            }
-                            value={prenom}
+                            left={<TextInput.Icon
+                                icon="account"
+                                color="#7F8C8D"
+                                size={20}
+                            />}
+                            placeholder="Votre nom"
+                            value={formData.nom}
                             style={styles.textInput}
-                            onChangeText={prenom => setPrenom(prenom)}
-                            underlineColor='darkgrey'
+                            onChangeText={(value) => handleInputChange('nom', value)}
+                            mode="outlined"
+                        // outlineColor="#E8ECF4"
+                        // activeOutlineColor="#3498DB"
                         />
+                    </View>
 
+                    <View style={styles.inputContainer}>
+                        <Text style={styles.inputLabel}>
+                            Prénom <Text style={styles.requiredIndicator}>*</Text>
+                        </Text>
                         <TextInput
-                            left={<TextInput.Icon icon={require('../assets/pictogram/worker.png')} />}
-                            label={
-                                <Text
-                                    style={{ textAlign: "center", color: 'rgba(77, 77, 71, 0.87)' }}
-                                    variant="titleMedium"
-                                >
-                                    Votre email
-                                </Text>
-                            }
-                            // value={prenom}
+                            left={<TextInput.Icon
+                                icon="account-outline"
+                                color="#7F8C8D"
+                                size={20}
+                            />}
+                            placeholder="Votre prénom"
+                            value={formData.prenom}
                             style={styles.textInput}
-                            // onChangeText={prenom => setPrenom(prenom)}
-                            underlineColor='darkgrey'
+                            onChangeText={(value) => handleInputChange('prenom', value)}
+                            mode="outlined"
+                        // outlineColor="#E8ECF4"
+                        // activeOutlineColor="#3498DB"
                         />
+                    </View>
 
+                    {/* Optional Fields */}
+                    <View style={styles.inputContainer}>
+                        <Text style={styles.inputLabel}>Email (optionnel)</Text>
                         <TextInput
-                            left={<TextInput.Icon icon={require('../assets/pictogram/worker.png')} />}
-                            label={
-                                <Text
-                                    style={{ textAlign: "center", color: 'rgba(77, 77, 71, 0.87)' }}
-                                    variant="titleMedium"
-                                >
-                                    Votre numéro de téléphone
-                                </Text>
-                            }
-                            // value={prenom}
+                            left={<TextInput.Icon icon="email" color="#7F8C8D" />}
+                            placeholder="email@exemple.com"
+                            value={formData.email}
                             style={styles.textInput}
-                            // onChangeText={prenom => setPrenom(prenom)}
-                            underlineColor='darkgrey'
+                            onChangeText={(value) => handleInputChange('email', value)}
+                            keyboardType="email-address"
+                            autoCapitalize="none"
+                            mode="outlined"
                         />
+                    </View>
 
+                    <View style={styles.inputContainer}>
+                        <Text style={styles.inputLabel}>Téléphone (optionnel)</Text>
                         <TextInput
-                            left={<TextInput.Icon icon={require('../assets/pictogram/id.png')} />}
-                            label={
-                                <Text
-                                    style={{ textAlign: "center", color: 'rgba(77, 77, 71, 0.87)' }}
-                                    variant="titleMedium"
-                                >
-                                    ID de votre permis de travail
-                                </Text>
-                            }
-                            value={text}
+                            left={<TextInput.Icon icon="phone" color="#7F8C8D" />}
+                            placeholder="+261 34 56 789 90"
+                            value={formData.telephone}
                             style={styles.textInput}
-                            onChangeText={text => setText(text)}
-                            underlineColor='darkgrey'
+                            onChangeText={(value) => handleInputChange('telephone', value)}
+                            keyboardType="phone-pad"
+                            mode="outlined"
                         />
-                        {/* <TextInput
-                            left={<TextInput.Icon icon={require('../assets/pictogram/id.png')} />}
-                            label={
-                                <Text
-                                    style={{ textAlign: "center", color: 'rgba(77, 77, 71, 0.87)' }}
-                                    variant="titleMedium"
-                                >
-                                    Societe
-                                </Text>
-                            }
-                            value={societe}
-                            style={styles.textInput}
-                            onChangeText={text => setSociete(text)}
-                            underlineColor='darkgrey'
-                        /> */}
+                    </View>
 
+                    <View style={styles.inputContainer}>
+                        <Text style={styles.inputLabel}>ID Permis de travail</Text>
+                        <TextInput
+                            left={<TextInput.Icon icon="card-account-details" color="#7F8C8D" />}
+                            placeholder="ID-XXXX-XXXX"
+                            value={formData.permisId}
+                            style={styles.textInput}
+                            onChangeText={(value) => handleInputChange('permisId', value)}
+                            mode="outlined"
+                        />
+                    </View>
+
+                    {/* Required Dropdowns */}
+                    <View style={styles.dropdownContainer}>
+                        <Text style={styles.inputLabel}>
+                            Société <Text style={styles.requiredIndicator}>*</Text>
+                        </Text>
                         <Dropdown
+                            style={[
+                                styles.dropdown,
+                                dropdownFocus.societe && styles.dropdownFocus
+                            ]}
+                            placeholderStyle={styles.placeholderStyle}
+                            selectedTextStyle={styles.selectedTextStyle}
+                            inputSearchStyle={styles.inputSearchStyle}
+                            iconStyle={styles.iconStyle}
+                            data={listSociete}
+                            search
+                            maxHeight={300}
+                            labelField="label"
+                            valueField="value"
+                            placeholder={"    "+"Sélectionner une société"}
+                            searchPlaceholder="Rechercher..."
+                            value={formData.societe}
+                            onFocus={() => setDropdownFocus(prev => ({ ...prev, societe: true }))}
+                            onBlur={() => setDropdownFocus(prev => ({ ...prev, societe: false }))}
+                            onChange={item => handleInputChange('societe', item.value)}
+                            renderLeftIcon={() => (
+                                <Icon
+                                    source="office-building"
+                                    size={20}
+                                    color={dropdownFocus.societe ? "rgba(26, 85, 161, 0.87)" : "#7F8C8D"}
+                                // style={styles.dropdownIcon}
+                                />
+                            )}
+                        />
+                        {/* <Dropdown
                             style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
                             placeholderStyle={styles.placeholderStyle}
                             selectedTextStyle={styles.selectedTextStyle}
@@ -286,86 +423,79 @@ export default function Login({ navigation }: Props) {
                                 setIsFocus(false);
                             }}
                             renderLeftIcon={renderSocieteLeftIcon}
-                        />
+                        /> */}
 
+                    </View>
+
+                    <View style={styles.dropdownContainer}>
+                        <Text style={styles.inputLabel}>
+                            Tâche <Text style={styles.requiredIndicator}>*</Text>
+                        </Text>
                         <Dropdown
-                            style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+                            style={[
+                                styles.dropdown,
+                                dropdownFocus.task && styles.dropdownFocus
+                            ]}
                             placeholderStyle={styles.placeholderStyle}
                             selectedTextStyle={styles.selectedTextStyle}
                             inputSearchStyle={styles.inputSearchStyle}
                             iconStyle={styles.iconStyle}
                             data={listTask}
-                            renderLeftIcon={renderSocieteLeftIcon}
                             search
-                            maxHeight={230}
+                            maxHeight={300}
                             labelField="label"
                             valueField="value"
-                            placeholder={"tâche"}
+                            placeholder={"    "+"Sélectionner une tâche"}
                             searchPlaceholder="Rechercher..."
-                            value={value}
-                            onFocus={() => setIsFocus(true)}
-                            onBlur={() => setIsFocus(false)}
-                            onChange={item => {
-                                setTask(item.value);
-                                setIsFocus(false);
-                            }}
-                        // renderLeftIcon={() => (
-                        //     // <AntDesign
-                        //     //     style={styles.icon}
-                        //     //     color={isFocus ? 'blue' : 'black'}
-                        //     //     name="Safety"
-                        //     //     size={20}
-                        //     // />
-                        // )}
+                            value={formData.task}
+                            onFocus={() => setDropdownFocus(prev => ({ ...prev, task: true }))}
+                            onBlur={() => setDropdownFocus(prev => ({ ...prev, task: false }))}
+                            onChange={item => handleInputChange('task', item.value)}
+                            renderLeftIcon={() => (
+                                <Icon
+                                    source="clipboard-list"
+                                    size={20}
+                                    color={dropdownFocus.task ? "rgba(26, 85, 161, 0.87)" : "#7F8C8D"}
+                                // style={styles.dropdownIcon}
+                                />
+                            )}
                         />
-
-                        <Button style={styles.bottomButton}
-                            mode="contained"
-                            onPress={newToko5}
-
-                            //test qr
-                            //onPress = {requestPermission}
-                            //onPress = {() => {navigation.navigate('ScanQr')}}
-
-                            contentStyle={{ flexDirection: 'row-reverse' }}
-                            labelStyle={{
-                                color: theme.colors.secondary, // Manually set to theme contrast color
-                                fontSize: 16
-                            }}
-                        >
-                            s'identifier
-                        </Button>
-                        {loading && (
-                            <View style={styles.loadingContainer}>
-                                <ActivityIndicator size="large" color={theme.colors.primary} />
-                            </View>)}
                     </View>
 
-                </KeyboardAvoidingView>
-                <View style={{
-                    marginTop: 10
-                }}>
+                    {/* Submit Button */}
+                    <Button
+                        mode="contained"
+                        onPress={newToko5}
+                        disabled={loading}
+                        style={[
+                            styles.button,
+                            loading && styles.buttonDisabled
+                        ]}
+                        labelStyle={styles.buttonText}
+                        contentStyle={styles.loadingButton}
+                    >
+                        {loading ? (
+                            <>
+                                <ActivityIndicator color="#FFFFFF" size="small" />
+                            </>
+                        ) : (
+                            "s'identifier"
+                        )}
+                    </Button>
+                </View>
+
+                {/* Refresh Button */}
+                <View style={styles.refreshContainer}>
                     <IconButton
                         icon="refresh"
                         size={24}
-                        onPress={() => { handleRefresh() }}
-                        iconColor='rgba(99, 99, 99, 0.87)'
-                        style={{
-                            borderWidth: 1,
-                            borderColor: 'rgba(99, 99, 99, 0.87)'
-                        }}
-                    //style={{backgroundColor: 'rgba(230, 241, 255, 1) '}}
+                        onPress={handleRefresh}
+                        iconColor="rgba(16, 81, 165, 1)"
+                        style={styles.refreshButton}
                     />
-                    {/* <Text
-                      style={{
-                        textAlign: "center",
-                      }}
-                      variant="titleMedium"
-                    >
-                      recharger
-                    </Text> */}
+                    <Text style={styles.refreshText}>Actualiser les données</Text>
                 </View>
-            </View>
+            </ScrollView>
         </>
-    )
+    );
 }

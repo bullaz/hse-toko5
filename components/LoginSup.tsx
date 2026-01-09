@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { DatabaseContext, RootStackParamList } from "../context";
-import { ActivityIndicator, Button, Text, useTheme } from "react-native-paper";
-import { KeyboardAvoidingView, StatusBar, View } from "react-native";
+import { ActivityIndicator, Button, Icon, IconButton, Text, useTheme } from "react-native-paper";
+import { KeyboardAvoidingView, ScrollView, StatusBar, View } from "react-native";
 import styles from "../styles/loginStyle";
 import { TextInput } from "react-native-paper";
 import { useContext, useState } from "react";
@@ -41,45 +41,91 @@ export default function LoginSup({ navigation }: Props) {
 
     return (
         <>
-            <StatusBar hidden={false} backgroundColor="black" />
-            <View style={styles.container}>
-                <KeyboardAvoidingView>
+            <StatusBar
+            // barStyle="dark-content"
+            // backgroundColor="#F8F9FA"
+            // translucent={false}
+            />
 
-                    <View style={styles.loginDiv}>
-                        {/* <Text variant='titleLarge' style={{ fontWeight: 'bold', color: 'rgba(68, 66, 68, 0.87)' }}>Identifiez-vous</Text> */}
+            <ScrollView
+                contentContainerStyle={styles.scrollContainer}
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+            >
+                {/* Header */}
+                <View style={styles.header}>
+                    {/* <Text style={styles.title}>Veuillez vous identifier</Text> */}
+                    {/* <Text style={styles.subtitle}>
+                        Veuillez vous identifier pour continuer
+                    </Text> */}
+                    <View
+                        style={{
+                            // flex: 1,
+                            flexWrap: "wrap",
+                            flexDirection: "row",
+                            justifyContent: 'center',
+                            alignItems: "center",
+                            alignContent: "center",
+                        }}
+                    >
+                        <Icon
+                            source="card-account-details-outline"
+                            size={52}
+                            color="rgba(56, 56, 56, 0.87)"
+                        />
+                        <Text
+                            style={{ textAlign: "center", paddingLeft: 17, color: 'rgba(0, 0, 0, 0.87)' }}
+                            variant="titleMedium"
+                        >
+                            Fenoy ireny  {" "}
+                            {"\n"}
+                            hahamantarana anao
+                            {/* Vous n'avez pas de : {"\n"}- [something...] */}
+                        </Text>
+                    </View>
+                </View>
+                <View style={styles.card}>
+                    <View style={styles.inputContainer}>
+                        <Text style={styles.inputLabel}>
+                            Nom <Text style={styles.requiredIndicator}>*</Text>
+                        </Text>
                         <TextInput
-                            left={<TextInput.Icon icon={require('../assets/pictogram/worker.png')} />}
-                            label={
-                                <Text
-                                    style={{ textAlign: "center", color: 'rgba(77, 77, 71, 0.87)' }}
-                                    variant="titleMedium"
-                                >
-                                    Nom
-                                </Text>
-                            }
+                            left={<TextInput.Icon
+                                icon="account"
+                                color="#7F8C8D"
+                                size={20}
+                            />}
+                            placeholder="Votre nom"
                             value={nom}
                             style={styles.textInput}
                             onChangeText={nom => setNom(nom)}
-                            underlineColor='darkgrey'
+                            mode="outlined"
+                        // outlineColor="#E8ECF4"
+                        // activeOutlineColor="#3498DB"
                         />
+                    </View>
 
+                    <View style={styles.inputContainer}>
+                        <Text style={styles.inputLabel}>
+                            Prénom <Text style={styles.requiredIndicator}>*</Text>
+                        </Text>
                         <TextInput
-                            left={<TextInput.Icon icon={require('../assets/pictogram/worker.png')} />}
-                            label={
-                                <Text
-                                    style={{ textAlign: "center", color: 'rgba(77, 77, 71, 0.87)' }}
-                                    variant="titleMedium"
-                                >
-                                    Prenom
-                                </Text>
-                            }
+                            left={<TextInput.Icon
+                                icon="account-outline"
+                                color="#7F8C8D"
+                                size={20}
+                            />}
+                            placeholder="Votre prénom"
                             value={prenom}
                             style={styles.textInput}
                             onChangeText={prenom => setPrenom(prenom)}
-                            underlineColor='darkgrey'
+                            mode="outlined"
+                        // outlineColor="#E8ECF4"
+                        // activeOutlineColor="#3498DB"
                         />
+                    </View>
 
-                        {/* <TextInput
+                    {/* <TextInput
                             left={<TextInput.Icon icon={require('../assets/pictogram/id.png')} />}
                             label={
                                 <Text
@@ -94,30 +140,27 @@ export default function LoginSup({ navigation }: Props) {
                             onChangeText={text => setText(text)}
                             underlineColor='darkgrey'
                         /> */}
-                        <Button style={styles.bottomButton}
-                            mode="contained"
-                            onPress={async ()=>{await handleLogin()}}
-
-                            //test qr
-                            //onPress = {requestPermission}
-                            //onPress = {() => {navigation.navigate('ScanQr')}}
-
-                            contentStyle={{ flexDirection: 'row-reverse' }}
-                            labelStyle={{
-                                color: theme.colors.secondary, // Manually set to theme contrast color
-                                fontSize: 16
-                            }}
-                        >
-                            s'identifier
-                        </Button>
-                        {loading && (
-                            <View style={styles.loadingContainer}>
-                                <ActivityIndicator size="large" color={theme.colors.primary} />
-                            </View>)}
-                    </View>
-
-                </KeyboardAvoidingView>
-            </View>
+                    <Button
+                        mode="contained"
+                        onPress={handleLogin}
+                        disabled={loading}
+                        style={[
+                            styles.button,
+                            loading && styles.buttonDisabled
+                        ]}
+                        labelStyle={styles.buttonText}
+                        contentStyle={styles.loadingButton}
+                    >
+                        {loading ? (
+                            <>
+                                <ActivityIndicator color="#FFFFFF" size="small" />
+                            </>
+                        ) : (
+                            "s'identifier"
+                        )}
+                    </Button>
+                </View>
+            </ScrollView>
         </>
     )
 }

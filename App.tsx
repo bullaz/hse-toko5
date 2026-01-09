@@ -30,30 +30,41 @@ import Home from "./components/Home";
 import LoginSup from "./components/LoginSup";
 import ListProblem from "./components/ListProblem";
 import { useNavigation } from '@react-navigation/native';
-
-// console.log('TEST OUTSIDE COMPONENT')
+import { TranslationProvider, useAppTranslation } from "./contexts/TranslationContext"; // Import useAppTranslation
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
-
 
 const theme = {
   ...DefaultTheme,
   colors: {
-    // primary: 'rgba(16, 81, 165, 1)',
-    primary: "rgba(26, 85, 161, 0.87)",
-    //primary: '',
-    secondary: 'white'
+    primary: 'rgba(26, 85, 161, 0.87)', //rgba(26, 85, 161, 0.87)
+    secondary: 'white',
   },
 };
 
-
-//export const DatabaseContext = createContext<Toko5Repository | null>(null); ///////////////////////put this in a another file ... this causes circular dependencies that can cause problems
-
-
-
-export default function App() {
-
-  const [toko5Repository, setToko5Repository] = useState<Toko5Repository | null>(null);
+// Create a component that wraps your navigator to access translation context
+function AppNavigator() {
+  const { t, language } = useAppTranslation();
+  
+  // Define screen titles based on language
+  const screenTitles = {
+    home: t('home.title'),
+    recent: t('screenTitles.recent'),
+    invalide: t('screenTitles.invalide'),
+    scanQr: t('screenTitles.scanQr'),
+    login: t('screenTitles.login'),
+    loginSup: t('screenTitles.login'),
+    think: t('screenTitles.think'),
+    singlePicto: t('screenTitles.singlePicto'),
+    organise1: t('screenTitles.organise'),
+    organise2: t('screenTitles.organise'),
+    identifyRisks: t('screenTitles.identifyRisks'),
+    controlMeasure: t('screenTitles.controlMeasure'),
+    epi: t('screenTitles.epi'),
+    fitness: t('screenTitles.fitness'),
+    commentaire: t('screenTitles.commentaire'),
+    listProblem: t('screenTitles.listProblem'),
+  };
 
   const screenOptions: NativeStackNavigationOptions = {
     headerStyle: {
@@ -65,6 +76,218 @@ export default function App() {
     },
   };
 
+  return (
+    <Stack.Navigator screenOptions={screenOptions}>
+      <Stack.Screen
+        name="Home"
+        component={Home}
+        options={{
+          title: screenTitles.home,
+          headerBackVisible: false,
+          gestureEnabled: false,
+          headerRight: () => (
+            <Image
+              source={require('./assets/stellarix.png')}
+              style={{ width: 120, height: 50, marginRight: 15 }}
+              resizeMode="contain"
+            />
+          ),
+          headerTitleStyle: {
+            color: 'rgb(255, 255, 255)',
+            fontSize: 24,
+            fontWeight: 'bold',
+          },
+        }}
+      />
+
+      <Stack.Screen
+        name="Recent"
+        component={Recent}
+        options={({ navigation }) => ({
+          title: screenTitles.recent,
+          headerBackVisible: false,
+          gestureEnabled: false,
+          headerRight: () => (
+            <IconButton
+              icon="home"
+              size={30}
+              iconColor="white"
+              onPress={() => navigation.navigate('Home')}
+            />
+          ),
+        })}
+      />
+
+      <Stack.Screen
+        name="Invalide"
+        component={Invalide}
+        options={{ 
+          title: screenTitles.invalide, 
+          headerBackVisible: false, 
+          gestureEnabled: false 
+        }}
+      />
+
+      <Stack.Screen
+        name="ScanQr"
+        component={ScanQr}
+        options={{ title: screenTitles.scanQr }}
+      />
+
+      <Stack.Screen
+        name="Login"
+        component={Login}
+        options={{ 
+          title: screenTitles.login, 
+          headerBackVisible: false, 
+          gestureEnabled: false 
+        }}
+      />
+
+      <Stack.Screen
+        name="LoginSup"
+        component={LoginSup}
+        options={{ 
+          title: screenTitles.loginSup, 
+          headerBackVisible: false, 
+          gestureEnabled: false 
+        }}
+      />
+      
+      <Stack.Screen
+        name="Think"
+        options={{ 
+          title: screenTitles.think, 
+          headerBackVisible: false, 
+          gestureEnabled: false 
+        }}
+      >
+        {(props: NativeStackScreenProps<RootStackParamList, 'Think'>) => (
+          <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
+            <Think {...props} />
+          </ProtectedToko5Route>
+        )}
+      </Stack.Screen>
+      
+      <Stack.Screen
+        name="SinglePicto"
+        component={SinglePicto}
+        options={{ title: screenTitles.singlePicto }}
+      />
+
+      <Stack.Screen
+        name="Organise1"
+        options={{ 
+          title: screenTitles.organise1, 
+          headerBackVisible: false, 
+          gestureEnabled: false 
+        }}
+      >
+        {(props: NativeStackScreenProps<RootStackParamList, 'Organise1'>) => (
+          <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
+            <Organise1 {...props} />
+          </ProtectedToko5Route>
+        )}
+      </Stack.Screen>
+
+      <Stack.Screen
+        name="Organise2"
+        options={{ 
+          title: screenTitles.organise2, 
+          headerBackVisible: false, 
+          gestureEnabled: false 
+        }}
+      >
+        {(props: NativeStackScreenProps<RootStackParamList, 'Organise2'>) => (
+          <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
+            <Organise2 {...props} />
+          </ProtectedToko5Route>
+        )}
+      </Stack.Screen>
+
+      <Stack.Screen
+        name="IdentifyRisks"
+        options={{ 
+          title: screenTitles.identifyRisks, 
+          headerBackVisible: false, 
+          gestureEnabled: false 
+        }}
+      >
+        {(props: NativeStackScreenProps<RootStackParamList, 'IdentifyRisks'>) => (
+          <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
+            <IdentifyRisks {...props} />
+          </ProtectedToko5Route>
+        )}
+      </Stack.Screen>
+
+      <Stack.Screen
+        name="ControlMeasure"
+        options={{ 
+          title: screenTitles.controlMeasure, 
+          gestureEnabled: false 
+        }}
+      >
+        {(props: NativeStackScreenProps<RootStackParamList, 'ControlMeasure'>) => (
+          <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
+            <ControlMeasure {...props} />
+          </ProtectedToko5Route>
+        )}
+      </Stack.Screen>
+
+      <Stack.Screen
+        name="Epi"
+        options={{ 
+          title: screenTitles.epi, 
+          headerBackVisible: false, 
+          gestureEnabled: false 
+        }}
+      >
+        {(props: NativeStackScreenProps<RootStackParamList, 'Epi'>) => (
+          <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
+            <Epi {...props} />
+          </ProtectedToko5Route>
+        )}
+      </Stack.Screen>
+
+      <Stack.Screen
+        name="Fitness"
+        options={{ 
+          title: screenTitles.fitness, 
+          gestureEnabled: false 
+        }}
+      >
+        {(props: NativeStackScreenProps<RootStackParamList, 'Fitness'>) => (
+          <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
+            <Fitness {...props} />
+          </ProtectedToko5Route>
+        )}
+      </Stack.Screen>
+
+      <Stack.Screen
+        name="Commentaire"
+        component={Commentaire}
+        options={{ 
+          title: screenTitles.commentaire, 
+          headerBackVisible: true, 
+          gestureEnabled: false 
+        }}
+      />
+
+      <Stack.Screen
+        name="ListProblem"
+        component={ListProblem}
+        options={{ 
+          title: screenTitles.listProblem, 
+          headerBackVisible: true, 
+          gestureEnabled: false 
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
+
+export default function App() {
+  const [toko5Repository, setToko5Repository] = useState<Toko5Repository | null>(null);
   const [dbInitialized, setDbInitialized] = useState(false);
 
   useEffect(() => {
@@ -91,200 +314,17 @@ export default function App() {
     );
   }
 
-
   return (
-    <DatabaseContext.Provider value={toko5Repository}>
-      <PaperProvider theme={theme}>
-        <NavigationContainer>
-          <Stack.Navigator screenOptions={screenOptions}>
-            <Stack.Screen
-              name="Home"
-              component={Home}
-              options={{
-                title: "TOKO 5", headerBackVisible: false, gestureEnabled: false,
-                headerRight: () => (
-                  <Image
-                    source={require('./assets/stellarix.png')} // or {uri: 'https://...'}
-                    style={{ width: 120, height: 50, marginRight: 15 }}
-                    resizeMode="contain"
-                  />
-                ),
-                headerTitleStyle: {
-                  color: 'rgb(255, 255, 255)', // Change to your desired color
-                  fontSize: 24,     // Change to your desired font size
-                  fontWeight: 'bold', // Optional: change font weight
-                  fontFamily: 'YourCustomFont', // Optional: custom font
-                },
-              }}
-            />
-
-            <Stack.Screen
-              name="Recent"
-              component={Recent}
-              options={({ navigation }) => ({ // Use function to get navigation prop
-                title: 'TOKO 5 RECENT(S)',
-                headerBackVisible: false,
-                gestureEnabled: false,
-                headerRight: () => (
-                  <IconButton
-                    icon="home"
-                    size={30}
-                    iconColor="white"
-                    onPress={() => navigation.navigate('Home')} // Navigate to Home
-                  />
-                ),
-              })}
-            />
-
-            <Stack.Screen
-              name="Invalide"
-              component={Invalide}
-              options={{ title: 'TOKO 5 INVALIDE', headerBackVisible: false, gestureEnabled: false }}
-            />
-
-            <Stack.Screen
-              name="ScanQr"
-              component={ScanQr}
-              options={{ title: 'SCANNER UN TOKO 5' }}
-            />
-
-            <Stack.Screen
-              name="Login"
-              component={Login}
-              options={{ title: "IDENTIFICATION", headerBackVisible: false, gestureEnabled: false}}
-            />
-
-            <Stack.Screen
-              name="LoginSup"
-              component={LoginSup}
-              options={{ title: "IDENTIFICATION", headerBackVisible: false, gestureEnabled: false}}
-            />
-            <Stack.Screen
-              name="Think"
-              options={{ title: 'PENSER', headerBackVisible: false, gestureEnabled: false }}
-            >
-              {(props: NativeStackScreenProps<RootStackParamList, 'Think'>) => (
-                <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
-                  <Think {...props} />
-                </ProtectedToko5Route>
-              )}
-            </Stack.Screen>
-            <Stack.Screen
-              name="SinglePicto"
-              component={SinglePicto}
-              options={{ title: 'description du pictogramme' }}
-            />
-
-            <Stack.Screen
-              name="Organise1"
-              options={{ title: 'ORGANISER', headerBackVisible: false, gestureEnabled: false }}
-            >
-              {(props: NativeStackScreenProps<RootStackParamList, 'Organise1'>) => (
-                <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
-                  <Organise1 {...props} />
-                </ProtectedToko5Route>
-              )}
-            </Stack.Screen>
-
-
-            <Stack.Screen
-              name="Organise2"
-              options={{ title: 'ORGANISER', headerBackVisible: false, gestureEnabled: false }}
-            >
-              {(props: NativeStackScreenProps<RootStackParamList, 'Organise2'>) => (
-                <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
-                  <Organise2 {...props} />
-                </ProtectedToko5Route>
-              )}
-            </Stack.Screen>
-
-            <Stack.Screen
-              name="IdentifyRisks"
-              options={{ title: 'IDENTIFIER LES DANGERS', headerBackVisible: false, gestureEnabled: false }}
-            >
-              {(props: NativeStackScreenProps<RootStackParamList, 'IdentifyRisks'>) => (
-                <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
-                  <IdentifyRisks {...props} />
-                </ProtectedToko5Route>
-              )}
-            </Stack.Screen>
-
-            <Stack.Screen
-              name="ControlMeasure"
-              options={{ title: 'PRENDRE DES MESURES', gestureEnabled: false }}
-            >
-              {(props: NativeStackScreenProps<RootStackParamList, 'ControlMeasure'>) => (
-                <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
-                  <ControlMeasure {...props} />
-                </ProtectedToko5Route>
-              )}
-            </Stack.Screen>
-
-
-            <Stack.Screen
-              name="Epi"
-              options={{ title: 'EPI / PPE', headerBackVisible: false, gestureEnabled: false }}
-            >
-              {(props: NativeStackScreenProps<RootStackParamList, 'Epi'>) => (
-                <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
-                  <Epi {...props} />
-                </ProtectedToko5Route>
-              )}
-            </Stack.Screen>
-
-
-            <Stack.Screen
-              name="Fitness"
-              options={{ title: 'MON ETAT', gestureEnabled: false }}
-            >
-              {(props: NativeStackScreenProps<RootStackParamList, 'Fitness'>) => (
-                <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
-                  <Fitness {...props} />
-                </ProtectedToko5Route>
-              )}
-            </Stack.Screen>
-
-            <Stack.Screen
-              name="Commentaire"
-              component={Commentaire}
-              options={{ title: 'COMMENTAIRES', headerBackVisible: true, gestureEnabled: false }}
-            />
-
-            <Stack.Screen
-              name="ListProblem"
-              component={ListProblem}
-              options={{ title: 'TOKO 5 INFORMATIONS', headerBackVisible: true, gestureEnabled: false }}
-            />
-
-          </Stack.Navigator>
-        </NavigationContainer>
-      </PaperProvider>
-    </DatabaseContext.Provider>
+    <TranslationProvider>
+      <DatabaseContext.Provider value={toko5Repository}>
+        <PaperProvider theme={theme}>
+          <NavigationContainer>
+            <AppNavigator />
+          </NavigationContainer>
+        </PaperProvider>
+      </DatabaseContext.Provider>
+    </TranslationProvider>
   );
 }
 
-AppRegistry.registerComponent('toko5', () => App)
-
-
-
-//   < Stack.Screen
-// name = "Recent"
-// options = {{ title: 'toko5 recent(s)', headerBackVisible: false }}
-//             >
-//   {() => (
-//     <AuthGuard>
-//       <Recent />
-//     </AuthGuard>
-//   )}
-//             </Stack.Screen >
-
-//   <Stack.Screen
-//     name="Invalide"
-//     options={{ title: 'Votre toko5 est invalide', headerBackVisible: false }}
-//   >
-//     {() => (
-//       <AuthGuard>
-//         <Invalide />
-//       </AuthGuard>
-//     )}
-//   </Stack.Screen>
+AppRegistry.registerComponent('toko5', () => App);

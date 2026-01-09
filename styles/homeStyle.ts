@@ -3,6 +3,7 @@ import { Platform, StatusBar, StyleSheet } from "react-native";
 export default StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor:"white"
     // flexDirection: 'column',
     // //justifyContent: 'center',
     // alignContent: 'center',
@@ -15,5 +16,10 @@ export default StyleSheet.create({
   },
   bottomButton: {
     width: '90%'
+  },
+  checkboxContainer: {
+    borderWidth: 0,
+    flexDirection: 'row',
+    justifyContent: 'center'
   },
 });
