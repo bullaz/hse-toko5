@@ -226,14 +226,19 @@ export default function Login({ navigation }: Props) {
                             alignContent: "center",
                         }}
                     >
-                        <Icon
+                        {/* <Icon
                             source="card-account-details-outline"
                             size={52}
                             color="rgba(56, 56, 56, 0.87)"
-                        />
-                        <Text
+                        /> */}
+
+                        {/* <Text
                             style={{ textAlign: "center", paddingLeft: 17, color: 'rgba(0, 0, 0, 0.87)' }}
                             variant="titleMedium"
+                        > */}
+                        <Text
+                            style={{ textAlign: "center", color: "rgba(88, 88, 88, 1)", fontSize: 16}}
+                            variant="titleSmall"
                         >
                             Fenoy ireny  {" "}
                             {"\n"}
@@ -387,7 +392,7 @@ export default function Login({ navigation }: Props) {
                             maxHeight={300}
                             labelField="label"
                             valueField="value"
-                            placeholder={"    "+"Sélectionner une société"}
+                            placeholder={"    " + "Sélectionner une société"}
                             searchPlaceholder="Rechercher..."
                             value={formData.societe}
                             onFocus={() => setDropdownFocus(prev => ({ ...prev, societe: true }))}
@@ -445,7 +450,7 @@ export default function Login({ navigation }: Props) {
                             maxHeight={300}
                             labelField="label"
                             valueField="value"
-                            placeholder={"    "+"Sélectionner une tâche"}
+                            placeholder={"    " + "Sélectionner une tâche"}
                             searchPlaceholder="Rechercher..."
                             value={formData.task}
                             onFocus={() => setDropdownFocus(prev => ({ ...prev, task: true }))}

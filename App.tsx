@@ -109,8 +109,8 @@ function AppNavigator() {
           gestureEnabled: false,
           headerRight: () => (
             <IconButton
-              icon="home"
-              size={30}
+              icon="home-circle"
+              size={33}
               iconColor="white"
               onPress={() => navigation.navigate('Home')}
             />
@@ -137,11 +137,19 @@ function AppNavigator() {
       <Stack.Screen
         name="Login"
         component={Login}
-        options={{ 
-          title: screenTitles.login, 
-          headerBackVisible: false, 
-          gestureEnabled: false 
-        }}
+        options={({ navigation }) => ({
+          title: screenTitles.login,
+          headerBackVisible: false,
+          gestureEnabled: false,
+          headerRight: () => (
+            <IconButton
+              icon="home-circle"
+              size={33}
+              iconColor="white"
+              onPress={() => navigation.navigate('Recent')}
+            />
+          ),
+        })}
       />
 
       <Stack.Screen

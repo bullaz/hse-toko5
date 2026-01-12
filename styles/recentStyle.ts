@@ -8,7 +8,7 @@ export default StyleSheet.create({
     alignItems: 'center',
     alignContent: 'center',
     justifyContent: 'space-between',
-    backgroundColor: "ghostwhite",
+    backgroundColor: "white",
 
     ...Platform.select({
       ios: { paddingTop: 40 },
@@ -51,14 +51,15 @@ export default StyleSheet.create({
   deleteModalStyle: {
     width: "90%", 
     backgroundColor: 'ghostwhite', 
-    borderRadius: 30,
-    height: "25%", //currently we support only numbers in height prop warning
+    borderRadius: 10,
+    height: 150, //currently we support only numbers in height prop warning
     // padding: 20,
     alignSelf: 'center',
     flexDirection: 'column',
     justifyContent: 'space-around',
     alignItems: 'center',
-    alignContent: 'center'
+    alignContent: 'center',
+    padding: 10
   },
 
   codeModalStyle: {

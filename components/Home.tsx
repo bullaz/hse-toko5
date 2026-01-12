@@ -67,8 +67,8 @@ export default function Home({ navigation }: Props) {
                                     />
                                     <Text style={{ fontSize: 80, fontStyle: 'italic', fontWeight: 'bold', textAlign: 'center', color: "rgba(24, 82, 158, 0.88)" }}>{t("common.appName")}</Text>
                                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-                                        <Text variant="headlineSmall" style={{ fontWeight: 'bold', color: 'rgba(94, 94, 94, 0.87)' }}>Protège / Miaro / Protect</Text>
-                                        <Icon source={require('../assets/pictogram/work-safety2.png')} size={25} color={theme.colors.primary} />
+                                        <Text variant="headlineSmall" style={{ color: 'rgba(94, 94, 94, 0.87)',fontFamily:'sans-serif-medium' }}>Protège / Miaro / Protect</Text>
+                                        <Icon source={require('../assets/pictogram/take5.png')} size={25} color={theme.colors.primary} />
                                     </View>
                                 </View>
 
@@ -149,6 +149,7 @@ export default function Home({ navigation }: Props) {
                             index={1}
                             snapPoints={snapPoints}
                             enablePanDownToClose
+                            backgroundStyle={{backgroundColor: 'ghostwhite',borderWidth:0.5}}                            
                         >
                             <BottomSheetView style={{
                                 flex: 1,
@@ -156,7 +157,8 @@ export default function Home({ navigation }: Props) {
                                 paddingBottom: 20,
                                 display: 'flex',
                                 flexDirection: 'column',
-                                alignItems: 'center',
+                                alignItems: 'center'
+
                             }}>
                                 <Text style={{
                                     fontSize: 20,

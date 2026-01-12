@@ -177,7 +177,7 @@ export default function Recent({ navigation }: Props) {
             <View style={styles.container}>
               {(Array.from(listToko5.values())).length > 0 ?
                 <View style={{
-                  marginTop: 30,
+                  marginTop: 10,
                   flex: 1,
                   flexDirection: 'column',
                   alignContent: 'center',
@@ -210,7 +210,7 @@ export default function Recent({ navigation }: Props) {
                       width: '88%', // 90% of parent width
                       maxHeight: '70%', // 60% of screen height
                       alignSelf: 'center',
-                      backgroundColor: 'ghostwhite',
+                      backgroundColor: 'white',
                       borderRadius: 10,
                       // borderEndColor: 'ghostwhite',
                       // shadowColor: "black",
@@ -262,6 +262,13 @@ export default function Recent({ navigation }: Props) {
                       {toko5.date_heure.split("T")[0]}
                     </Text>
                   </View> */}
+
+                            <View
+                              style={{ flexDirection: "row", justifyContent: "center" }}
+                            >
+                              <Icon source={require('../assets/pictogram/take5.png')} size={30} color={theme.colors.primary} />
+
+                            </View>
                             <Text
                               style={{
                                 textAlign: "center", paddingLeft: 17, flex: 1, // Add this
@@ -333,13 +340,15 @@ export default function Recent({ navigation }: Props) {
                     size={30}
                     style={{}}
                   /> */}
-                    <Icon
+
+                    {/* <Icon
                       source={require('../assets/pictogram/bulb.png')}
                       size={45}
-                    />
+                    /> */}
+
                     <Text
-                      style={{ textAlign: "center", padding: 10 }}
-                      variant="titleMedium"
+                      style={{ textAlign: "center", padding: 10, color: "rgba(88, 88, 88, 1)", fontSize: 15 }}
+                      variant="titleSmall"
                     >
                       {/* Vous n'avez pas de toko 5 {"\n"} */}
                       {t("recent.pressButtonNew")}
@@ -353,12 +362,13 @@ export default function Recent({ navigation }: Props) {
                     size={30}
                     style={{}}
                   /> */}
-                  <Icon
+
+                  {/* <Icon
                     source={require('../assets/pictogram/bulb.png')}
                     size={45}
-                  />
+                  /> */}
                   <Text
-                    style={{ textAlign: "center", padding: 10, color: "rgba(88, 88, 88, 1)", fontSize:15 }}
+                    style={{ textAlign: "center", padding: 10, color: "rgba(88, 88, 88, 1)", fontSize: 15 }}
                     variant="titleSmall"
                   >
                     {t("recent.empty")} {"\n"}
@@ -426,7 +436,7 @@ export default function Recent({ navigation }: Props) {
             </View >
 
             <Modal visible={deleteVisible} onDismiss={hideDeleteModal} contentContainerStyle={styles.deleteModalStyle}>
-              <Text style={{ textAlign: "center", paddingLeft: 17 }}
+              <Text style={{ textAlign: "center", paddingLeft: 17, paddingRight: 17 }}
                 variant="titleMedium">
                 {t("recent.delete")}
               </Text>
@@ -451,7 +461,7 @@ export default function Recent({ navigation }: Props) {
                 <Button style={{
                   width: "30%",
                   borderRadius: 5,
-                  backgroundColor: "ghostwhite",
+                  backgroundColor: "white",
                   borderWidth: 1,
                   borderColor: 'black'
                 }}

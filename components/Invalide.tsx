@@ -3,6 +3,7 @@ import { DatabaseContext, RootStackParamList } from "../context";
 import { Image, ScrollView, StatusBar, View } from "react-native";
 import {
   ActivityIndicator,
+  Divider,
   Icon,
   IconButton,
   Text,
@@ -72,7 +73,7 @@ export default function Invalide({ navigation, route }: Props) {
                 width: '100%',
                 maxHeight: '80%',
                 alignSelf: 'center',
-                backgroundColor: 'ghostwhite'
+                backgroundColor: 'white'
               }}
               persistentScrollbar={true}
             >
@@ -136,7 +137,11 @@ export default function Invalide({ navigation, route }: Props) {
                 </Text>
               </View>
             </ScrollView>
-            <View>
+            <View style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-around',
+            }}>
               <IconButton
                 icon="home"
                 size={24}
@@ -150,6 +155,17 @@ export default function Invalide({ navigation, route }: Props) {
                   marginBottom: 35,
                 }}
               />
+              {/* <Divider/> */}
+              <IconButton
+                      icon="restart"
+                      size={50}
+                      iconColor="white"
+                      onPress={() => { tryAgain(toko5Id) }}
+                      style={{
+                        backgroundColor: "rgba(33, 93, 172, 0.87)",
+                      }}
+                    //style={{backgroundColor: 'rgba(230, 241, 255, 1) '}}
+                    />
               {/* "rgba(105, 146, 200, 0.87)" */}
             </View>
           </View>
