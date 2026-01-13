@@ -277,7 +277,7 @@ export default function Recent({ navigation }: Props) {
                               }}
                               variant="titleMedium"
                             >
-                              TOKO 5 de {toko5.prenom_contractant.slice(0, 22)}...  {"\n"}
+                              {t("recent.single")} {toko5.prenom_contractant.slice(0, 22)}...  {"\n"}
                               <Text style={{ color: 'rgba(49, 108, 184, 0.85)', fontWeight: 'bold' }}>
                                 {toko5.date_heure.split("T")[0].replaceAll("-", "/")}
                               </Text>

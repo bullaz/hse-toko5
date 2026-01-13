@@ -41,6 +41,14 @@ class Toko5Repository {
         }
     }
 
+    // async addTranslations(){
+    //     try {
+            
+    //     }catch(error){
+    //         console.log('Error while adding tarnslations toko5repository', error);
+    //     }
+    // }
+
     async createTables() {
         //try using transaction
         if (this.db !== null) {
@@ -49,9 +57,12 @@ class Toko5Repository {
                 await this.db.execAsync("DROP TABLE IF EXISTS toko5");
                 await this.db.execAsync("DROP TABLE IF EXISTS commentaire");
                 await this.db.execAsync("DROP TABLE IF EXISTS mesure_controle");
+                await this.db.execAsync("DROP TABLE IF EXISTS reponse");
+                await this.db.execAsync("DROP TABLE IF EXISTS question");
                 await this.db.execAsync(
                     `CREATE TABLE IF NOT EXISTS question (
                         question_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        text_id TEXT,
                         nom TEXT NOT NULL UNIQUE,
                         pictogramme TEXT,
                         required INTEGER NOT NULL DEFAULT 0 CHECK (required in (0,1)),
@@ -193,53 +204,51 @@ class Toko5Repository {
                 await this.db.execAsync(`DELETE FROM mesure_controle`);
                 await this.db.execAsync(`DELETE FROM commentaire`);
                 await this.db.runAsync(
-                    `INSERT INTO question (nom, pictogramme, categorie, required) VALUES 
-                        ('alcool','alcool', 'think', 1),
-                        ('competence', 'competency', 'think', 1),
-                        ('formation', 'formation', 'think', 1),
-                        ('materiel', 'materiel', 'think', 1),
-                        ('nombre de travailleurs', 'people', 'think', 1),
+                    `INSERT INTO question (nom, pictogramme,text_id, categorie, required) VALUES 
+                        ('alcool','alcool','alcool', 'think', 1),
+                        ('competence', 'competency','competence', 'think', 1),
+                        ('formation', 'formation', 'formation', 'think', 1),
+                        ('materiel', 'materiel', 'materiel', 'think', 1),
+                        ('nombre de travailleurs', 'people', 'nombreTravailleurs', 'think', 1),
 
                         
-                        ('swp',  'swp', 'organise', 1),
-                        ('ast', 'ast', 'organise', 1),
-                        ('permis de travail', 'workpermit', 'organise', 1),
-                        ('attention eboulement', 'falling-rock', 'organise', 0),
-                        ('pelle', 'pelle', 'organise', 0),
-                        ('attention feu', 'fire_warning', 'organise', 0),
-                        ('test1', 'organise22', 'organise', 0),
-                        ('test5', 'organise23', 'organise', 0),
-                        ('test2', 'organise24', 'organise', 0),
-                        ('test3', 'organise211', 'organise', 0),
-                        ('test4', 'organiselast', 'organise', 0),
+                        ('swp',  'swp','swp', 'organise', 1),
+                        ('ast', 'ast', 'ast', 'organise', 1),
+                        ('permis de travail', 'workpermit', 'permis', 'organise', 1),
+                        ('attention eboulement', 'falling-rock', 'eboulement', 'organise', 0),
+                        ('pelle', 'pelle', 'pelle', 'organise', 0),
+                        ('attention feu', 'fire_warning', 'fue', 'organise', 0),
+                        ('test1', 'organise22', 'test1', 'organise', 0),
+                        ('test5', 'organise23', 'test5', 'organise', 0),
+                        ('test2', 'organise24', 'test2', 'organise', 0),
+                        ('test3', 'organise211', 'test3', 'organise', 0),
+                        ('test4', 'organiselast', 'test4', 'organise', 0),
 
 
-
-                        ('biohazard', 'biohazard', 'risk', 0),
-                        ('electricite', 'electricity', 'risk', 0),
-                        ('fatal', 'fatal', 'risk', 0),
-                        ('attention risque feu ', 'fire_warning', 'risk', 0),
-                        ('attention terrain glissant', 'slippery', 'risk', 0),
-                        ('unknown', 'unknown', 'risk', 0),
-                        ('attention a la marche', 'watch-steps', 'risk', 0),
-                        ('autre', 'other-hazard', 'risk', 0),
-
-
-                        ('antibruit', 'antibruit', 'epi', 0),
-                        ('verre de protection du visage', 'face-protection', 'epi', 0),
-                        ('gant', 'gant', 'epi', 0),
-                        ('gilet', 'gilet', 'epi', 0),
-                        ('gilet2', 'gilet2', 'epi', 0),
-                        ('lunettes', 'glass2', 'epi', 0),
-                        ('casque', 'helmet', 'epi', 0),
-                        ('cache-bouche', 'mask2', 'epi', 0),
-                        ('chaussures de protection', 'shoes', 'epi', 0),
-                        ('uniforme', 'uniform', 'epi', 0),
+                        ('biohazard', 'biohazard','biohazard', 'risk', 0),
+                        ('electricite', 'electricity', 'electricite', 'risk', 0),
+                        ('fatal', 'fatal', 'fatal', 'risk', 0),
+                        ('attention risque feu ', 'fire_warning', 'risqueFeu', 'risk', 0),
+                        ('attention terrain glissant', 'slippery', 'terrainGlissant', 'risk', 0),
+                        ('unknown', 'unknown', 'unknown', 'risk', 0),
+                        ('attention a la marche', 'watch-steps', 'attentionMarche', 'risk', 0),
+                        ('autre', 'other-hazard', 'autre', 'risk', 0),
 
 
-                        ('Est-ce que je suis en bonne condition pour faire ce travail?',null , 'safety', 1),
-                        ('Est-ce que je suis en securite pour realiser la tache?',null , 'safety', 1),
-                        ('Executer la tache en toute securite',null , 'safety', 1)
+                        ('antibruit', 'antibruit','antibruit', 'epi', 0),
+                        ('verre de protection du visage', 'face-protection', 'faceProtection', 'epi', 0),
+                        ('gant', 'gant', 'gant', 'epi', 0),
+                        ('gilet', 'gilet', 'gilet', 'epi', 0),
+                        ('gilet2', 'gilet2', 'gilet2', 'epi', 0),
+                        ('lunettes', 'glass2', 'lunettes', 'epi', 0),
+                        ('casque', 'helmet', 'casque', 'epi', 0),
+                        ('cache-bouche', 'mask2', 'cacheBouche', 'epi', 0),
+                        ('chaussures de protection', 'shoes', 'chaussuresProtection', 'epi', 0),
+                        ('uniforme', 'uniform', 'uniforme', 'epi', 0),
+
+                        ('Est-ce que je suis en bonne condition pour faire ce travail?',null ,'','safety', 1),
+                        ('Est-ce que je suis en securite pour realiser la tache?',null ,'','safety', 1),
+                        ('Executer la tache en toute securite',null ,'','safety', 1)
                     `
                 )
                 await this.db.runAsync(

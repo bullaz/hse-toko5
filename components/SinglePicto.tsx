@@ -4,10 +4,13 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { DatabaseContext, RootStackParamList } from "../context";
 import { Text, useTheme } from "react-native-paper";
 import { imagePathMapping } from "../utils/imagePathMapping";
+import { useAppTranslation } from "../contexts/TranslationContext";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'SinglePicto'>;
 
 export default function SinglePicto({ navigation, route }: Props) {
+
+    const {t} = useAppTranslation();
 
     const { question } = route.params;
 
@@ -44,7 +47,8 @@ export default function SinglePicto({ navigation, route }: Props) {
                     flex: 1,
                     flexDirection: 'column',
                     alignItems: 'center',
-                    justifyContent: 'center', // Changed from 'flex-start'
+                    alignContent: 'center',
+                    justifyContent: 'flex-start', // Changed from 'flex-start'
                     gap: 40,
                     backgroundColor: 'ghostwhite',
                     ...Platform.select({
@@ -53,11 +57,11 @@ export default function SinglePicto({ navigation, route }: Props) {
                     }),
                 }}
             >
-                <View>
+                <View style={{marginTop: 80}}>
                     <Image source={imagePathMapping(question.pictogramme)} style={{ width: 150, height: 150 }}></Image>
                 </View>
-                <View>
-                    <Text variant="displaySmall">[Description]</Text>
+                <View style={{paddingHorizontal: 20}}>
+                    <Text variant="titleLarge" style={{textAlign: 'center'}}>{t(question.text_id+".description")}</Text>
                 </View>
             </View>
         </>

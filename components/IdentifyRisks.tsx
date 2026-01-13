@@ -11,6 +11,7 @@ import { imagePathMapping } from "../utils/imagePathMapping";
 import { useFocusEffect } from "@react-navigation/native";
 import { getAllData } from "../utils/commonFunctions";
 import { addMesureControle, updateOrAddToko5 } from "../services/ApiService";
+import { useAppTranslation } from "../contexts/TranslationContext";
 
 
 ////one time from epi press that top button to go back here the buttons precedent and suivant was right below those pictograms not at the end of the screen ... FIND WHY
@@ -20,6 +21,8 @@ const boxes = new Array(10).fill(null).map((v, i) => i + 1);
 type Props = NativeStackScreenProps<RootStackParamList, 'IdentifyRisks'>;
 
 export default function IdentifyRisks({ navigation, route }: Props) {
+
+    const {t} = useAppTranslation();
 
     const { toko5Id } = route.params;
 
@@ -167,7 +170,7 @@ export default function IdentifyRisks({ navigation, route }: Props) {
                     </View> */}
                     <View
                         style={{
-                            marginTop: 40,
+                            marginTop: 25,
                             // flex: 1,
                             flexWrap: "wrap",
                             flexDirection: "row",
@@ -181,13 +184,10 @@ export default function IdentifyRisks({ navigation, route }: Props) {
                             size={40}
                         />
                         <Text
-                            style={{ textAlign: "center", paddingLeft: 17 }}
+                            style={{ textAlign: "center", paddingLeft: 17, flexBasis: '70%' }}
                             variant="titleMedium"
                         >
-                            Identifiez les risques et {" "}
-                            {"\n"}
-                            dangers potentiels
-                            {/* Vous n'avez pas de : {"\n"}- [something...] */}
+                            {t("identifyRisks.description")}
                         </Text>
                     </View>
                     <Button style={styles.controlButton}

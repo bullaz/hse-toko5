@@ -17,11 +17,14 @@ import { QUESTION_CATEGORIES } from "../constants/questionTypes";
 import { useFocusEffect } from "@react-navigation/native";
 import { updateOrAddToko5 } from "../services/ApiService";
 import { Text } from "react-native-paper";
+import { useAppTranslation } from "../contexts/TranslationContext";
 
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Think'>;
 
 export default function Think({ navigation, route }: Props) {
+
+    const {t, language} = useAppTranslation();
 
     const { toko5Id } = route.params;
 
@@ -129,6 +132,7 @@ export default function Think({ navigation, route }: Props) {
 
     useFocusEffect(
         useCallback(() => {
+            //console.log(language);
             getAllThinkData();
             return () => {
             };
@@ -157,13 +161,13 @@ export default function Think({ navigation, route }: Props) {
                     alignContent: "center",
                     gap: 25,
                     width: "100%",
-                    backgroundColor: "ghostwhite"
+                    backgroundColor: "white"
                     // alignContent: "center",
                 }}>
 
                     <View
                         style={{
-                            marginTop: 40,
+                            marginTop: 25,
                             // flex: 1,
                             flexWrap: "wrap",
                             flexDirection: "row",
@@ -177,12 +181,12 @@ export default function Think({ navigation, route }: Props) {
                             size={40}
                         />
                         <Text
-                            style={{ textAlign: "center", paddingLeft: 17 }}
+                            style={{ textAlign: "auto", paddingLeft: 17, flexBasis: '70%' }}
                             variant="titleMedium"
                         >
-                            Description-lorem ipsum x {" "}
-                            {"\n"}
-                            Description lorem ipsum
+                            {t("think.description")}
+                            {/* {"\n"}
+                            {t("think.description2")} */}
                             {/* Vous n'avez pas de : {"\n"}- [something...] */}
                         </Text>
                     </View>
@@ -210,7 +214,7 @@ export default function Think({ navigation, route }: Props) {
                                             pressed && styles.pressedBox,
                                         ]}
                                     >
-                                        <Image source={imagePathMapping(question.pictogramme)} style={{ width: 80, height: 80, alignSelf: 'center' }}></Image>
+                                        <Image source={imagePathMapping(question.pictogramme)} style={{ width: 75, height: 75, alignSelf: 'center' }}></Image>
                                     </Pressable>
                                     <View style={styles.checkboxContainer}>
 
@@ -257,7 +261,7 @@ export default function Think({ navigation, route }: Props) {
 
                                     </View>
                                     <View>
-                                        <Text variant="titleMedium" style={{ textAlign: 'center' }}>{question.nom}</Text>
+                                        <Text variant="titleMedium" style={{ textAlign: 'center' }}>{t(question.text_id+".nom")}</Text>
                                     </View>
                                 </View>
                             ))}
@@ -281,7 +285,7 @@ export default function Think({ navigation, route }: Props) {
                             fontSize: 16
                         }}
                     >
-                        Accueil
+                        {t("navigationButton.home")}
                     </Button>
                 </View>
 
@@ -303,7 +307,7 @@ export default function Think({ navigation, route }: Props) {
                             fontSize: 16
                         }}
                     >
-                        suivant
+                        {t("navigationButton.next")}
                     </Button>
                 </View>
             </View >

@@ -10,6 +10,7 @@ import axios from "axios";
 import { BACKEND_URL } from "../constants/commonConstants";
 import { Dropdown } from 'react-native-element-dropdown'; import { Societe, Task } from "../types/domain";
 import { useFocusEffect } from "@react-navigation/native";
+import { useAppTranslation } from "../contexts/TranslationContext";
 ;
 // import AntDesign from '@expo/vector-icons/AntDesign';
 
@@ -29,6 +30,8 @@ const data = [
 
 export default function Login({ navigation }: Props) {
 
+    const { t } = useAppTranslation();
+
     // Form state
     const [formData, setFormData] = useState({
         nom: "",
@@ -45,6 +48,8 @@ export default function Login({ navigation }: Props) {
     // Updated form handling
     const handleInputChange = (field: keyof typeof formData, value: any) => {
         setFormData(prev => ({ ...prev, [field]: value }));
+        // console.log(formData);
+        // console.log(value+" "+field);
     };
 
     // Validate form before submission
@@ -57,29 +62,29 @@ export default function Login({ navigation }: Props) {
         return errors;
     };
 
-    const renderSocieteLeftIcon = () => {
-        return (
-            <IconButton
-                icon="office-building"
-                size={24}
-                onPress={() => { handleRefresh() }}
-                style={{ borderWidth: 0 }}
-            //style={{backgroundColor: 'rgba(230, 241, 255, 1) '}}
-            />
-        );
-    };
+    // const renderSocieteLeftIcon = () => {
+    //     return (
+    //         <IconButton
+    //             icon="office-building"
+    //             size={24}
+    //             onPress={() => { handleRefresh() }}
+    //             style={{ borderWidth: 0 }}
+    //         //style={{backgroundColor: 'rgba(230, 241, 255, 1) '}}
+    //         />
+    //     );
+    // };
 
-    const renderTaskLeftIcon = () => {
-        return (
-            <IconButton
-                icon="office-building"
-                size={24}
-                onPress={() => { handleRefresh() }}
-                style={{ borderWidth: 0 }}
-            //style={{backgroundColor: 'rgba(230, 241, 255, 1) '}}
-            />
-        );
-    };
+    // const renderTaskLeftIcon = () => {
+    //     return (
+    //         <IconButton
+    //             icon="office-building"
+    //             size={24}
+    //             onPress={() => { handleRefresh() }}
+    //             style={{ borderWidth: 0 }}
+    //         //style={{backgroundColor: 'rgba(230, 241, 255, 1) '}}
+    //         />
+    //     );
+    // };
 
     const [gender, setGender] = useState<string>();
 
@@ -129,14 +134,14 @@ export default function Login({ navigation }: Props) {
             let dataTask = [];
             for (let societe of societes) {
                 dataSociete.push({
-                    label: societe.nom,
+                    label: "         " +societe.nom,
                     value: societe
                 })
             }
             setListSociete(dataSociete);
             for (let task of tasks) {
                 dataTask.push({
-                    label: task.nom,
+                    label: "         " +task.nom,
                     value: task
                 })
             }
@@ -240,9 +245,9 @@ export default function Login({ navigation }: Props) {
                             style={{ textAlign: "center", color: "rgba(88, 88, 88, 1)", fontSize: 16}}
                             variant="titleSmall"
                         >
-                            Fenoy ireny  {" "}
+                            {t("identification.description1")}  {" "}
                             {"\n"}
-                            hahamantarana anao
+                            {t("identification.description2")}
                             {/* Vous n'avez pas de : {"\n"}- [something...] */}
                         </Text>
                     </View>
@@ -295,7 +300,7 @@ export default function Login({ navigation }: Props) {
 
                     <View style={styles.inputContainer}>
                         <Text style={styles.inputLabel}>
-                            Nom <Text style={styles.requiredIndicator}>*</Text>
+                            {t("identification.nom")} <Text style={styles.requiredIndicator}>*</Text>
                         </Text>
                         <TextInput
                             left={<TextInput.Icon
@@ -303,7 +308,7 @@ export default function Login({ navigation }: Props) {
                                 color="#7F8C8D"
                                 size={20}
                             />}
-                            placeholder="Votre nom"
+                            placeholder={t("identification.nomLabel")}
                             value={formData.nom}
                             style={styles.textInput}
                             onChangeText={(value) => handleInputChange('nom', value)}
@@ -315,7 +320,7 @@ export default function Login({ navigation }: Props) {
 
                     <View style={styles.inputContainer}>
                         <Text style={styles.inputLabel}>
-                            Prénom <Text style={styles.requiredIndicator}>*</Text>
+                            {t("identification.prenom")} <Text style={styles.requiredIndicator}>*</Text>
                         </Text>
                         <TextInput
                             left={<TextInput.Icon
@@ -323,7 +328,7 @@ export default function Login({ navigation }: Props) {
                                 color="#7F8C8D"
                                 size={20}
                             />}
-                            placeholder="Votre prénom"
+                            placeholder={t("identification.prenomLabel")}
                             value={formData.prenom}
                             style={styles.textInput}
                             onChangeText={(value) => handleInputChange('prenom', value)}
@@ -335,7 +340,7 @@ export default function Login({ navigation }: Props) {
 
                     {/* Optional Fields */}
                     <View style={styles.inputContainer}>
-                        <Text style={styles.inputLabel}>Email (optionnel)</Text>
+                        <Text style={styles.inputLabel}>{t("identification.email")} {/*(optionnel)*/}</Text>
                         <TextInput
                             left={<TextInput.Icon icon="email" color="#7F8C8D" />}
                             placeholder="email@exemple.com"
@@ -349,7 +354,7 @@ export default function Login({ navigation }: Props) {
                     </View>
 
                     <View style={styles.inputContainer}>
-                        <Text style={styles.inputLabel}>Téléphone (optionnel)</Text>
+                        <Text style={styles.inputLabel}>{t("identification.phone")} {/*(optionnel)*/}</Text>
                         <TextInput
                             left={<TextInput.Icon icon="phone" color="#7F8C8D" />}
                             placeholder="+261 34 56 789 90"
@@ -362,7 +367,7 @@ export default function Login({ navigation }: Props) {
                     </View>
 
                     <View style={styles.inputContainer}>
-                        <Text style={styles.inputLabel}>ID Permis de travail</Text>
+                        <Text style={styles.inputLabel}>{t("identification.permis")}</Text>
                         <TextInput
                             left={<TextInput.Icon icon="card-account-details" color="#7F8C8D" />}
                             placeholder="ID-XXXX-XXXX"
@@ -376,7 +381,7 @@ export default function Login({ navigation }: Props) {
                     {/* Required Dropdowns */}
                     <View style={styles.dropdownContainer}>
                         <Text style={styles.inputLabel}>
-                            Société <Text style={styles.requiredIndicator}>*</Text>
+                            {t("identification.societe")} <Text style={styles.requiredIndicator}>*</Text>
                         </Text>
                         <Dropdown
                             style={[
@@ -392,9 +397,9 @@ export default function Login({ navigation }: Props) {
                             maxHeight={300}
                             labelField="label"
                             valueField="value"
-                            placeholder={"    " + "Sélectionner une société"}
+                            placeholder={"    " + t("identification.societeLabel")}
                             searchPlaceholder="Rechercher..."
-                            value={formData.societe}
+                            // value={formData.societe}
                             onFocus={() => setDropdownFocus(prev => ({ ...prev, societe: true }))}
                             onBlur={() => setDropdownFocus(prev => ({ ...prev, societe: false }))}
                             onChange={item => handleInputChange('societe', item.value)}
@@ -434,7 +439,7 @@ export default function Login({ navigation }: Props) {
 
                     <View style={styles.dropdownContainer}>
                         <Text style={styles.inputLabel}>
-                            Tâche <Text style={styles.requiredIndicator}>*</Text>
+                            {t("identification.task")} <Text style={styles.requiredIndicator}>*</Text>
                         </Text>
                         <Dropdown
                             style={[
@@ -450,9 +455,9 @@ export default function Login({ navigation }: Props) {
                             maxHeight={300}
                             labelField="label"
                             valueField="value"
-                            placeholder={"    " + "Sélectionner une tâche"}
+                            placeholder={"    " + t("identification.taskLabel")}
                             searchPlaceholder="Rechercher..."
-                            value={formData.task}
+                            // value={formData.task}
                             onFocus={() => setDropdownFocus(prev => ({ ...prev, task: true }))}
                             onBlur={() => setDropdownFocus(prev => ({ ...prev, task: false }))}
                             onChange={item => handleInputChange('task', item.value)}
@@ -484,7 +489,7 @@ export default function Login({ navigation }: Props) {
                                 <ActivityIndicator color="#FFFFFF" size="small" />
                             </>
                         ) : (
-                            "s'identifier"
+                            t("identification.enter")
                         )}
                     </Button>
                 </View>
@@ -498,7 +503,7 @@ export default function Login({ navigation }: Props) {
                         iconColor="rgba(16, 81, 165, 1)"
                         style={styles.refreshButton}
                     />
-                    <Text style={styles.refreshText}>Actualiser les données</Text>
+                    <Text style={styles.refreshText}>{t("identification.refreshData")}</Text>
                 </View>
             </ScrollView>
         </>

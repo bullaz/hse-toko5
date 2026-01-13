@@ -12,10 +12,13 @@ import { imagePathMapping } from "../utils/imagePathMapping";
 import { useFocusEffect } from "@react-navigation/native";
 import { getAllData } from "../utils/commonFunctions";
 import { updateOrAddToko5 } from "../services/ApiService";
+import { useAppTranslation } from "../contexts/TranslationContext";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Epi">;
 
 export default function Epi({ navigation, route }: Props) {
+
+    const {t} = useAppTranslation();
 
     const { toko5Id } = route.params;
 
@@ -118,10 +121,7 @@ export default function Epi({ navigation, route }: Props) {
                             style={{ textAlign: "center", paddingLeft: 17 }}
                             variant="titleMedium"
                         >
-                            Description-lorem ipsum {" "}
-                            {"\n"}
-                            Description lorem ipsum
-                            {/* Vous n'avez pas de : {"\n"}- [something...] */}
+                            {t("epi.description")}
                         </Text>
                     </View>
                     <ScrollView

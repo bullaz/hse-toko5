@@ -38,6 +38,10 @@ export default function LoginSup({ navigation }: Props) {
         navigation.navigate('ScanQr');
     }
 
+    const handleRefresh = () => {
+
+    }
+
 
     return (
         <>
@@ -54,10 +58,6 @@ export default function LoginSup({ navigation }: Props) {
             >
                 {/* Header */}
                 <View style={styles.header}>
-                    {/* <Text style={styles.title}>Veuillez vous identifier</Text> */}
-                    {/* <Text style={styles.subtitle}>
-                        Veuillez vous identifier pour continuer
-                    </Text> */}
                     <View
                         style={{
                             // flex: 1,
@@ -68,14 +68,19 @@ export default function LoginSup({ navigation }: Props) {
                             alignContent: "center",
                         }}
                     >
-                        <Icon
+                        {/* <Icon
                             source="card-account-details-outline"
                             size={52}
                             color="rgba(56, 56, 56, 0.87)"
-                        />
-                        <Text
+                        /> */}
+
+                        {/* <Text
                             style={{ textAlign: "center", paddingLeft: 17, color: 'rgba(0, 0, 0, 0.87)' }}
                             variant="titleMedium"
+                        > */}
+                        <Text
+                            style={{ textAlign: "center", color: "rgba(88, 88, 88, 1)", fontSize: 16 }}
+                            variant="titleSmall"
                         >
                             Fenoy ireny  {" "}
                             {"\n"}
@@ -159,6 +164,17 @@ export default function LoginSup({ navigation }: Props) {
                             "s'identifier"
                         )}
                     </Button>
+                </View>
+
+                <View style={styles.refreshContainer}>
+                    <IconButton
+                        icon="refresh"
+                        size={24}
+                        onPress={handleRefresh}
+                        iconColor="rgba(16, 81, 165, 1)"
+                        style={styles.refreshButton}
+                    />
+                    <Text style={styles.refreshText}>Actualiser les données</Text>
                 </View>
             </ScrollView>
         </>

@@ -12,10 +12,13 @@ import { imagePathMapping } from "../utils/imagePathMapping";
 import { useFocusEffect } from "@react-navigation/native";
 import { getAllData } from "../utils/commonFunctions";
 import { updateOrAddToko5 } from "../services/ApiService";
+import { useAppTranslation } from "../contexts/TranslationContext";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Organise2'>;
 
 export default function Organise2({ navigation, route }: Props) {
+
+    const {t} = useAppTranslation();
 
     const { toko5Id } = route.params;
 
@@ -104,7 +107,7 @@ export default function Organise2({ navigation, route }: Props) {
                 }}>
                     <View
                         style={{
-                            marginTop: 40,
+                            marginTop: 25,
                             // flex: 1,
                             flexWrap: "wrap",
                             flexDirection: "row",
@@ -118,12 +121,10 @@ export default function Organise2({ navigation, route }: Props) {
                             size={40}
                         />
                         <Text
-                            style={{ textAlign: "center", paddingLeft: 17 }}
+                            style={{ textAlign: "center", paddingLeft: 17, flexBasis: '70%' }}
                             variant="titleMedium"
                         >
-                            Description-lorem ipsum {" "}
-                            {"\n"}
-                            Description lorem ipsum
+                            {t("organise2.description")}
                             {/* Vous n'avez pas de : {"\n"}- [something...] */}
                         </Text>
                     </View>

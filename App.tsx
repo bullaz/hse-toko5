@@ -121,11 +121,19 @@ function AppNavigator() {
       <Stack.Screen
         name="Invalide"
         component={Invalide}
-        options={{ 
+        options={({ navigation }) => ({
           title: screenTitles.invalide, 
           headerBackVisible: false, 
-          gestureEnabled: false 
-        }}
+          gestureEnabled: false, 
+          headerRight: () => (
+            <IconButton
+              icon="home-circle"
+              size={33}
+              iconColor="white"
+              onPress={() => navigation.navigate('Home')}
+            />
+          ),
+        })}
       />
 
       <Stack.Screen
@@ -155,20 +163,36 @@ function AppNavigator() {
       <Stack.Screen
         name="LoginSup"
         component={LoginSup}
-        options={{ 
+         options={({ navigation }) => ({
           title: screenTitles.loginSup, 
           headerBackVisible: false, 
-          gestureEnabled: false 
-        }}
+          gestureEnabled: false,
+          headerRight: () => (
+            <IconButton
+              icon="home-circle"
+              size={33}
+              iconColor="white"
+              onPress={() => navigation.navigate('Home')}
+            />
+          ),
+        })}
       />
       
       <Stack.Screen
         name="Think"
-        options={{ 
+        options={({ navigation }) => ({
           title: screenTitles.think, 
           headerBackVisible: false, 
-          gestureEnabled: false 
-        }}
+          gestureEnabled: false,
+          headerRight: () => (
+            <IconButton
+              icon="home-circle"
+              size={33}
+              iconColor="white"
+              onPress={() => navigation.navigate('Recent')}
+            />
+          ),
+        })}
       >
         {(props: NativeStackScreenProps<RootStackParamList, 'Think'>) => (
           <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
@@ -180,16 +204,36 @@ function AppNavigator() {
       <Stack.Screen
         name="SinglePicto"
         component={SinglePicto}
-        options={{ title: screenTitles.singlePicto }}
+        options={({ navigation }) => ({
+          title: screenTitles.singlePicto, 
+          headerBackVisible: true, 
+          gestureEnabled: false,
+          headerRight: () => (
+            <IconButton
+              icon="home-circle"
+              size={33}
+              iconColor="white"
+              onPress={() => navigation.navigate('Recent')}
+            />
+          ),
+        })}
       />
 
       <Stack.Screen
         name="Organise1"
-        options={{ 
+        options={({ navigation }) => ({
           title: screenTitles.organise1, 
           headerBackVisible: false, 
-          gestureEnabled: false 
-        }}
+          gestureEnabled: false,
+          headerRight: () => (
+            <IconButton
+              icon="home-circle"
+              size={33}
+              iconColor="white"
+              onPress={() => navigation.navigate('Recent')}
+            />
+          ),
+        })}
       >
         {(props: NativeStackScreenProps<RootStackParamList, 'Organise1'>) => (
           <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
@@ -200,11 +244,19 @@ function AppNavigator() {
 
       <Stack.Screen
         name="Organise2"
-        options={{ 
+        options={({ navigation }) => ({
           title: screenTitles.organise2, 
           headerBackVisible: false, 
-          gestureEnabled: false 
-        }}
+          gestureEnabled: false,
+          headerRight: () => (
+            <IconButton
+              icon="home-circle"
+              size={33}
+              iconColor="white"
+              onPress={() => navigation.navigate('Recent')}
+            />
+          ),
+        })}
       >
         {(props: NativeStackScreenProps<RootStackParamList, 'Organise2'>) => (
           <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
@@ -215,11 +267,19 @@ function AppNavigator() {
 
       <Stack.Screen
         name="IdentifyRisks"
-        options={{ 
+        options={({ navigation }) => ({
           title: screenTitles.identifyRisks, 
           headerBackVisible: false, 
-          gestureEnabled: false 
-        }}
+          gestureEnabled: false,
+          headerRight: () => (
+            <IconButton
+              icon="home-circle"
+              size={33}
+              iconColor="white"
+              onPress={() => navigation.navigate('Recent')}
+            />
+          ),
+        })}
       >
         {(props: NativeStackScreenProps<RootStackParamList, 'IdentifyRisks'>) => (
           <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
@@ -230,10 +290,18 @@ function AppNavigator() {
 
       <Stack.Screen
         name="ControlMeasure"
-        options={{ 
+        options={({ navigation }) => ({
           title: screenTitles.controlMeasure, 
-          gestureEnabled: false 
-        }}
+          gestureEnabled: false,
+          headerRight: () => (
+            <IconButton
+              icon="home-circle"
+              size={33}
+              iconColor="white"
+              onPress={() => navigation.navigate('Recent')}
+            />
+          ),
+        })}
       >
         {(props: NativeStackScreenProps<RootStackParamList, 'ControlMeasure'>) => (
           <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
@@ -244,11 +312,19 @@ function AppNavigator() {
 
       <Stack.Screen
         name="Epi"
-        options={{ 
+        options={({ navigation }) => ({
           title: screenTitles.epi, 
           headerBackVisible: false, 
-          gestureEnabled: false 
-        }}
+          gestureEnabled: false,
+          headerRight: () => (
+            <IconButton
+              icon="home-circle"
+              size={33}
+              iconColor="white"
+              onPress={() => navigation.navigate('Recent')}
+            />
+          ),
+        })}
       >
         {(props: NativeStackScreenProps<RootStackParamList, 'Epi'>) => (
           <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
@@ -259,10 +335,19 @@ function AppNavigator() {
 
       <Stack.Screen
         name="Fitness"
-        options={{ 
+        options={({ navigation }) => ({
           title: screenTitles.fitness, 
-          gestureEnabled: false 
-        }}
+          headerBackVisible: false, 
+          gestureEnabled: false,
+          headerRight: () => (
+            <IconButton
+              icon="home-circle"
+              size={33}
+              iconColor="white"
+              onPress={() => navigation.navigate('Recent')}
+            />
+          ),
+        })}
       >
         {(props: NativeStackScreenProps<RootStackParamList, 'Fitness'>) => (
           <ProtectedToko5Route toko5Id={props.route.params.toko5Id}>
@@ -284,11 +369,19 @@ function AppNavigator() {
       <Stack.Screen
         name="ListProblem"
         component={ListProblem}
-        options={{ 
+        options={({ navigation }) => ({
           title: screenTitles.listProblem, 
-          headerBackVisible: true, 
-          gestureEnabled: false 
-        }}
+          headerBackVisible: false, 
+          gestureEnabled: false,
+          headerRight: () => (
+            <IconButton
+              icon="home-circle"
+              size={33}
+              iconColor="white"
+              onPress={() => navigation.navigate('Recent')}
+            />
+          ),
+        })}
       />
     </Stack.Navigator>
   );

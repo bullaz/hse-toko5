@@ -6,7 +6,7 @@ export default StyleSheet.create({
   //added to see changes
   container: {
     flex: 1,
-    backgroundColor: 'ghostwhite',
+    backgroundColor: 'white',
   },
 
   content: {
@@ -22,7 +22,7 @@ export default StyleSheet.create({
     justifyContent: "center",
     alignItems: 'center',
     alignContent: 'center',
-    backgroundColor: 'ghostwhite',
+    backgroundColor: 'white',
   },
 
 
@@ -32,7 +32,7 @@ export default StyleSheet.create({
     flexWrap: 'wrap',
     alignItems: 'stretch', // Changed from 'center' to 'flex-start'
     justifyContent: 'flex-start',
-    backgroundColor: 'ghostwhite',
+    backgroundColor: 'white',
 
     //this is responsable for that padding on top of the screen.. that padding on that title
     ...Platform.select({
@@ -48,7 +48,7 @@ export default StyleSheet.create({
     width: '100%',
     maxHeight: '80%',
     alignSelf: 'center',
-    backgroundColor: 'ghostwhite',
+    backgroundColor: 'white',
     //borderRadius: 10,
     // borderEndColor: 'ghostwhite',
     // shadowColor: "black",
@@ -92,7 +92,7 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: 'ghostwhite',
+    backgroundColor: 'white',
     paddingBottom: 30
   },
 

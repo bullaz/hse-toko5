@@ -12,10 +12,13 @@ import { imagePathMapping } from "../utils/imagePathMapping";
 import { useFocusEffect } from "@react-navigation/native";
 import { getAllData } from "../utils/commonFunctions";
 import { updateOrAddToko5 } from "../services/ApiService";
+import { useAppTranslation } from "../contexts/TranslationContext";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Organise1'>;
 
 export default function Organise1({ navigation, route }: Props) {
+
+    const {t} = useAppTranslation();
 
     const { toko5Id } = route.params;
 
@@ -112,12 +115,12 @@ export default function Organise1({ navigation, route }: Props) {
                     alignContent: "center",
                     gap: 15,
                     width: "100%",
-                    backgroundColor: "ghostwhite"
+                    backgroundColor: "white"
                     // alignContent: "center",
                 }}>
                     <View
                         style={{
-                            marginTop: 40,
+                            marginTop: 25,
                             // flex: 1,
                             flexWrap: "wrap",
                             flexDirection: "row",
@@ -131,13 +134,10 @@ export default function Organise1({ navigation, route }: Props) {
                             size={40}
                         />
                         <Text
-                            style={{ textAlign: "center", paddingLeft: 17 }}
+                            style={{ textAlign: "auto", paddingLeft: 17, flexBasis: '70%'  }}
                             variant="titleMedium"
                         >
-                            Description-lorem ipsum {" "}
-                            {"\n"}
-                            Description lorem ipsum
-                            {/* Vous n'avez pas de : {"\n"}- [something...] */}
+                           {t("organise1.description")}
                         </Text>
                     </View>
                     <ScrollView
@@ -166,7 +166,7 @@ export default function Organise1({ navigation, route }: Props) {
                                         />
                                     </View>
                                     <View>
-                                        <Text variant="titleMedium" style={{ textAlign: 'center' }}>{question.nom}</Text>
+                                        <Text variant="titleMedium" style={{ textAlign: 'center' }}>{t(question.text_id+".nom")}</Text>
                                     </View>
                                 </View>
                             ))}
@@ -185,7 +185,7 @@ export default function Organise1({ navigation, route }: Props) {
                             fontSize: 16
                         }}
                     >
-                        précédent
+                        {t("navigationButton.previous")}
                     </Button>
                 </View>
 
@@ -206,7 +206,7 @@ export default function Organise1({ navigation, route }: Props) {
                             fontSize: 16
                         }}
                     >
-                        suivant
+                        {t("navigationButton.next")}
                     </Button>
                 </View>
             </View >
