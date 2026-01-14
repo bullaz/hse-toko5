@@ -23,12 +23,15 @@ import { useFocusEffect } from "@react-navigation/native";
 import { imagePathMapping } from "../utils/imagePathMapping";
 import { StatusBar } from "expo-status-bar";
 import { updateMesureControle } from "../services/ApiService";
+import { useAppTranslation } from "../contexts/TranslationContext";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ControlMeasure'>;
 
 export default function ControlMeasure({ navigation, route }: Props) {
 
-  const { toko5Id, questionId } = route.params;
+  const {t} = useAppTranslation();
+
+  const { toko5Id } = route.params;
 
   const theme = useTheme();
   const [page, setPage] = useState<number>(0);
@@ -166,9 +169,9 @@ export default function ControlMeasure({ navigation, route }: Props) {
                     style={{ textAlign: "center", paddingLeft: 17 }}
                     variant="titleMedium"
                   >
-                    Pour ajouter une nouvelle ligne: {" "}
+                   {t("controlMeasure.addDescription1")} {" "}
                     {"\n"}
-                    Appuyer sur le bouton en dessous
+                    {t("controlMeasure.addDescription2")}
                     {/* Vous n'avez pas de : {"\n"}- [something...] */}
                   </Text>
                 </View>
@@ -210,10 +213,10 @@ export default function ControlMeasure({ navigation, route }: Props) {
                     // elevation: 5,
                   }}>
                     <DataTable.Header>
-                      <DataTable.Title style={styles.cell}>danger</DataTable.Title>
-                      <DataTable.Title style={styles.cell}>mesures</DataTable.Title>
-                      <DataTable.Title style={styles.cell}>en place</DataTable.Title>
-                      <DataTable.Title style={styles.cell}>supprimer</DataTable.Title>
+                      <DataTable.Title style={styles.cell}>{t("controlMeasure.danger")}</DataTable.Title>
+                      <DataTable.Title style={styles.cell}>{t("controlMeasure.mesures")}</DataTable.Title>
+                      <DataTable.Title style={styles.cell}>{t("controlMeasure.implemented")}</DataTable.Title>
+                      <DataTable.Title style={styles.cell}>{t("controlMeasure.delete")}</DataTable.Title>
                     </DataTable.Header>
 
 
@@ -301,7 +304,7 @@ export default function ControlMeasure({ navigation, route }: Props) {
                       style={{ textAlign: "center", color: 'rgba(77, 77, 71, 0.87)', textAlignVertical: 'top' }}
                       variant="titleMedium"
                     >
-                      Mesure à prendre
+                      {t("controlMeasure.mesureToTake")}
                     </Text>
                   }
                   value={currentMesureText}
@@ -329,7 +332,7 @@ export default function ControlMeasure({ navigation, route }: Props) {
                     fontSize: 18
                   }}
                 >
-                  valider
+                  {t("controlMeasure.valider")}
                 </Button>
 
                 {/* <View style={styles.loadingContainer}>
@@ -342,7 +345,7 @@ export default function ControlMeasure({ navigation, route }: Props) {
             <Modal visible={deleteVisible} onDismiss={hideDeleteModal} contentContainerStyle={styles.deleteModalStyle}>
               <Text style={{ textAlign: "center", paddingLeft: 17 }}
                 variant="titleMedium">
-                Voulez-vous vraiment supprimer cette mesure de controle?
+                {t("controlMeasure.deleteText")}
               </Text>
               <View style={{ flexDirection: 'row', justifyContent: 'space-around', gap: 30 }}>
                 <Button style={{
@@ -361,7 +364,7 @@ export default function ControlMeasure({ navigation, route }: Props) {
                     fontSize: 18
                   }}
                 >
-                  oui
+                  {t("common.yes")}
                 </Button>
                 <Button style={{
                   width: "30%",
@@ -379,7 +382,7 @@ export default function ControlMeasure({ navigation, route }: Props) {
                     fontSize: 18
                   }}
                 >
-                  non
+                  {t("common.no")}
                 </Button>
               </View>
             </Modal>

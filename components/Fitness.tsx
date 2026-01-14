@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { DatabaseContext, Reponse, RootStackParamList } from "../context";
+import { DatabaseContext, Question, Reponse, RootStackParamList } from "../context";
 import { Image, View } from "react-native";
 import { ActivityIndicator, Button, Checkbox, Divider, Modal, PaperProvider, Portal, Text, useTheme } from "react-native-paper";
 import styles from "../styles";
@@ -10,6 +10,7 @@ import { getAllData } from "../utils/commonFunctions";
 //import Checkbox from "expo-checkbox";
 import { StatusBar } from "expo-status-bar";
 import { updateOrAddToko5 } from "../services/ApiService";
+import { useAppTranslation } from "../contexts/TranslationContext";
 // import { useValidity } from "../hooks/useValidity";
 
 
@@ -18,11 +19,13 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Fitness'>;
 
 export default function Fitness({ navigation, route }: Props) {
 
+    const {t} = useAppTranslation();
+
     const { toko5Id } = route.params;
 
     const theme = useTheme();
 
-    const [listQuestion, setListQuestion] = useState<any>([]);
+    const [listQuestion, setListQuestion] = useState<Question[]>([]);
 
     const toko5Repository = useContext(DatabaseContext);
 
@@ -39,6 +42,9 @@ export default function Fitness({ navigation, route }: Props) {
 
     const getData = async () => {
         try {
+            if (!toko5Repository) {
+                throw new Error('toko5Repository not initialized');
+            }
             setLoading(true);
             const data = await getAllData(toko5Repository, QUESTION_CATEGORIES.SAFETY, toko5Id, false, false);
             setListQuestion(data?.listQuestion);
@@ -89,7 +95,8 @@ export default function Fitness({ navigation, route }: Props) {
                     setVisible(true);
                 } else {
                     await updateOrAddToko5(toko5Id, toko5Repository, true, Object.values(listReponse));
-                    navigation.navigate('Invalide');
+                    const attemptNumber = await toko5Repository.getAttemptNumberToko5(toko5Id);
+                    navigation.navigate('Invalide',{toko5Id: toko5Id, attemptNumber: attemptNumber});
                 }
             } else {
                 throw new Error('toko5repository not initialized');
@@ -132,9 +139,9 @@ export default function Fitness({ navigation, route }: Props) {
                             alignItems: 'center',
                             padding: 20
                         }}>
-                            {listQuestion.map((question: any, index: number) => (
+                            {listQuestion.map((question: Question, index: number) => (
                                 <View style={{ gap: 10 }} key={question.question_id}>
-                                    <Text style={{ textAlign: 'center', }} variant="titleMedium">{question.nom}</Text>
+                                    <Text style={{ textAlign: 'center', }} variant="titleMedium">{t(question.text_id+".nom")}</Text>
                                     <View style={styles.checkboxContainer}>
                                         {/* <Checkbox
                                             value={listReponse[question.question_id].valeur} onValueChange={() => { updateListReponse(question.question_id, !listReponse[question.question_id].valeur) }}
@@ -163,7 +170,7 @@ export default function Fitness({ navigation, route }: Props) {
                                 }}
                             >
 
-                                J'ai fini mon toko5
+                                {t("fitness.finish")}
                             </Button>
 
                             {/* {saveLoading && (
@@ -191,7 +198,7 @@ export default function Fitness({ navigation, route }: Props) {
                                         style={{ textAlign: "center" }}
                                         variant="titleMedium"
                                     >
-                                        Merci d'avoir pris le temps de finir votre toko 5 !!!
+                                        {t("fitness.merci")}
                                     </Text>
 
                                     <Button style={{
@@ -215,7 +222,7 @@ export default function Fitness({ navigation, route }: Props) {
                                             fontSize: 16
                                         }}
                                     >
-                                        revenir a l'accueil
+                                       {t("fitness.backHome")}
                                     </Button>
 
                                 </View>

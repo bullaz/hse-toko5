@@ -18,7 +18,7 @@ import 'react-native-get-random-values';
 import { getLocalDateTimeISOString } from '../utils/commonFunctions';
 import { ETAT } from '../constants/commonConstants';
 import { v7 as uuidv7 } from 'uuid';
-import { Toko5 } from '../context';
+import { Question, Reponse, Toko5 } from '../context';
 import { Societe, Task } from '../types/domain';
 
 
@@ -40,14 +40,6 @@ class Toko5Repository {
             console.log('Error when opening the database: ', error)
         }
     }
-
-    // async addTranslations(){
-    //     try {
-            
-    //     }catch(error){
-    //         console.log('Error while adding tarnslations toko5repository', error);
-    //     }
-    // }
 
     async createTables() {
         //try using transaction
@@ -324,10 +316,11 @@ class Toko5Repository {
         }
     }
 
-    async getAllCategorieQuestion(categorie: string) {
+    //rft
+    async getAllCategorieQuestion(categorie: string): Promise<Question[]> {
         if (this.db !== null) {
             try {
-                const listQuestion = await this.db.getAllAsync('SELECT * FROM question WHERE categorie = ?', categorie);
+                const listQuestion: Question[] = await this.db.getAllAsync('SELECT * FROM question WHERE categorie = ?', categorie);
                 return listQuestion;
             } catch (error) {
                 console.log("error getAllCategorieQuestion", error);
@@ -338,11 +331,11 @@ class Toko5Repository {
         }
     }
 
-    async getAllCategorieQuestionWithRequired(categorie: string, required: boolean) {
+    //rft
+    async getAllCategorieQuestionWithRequired(categorie: string, required: boolean): Promise<Question[]> {
         if (this.db !== null) {
             try {
-                const listQuestion = await this.db.getAllAsync('SELECT * FROM question WHERE categorie = ? AND required = ?', categorie, required);
-                //console.log('listQuestion getAllCategorieQuestionWithREquired',listQuestion);
+                const listQuestion: Question[] = await this.db.getAllAsync('SELECT * FROM question WHERE categorie = ? AND required = ?', categorie, required);
                 return listQuestion;
             } catch (error) {
                 console.log("error getAllCategorieQuestionWithRequired", error);
@@ -549,11 +542,10 @@ class Toko5Repository {
     }
 
 
-    async getAllReponseToko5Categorie(toko5Id: string, categorie: string) {
+    async getAllReponseToko5Categorie(toko5Id: string, categorie: string): Promise<Reponse[]> {
         if (this.db !== null) {
             try {
-                const listReponse = await this.db.getAllAsync('SELECT * FROM reponse,question WHERE (reponse.question_id = question.question_id AND toko5_id = ? AND question.categorie = ?)', toko5Id, categorie);
-                //console.log('listReponse in database', listReponse);
+                const listReponse: Reponse[] = await this.db.getAllAsync('SELECT * FROM reponse,question WHERE (reponse.question_id = question.question_id AND toko5_id = ? AND question.categorie = ?)', toko5Id, categorie);
                 return listReponse;
             } catch (error) {
                 console.log("error getAllReponseToko5Categorie", error);
@@ -564,11 +556,10 @@ class Toko5Repository {
         }
     }
 
-    async getAllReponseToko5CategorieWithRequired(toko5Id: string, categorie: string, required: boolean) {
+    async getAllReponseToko5CategorieWithRequired(toko5Id: string, categorie: string, required: boolean): Promise<Reponse[]> {
         if (this.db !== null) {
             try {
-                const listReponse = await this.db.getAllAsync('SELECT * FROM reponse,question WHERE (reponse.question_id = question.question_id AND toko5_id = ? AND question.categorie = ? AND question.required = ?)', toko5Id, categorie, required);
-                //console.log('listReponse in database', listReponse);
+                const listReponse: Reponse[] = await this.db.getAllAsync('SELECT * FROM reponse,question WHERE (reponse.question_id = question.question_id AND toko5_id = ? AND question.categorie = ? AND question.required = ?)', toko5Id, categorie, required);
                 return listReponse;
             } catch (error) {
                 console.log("error getAllReponseToko5CategorieWithRequired", error);

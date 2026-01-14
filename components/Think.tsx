@@ -28,11 +28,9 @@ export default function Think({ navigation, route }: Props) {
 
     const { toko5Id } = route.params;
 
-    //const {validity, validityLoading}: {validity: boolean | null, validityLoading: boolean} = useValidity(route);
-
     const theme = useTheme();
 
-    const [listQuestion, setListQuestion] = useState<any>([]);
+    const [listQuestion, setListQuestion] = useState<Question[]>([]);
 
     const toko5Repository = useContext(DatabaseContext);
 
@@ -41,8 +39,6 @@ export default function Think({ navigation, route }: Props) {
     const [listReponse, setListReponse] = useState<Record<number, ReponseInterfaceView>>({});
 
     const [saveLoading, setSaveLoading] = useState<boolean>(false);
-
-    //const isLoading = loading || validityLoading;
 
     const getAllThinkData = async () => {
         try {
@@ -53,10 +49,9 @@ export default function Think({ navigation, route }: Props) {
                 // find a cleaner way to achieve this .. I think this is too dirty ... maybe
                 let listAnswer = await toko5Repository.getAllReponseToko5Categorie(toko5Id, QUESTION_CATEGORIES.THINK);
                 if (listAnswer.length > 0) {
-                    //console.log("listAnswerrrrrrrrrrr",listAnswer);
                     let listRep: Record<number, ReponseInterfaceView> = {};
 
-                    for (let answer of listAnswer as Reponse[]) {
+                    for (let answer of listAnswer) {
                         let x: ReponseInterfaceView = {
                             toko5_id: toko5Id,
                             question_id: answer.question_id,
@@ -65,7 +60,7 @@ export default function Think({ navigation, route }: Props) {
                         };
                         listRep[answer.question_id] = x;
                     }
-                    for (let question of list as Question[]) {
+                    for (let question of list) {
                         if (!listRep[question.question_id]) {
                             let x: ReponseInterfaceView = {
                                 toko5_id: toko5Id,
@@ -79,7 +74,7 @@ export default function Think({ navigation, route }: Props) {
                     setListReponse(listRep);
                 } else {
                     let listRep: Record<number, ReponseInterfaceView> = {};
-                    for (let question of list as Question[]) {
+                    for (let question of list) {
                         let reponse: ReponseInterfaceView = {
                             toko5_id: toko5Id,
                             question_id: question.question_id,
@@ -205,7 +200,7 @@ export default function Think({ navigation, route }: Props) {
                         persistentScrollbar={true}
                     >
                         <View style={styles.pictoContainer}>
-                            {listQuestion.map((question: any, i: number) => (
+                            {listQuestion.map((question: Question) => (
                                 <View key={question.question_id} style={styles.single}>
                                     <Pressable
                                         onPress={() => navigation.navigate('SinglePicto', { question: question })}

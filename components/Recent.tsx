@@ -456,7 +456,7 @@ export default function Recent({ navigation }: Props) {
                     fontSize: 18
                   }}
                 >
-                  oui
+                  {t("common.yes")}
                 </Button>
                 <Button style={{
                   width: "30%",
@@ -475,7 +475,7 @@ export default function Recent({ navigation }: Props) {
                     fontSize: 18
                   }}
                 >
-                  non
+                  {t("common.no")}
                 </Button>
               </View>
             </Modal>

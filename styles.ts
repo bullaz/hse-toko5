@@ -62,9 +62,10 @@ export default StyleSheet.create({
     borderBottomWidth: 0,
   },
 
-  controlButton:{
+  controlButton: {
     width: '90%',
-    borderRadius: 5
+    borderRadius: 5,
+    backgroundColor: "rgba(26, 85, 161, 0.87)"
   },
 
   box: {
@@ -123,7 +124,8 @@ export default StyleSheet.create({
 
   bottomButton: {
     width: 130,
-    borderRadius: 5
+    borderRadius: 5,
+    backgroundColor: "rgba(26, 85, 161, 0.87)"
   },
 
 
@@ -133,7 +135,12 @@ export default StyleSheet.create({
     borderRadius: 30,
     minHeight: "50%",
     padding: 20,
-    alignSelf: 'center'
+    alignSelf: 'center',
+    marginHorizontal: 20,
+    maxHeight: '50%',
+    // Center horizontally - JUST USE THESE TWO:
+    //alignSelf: 'center',
+    //marginHorizontal: 'auto',
   }
 
   /*

@@ -24,7 +24,6 @@ export type RootStackParamList = {
   };
   ControlMeasure: {
     toko5Id: string;
-    questionId: number;
   };
   Epi: {
     toko5Id: string;
@@ -52,9 +51,10 @@ export type RootStackParamList = {
 
 export interface Question {
   question_id: number;
-  // add other properties that your question object has
-  texte?: string;
-  categorie?: string;
+  nom: string;
+  text_id: string;
+  pictogramme: string;
+  categorie: string;
 }
 
 export interface RepDto {

@@ -2,7 +2,7 @@ import { useCallback, useContext, useState } from "react";
 import { View, StatusBar, Pressable, Image, ScrollView } from "react-native";
 import styles from "../styles";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { DatabaseContext, Reponse, RootStackParamList } from "../context";
+import { DatabaseContext, Question, Reponse, RootStackParamList } from "../context";
 //import Checkbox from "expo-checkbox";
 import { ActivityIndicator, Checkbox, Icon, Text } from "react-native-paper";
 import { useTheme } from "react-native-paper";
@@ -24,7 +24,7 @@ export default function Epi({ navigation, route }: Props) {
 
     const theme = useTheme();
 
-    const [listQuestion, setListQuestion] = useState<any>([]);
+    const [listQuestion, setListQuestion] = useState<Question[]>([]);
 
     const toko5Repository = useContext(DatabaseContext);
 
@@ -37,9 +37,12 @@ export default function Epi({ navigation, route }: Props) {
     const getData = async () => {
         try {
             setLoading(true);
+            if (!toko5Repository) {
+                throw new Error('toko5Repository not initialized');
+            }
             const data = await getAllData(toko5Repository, QUESTION_CATEGORIES.EPI, toko5Id, false, false);
-            setListQuestion(data?.listQuestion);
-            setListReponse(data?.listReponse);
+            setListQuestion(data.listQuestion);
+            setListReponse(data.listReponse);
 
         } catch (error) {
             console.log('error in getAllDAta organise1', error);
@@ -99,12 +102,12 @@ export default function Epi({ navigation, route }: Props) {
                     alignContent: "center",
                     gap: 15,
                     width: "100%",
-                    backgroundColor: "ghostwhite"
+                    backgroundColor: "white"
                     // alignContent: "center",
                 }}>
                     <View
                         style={{
-                            marginTop: 40,
+                            marginTop: 25,
                             // flex: 1,
                             flexWrap: "wrap",
                             flexDirection: "row",
@@ -139,7 +142,7 @@ export default function Epi({ navigation, route }: Props) {
                     >
                         <View style={styles.pictoContainer}>
                             {/* <StatusBar hidden={false} /> */}
-                            {listQuestion.map((question: any, index: number) => (
+                            {listQuestion.map((question: Question) => (
                                 <View key={question.question_id} style={styles.single}>
                                     <Pressable
                                         onPress={() => navigation.navigate('SinglePicto', { question: question })}
@@ -158,7 +161,7 @@ export default function Epi({ navigation, route }: Props) {
                                         />
                                     </View>
                                     <View>
-                                        <Text variant="titleMedium" style={{ textAlign: 'center' }}>{question.nom}</Text>
+                                        <Text variant="titleMedium" style={{ textAlign: 'center' }}>{t(question.text_id+".nom")}</Text>
                                     </View>
                                 </View>
                             ))}
@@ -177,7 +180,7 @@ export default function Epi({ navigation, route }: Props) {
                             fontSize: 16
                         }}
                     >
-                        précédent
+                        {t("navigationButton.previous")}
                     </Button>
                 </View>
                 <View>
@@ -191,7 +194,7 @@ export default function Epi({ navigation, route }: Props) {
                             fontSize: 16
                         }}
                     >
-                        suivant
+                        {t("navigationButton.next")}
                     </Button>
                 </View>
             </View >

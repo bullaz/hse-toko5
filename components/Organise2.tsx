@@ -2,7 +2,7 @@ import { useCallback, useContext, useState } from "react";
 import { View, StatusBar, Pressable, Image, ScrollView } from "react-native";
 import styles from "../styles";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { DatabaseContext, Reponse, RootStackParamList } from "../context";
+import { DatabaseContext, Question, Reponse, RootStackParamList } from "../context";
 //import Checkbox from "expo-checkbox";
 import { ActivityIndicator, Checkbox, Divider, Icon, Text } from "react-native-paper";
 import { useTheme } from "react-native-paper";
@@ -26,7 +26,7 @@ export default function Organise2({ navigation, route }: Props) {
 
     const theme = useTheme();
 
-    const [listQuestion, setListQuestion] = useState<any>([]);
+    const [listQuestion, setListQuestion] = useState<Question[]>([]);
 
     const toko5Repository = useContext(DatabaseContext);
 
@@ -38,10 +38,13 @@ export default function Organise2({ navigation, route }: Props) {
 
     const getData = async () => {
         try {
+            if (!toko5Repository) {
+                throw new Error('toko5Repository not initialized');
+            }
             setLoading(true);
             const data = await getAllData(toko5Repository, QUESTION_CATEGORIES.ORGANISE, toko5Id, true, false);
-            setListQuestion(data?.listQuestion);
-            setListReponse(data?.listReponse);
+            setListQuestion(data.listQuestion);
+            setListReponse(data.listReponse);
 
         } catch (error) {
             console.log('error in getAllDAta organise1', error);
@@ -74,10 +77,6 @@ export default function Organise2({ navigation, route }: Props) {
         setListReponse(list);
     }
 
-    // useEffect(() => {
-    //     getAllRequiredOrganiseQuestions();
-    // }, []);
-
     useFocusEffect(
         useCallback(() => {
             getData();
@@ -102,7 +101,7 @@ export default function Organise2({ navigation, route }: Props) {
                     alignContent: "center",
                     gap: 15,
                     width: "100%",
-                    backgroundColor: "ghostwhite"
+                    backgroundColor: "white"
                     // alignContent: "center",
                 }}>
                     <View
@@ -136,7 +135,7 @@ export default function Organise2({ navigation, route }: Props) {
                     >
                         <View style={styles.pictoContainer}>
                             {/* <StatusBar hidden={false} /> */}
-                            {listQuestion.map((question: any, index: number) => (
+                            {listQuestion.map((question: Question) => (
                                 <View key={question.question_id} style={styles.single}>
                                     <Pressable
                                         onPress={() => navigation.navigate('SinglePicto', { question: question })}

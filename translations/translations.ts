@@ -34,7 +34,7 @@ export const translations = {
       singlePicto: "Description du pictogramme",
       organise: "ORGANISER",
       identifyRisks: "IDENTIFIER LES DANGERS",
-      controlMeasure: "PRENDRE DES MESURES",
+      controlMeasure: "MESURES DE CONTRÔLE",
       epi: "EPI / PPE",
       fitness: "MON ÉTAT",
       commentaire: "COMMENTAIRES",
@@ -108,6 +108,100 @@ export const translations = {
     },
 
 
+
+    identifyRisks: {
+      description: "Identifiez les dangers et risques spécifiques liés à votre tâche et votre environnement",
+      controlMeasure: "Mes mesures de contrôle"
+    },
+    biohazard: {
+      nom: "Risque biologique, chimique",
+      description: "Y a-t-il des risques biologiques ou chimiques associés à cette tâche?"
+    },
+    electricite: {
+      nom: "Électricité",
+      description: "Can I get in contact with live electrical parts during this task?"
+    },
+    fatal: {
+      nom: "Risque mortel",
+      description: "Y a-t-il des risques mortels associés à cette tâche?"
+    },
+    risqueFeu: {
+      nom: "Risque d'incendie / explosion / feu",
+      description: "Y a-t-il des risques d'incendie, d'explosion ou de feu associés à cette tâche?"
+    },
+    terrainGlissant: {
+      nom: "Terrain glissant / instable",
+      description: "Y a-t-il des risques de terrain glissant ou instable associés à cette tâche?"
+    },
+    attentionMarche: {
+      nom: "trébuchement",
+      description: "Y a-t-il des risques de trébuchement associés à cette tâche?"
+    },
+    autre: {
+      nom: "Autre",
+      description: "Y a-t-il d'autres risques que ceux cités associés à cette tâche?"
+    }, 
+    unknown: {
+      nom: "Risque d'asphyxie / manque d'oxygène",
+      description: "Y a-t-il des risques d'asphyxie ou de manque d'oxygène associés à cette tâche?" 
+    },
+
+
+    controlMeasure: {
+      danger: "danger",
+      mesures: "mesures",
+      implemented: "en place",
+      delete: "supprimer",
+      deleteText: "Voulez-vous vraiment supprimer cette mesure de controle?",
+      valider: "valider",
+      mesureToTake: "mesure à prendre",
+      addDescription1: " Pour ajouter une nouvelle mesure de contrôle pour d'autres dangers",
+      addDescription2: " appuyez sur le bouton '+' en dessous",
+    },
+
+
+    epi: {
+      description: "Assurez-vous que chaque équipement requis est disponible, en bon état, adapté à la tâche et que vous savez correctement l'utiliser. Portez-le systématiquement."
+    },
+    antibruit: {
+      nom: "Protection antibruit",
+      description: "Avez-vous la protection antibruit requise pour cette tâche?"
+    },
+    faceProtection: {
+      nom: "Verre de protection du visage",
+      description: "Avez-vous les verres de protection du visage requis pour cette tâche?"
+    },
+    gant: {
+      nom: "Gants de protection",
+      description: "Avez-vous les gants de protection requis pour cette tâche?"
+    },
+    gilet: {
+      nom: "gilet haute visibilité",
+      description: "Avez-vous le gilet haute visibilité requis pour cette tâche?"
+    },
+    gilet2: {
+      nom: "Gilet de sauvetage",
+      description: "Avez-vous le gilet de sauvetage requis pour cette tâche?"
+    },
+    lunettes: {
+      nom: "Lunettes de sécurité",
+      description: "Avez-vous les lunettes de sécurité requises pour cette tâche?"
+    },
+    chaussuresProtection: {
+      nom: "Chaussures de protection",
+      description: "Avez-vous les chaussures de protection requises pour cette tâche?"
+    },
+    uniforme: {
+      nom: "Vetements de protection",
+      description: "Avez-vous les vêtements de protection requis pour cette tâche?"
+    },
+
+
+    fitness: {
+      merci: "Merci d'avoir pris le temps de finir votre toko 5 !!!",
+      backHome: "revenir a l'accueil",
+      finish: "J'ai fini mon toko5"
+    },
     bonneCondition: {
       nom: "Bonne condition",
       description: "Est-ce que je suis en bonne condition pour faire ce travail?"
@@ -158,7 +252,7 @@ export const translations = {
       singlePicto: "Pictogram description",
       organise: "ORGANIZE",
       identifyRisks: "IDENTIFY RISKS",
-      controlMeasure: "TAKE MEASURES",
+      controlMeasure: "CONTROL MEASURES",
       epi: "PPE / EPP",
       fitness: "MY CONDITION",
       commentaire: "COMMENTS",
@@ -228,7 +322,99 @@ export const translations = {
       description: "Do you have a work permit for this task?"
     },
 
+    identifyRisks: {
+      description: "Identify the specific hazards and risks associated with your task and environment.",
+      controlMeasure: "My control measures"
+    },
+    biohazard: {
+      nom: "Biological, chemical risk",
+      description: "Are there any biological or chemical risks associated with this task?"
+    },
+    electricite: {
+      nom: "Electricity",
+      description: "Can I get in contact with live electrical parts during this task?"
+    },
+    fatal: {
+      nom: "Mortal risks",
+      description: "Are there any life-threatening risks associated with this task?"
+    },
+    risqueFeu: {
+      nom: "Risk of fire / explosion / blaze",
+      description: "Are there any risks of fire, explosion, or flame associated with this task?"
+    },
+    terrainGlissant: {
+      nom: "Slippery/unstable terrain",
+      description: "Are there any risks of slippery or unstable ground associated with this task?"
+    },
+    attentionMarche: {
+      nom: "stumble",
+      description: "Are there any tripping hazards associated with this task?"
+    },
+    autre: {
+      nom: "Other",
+      description: "Are there any other risks associated with this task besides those mentioned?"
+    }, 
+    unknown: {
+      nom: "Risk of asphyxiation / lack of oxygen",
+      description: "Are there any risks of asphyxiation or lack of oxygen associated with this task?" 
+    },
 
+
+    controlMeasure: {
+      danger: "danger",
+      mesures: "measures",
+      implemented: "implemented",
+      delete: "delete",
+      deleteText: "Do you really want to remove this control measure?",
+      valider: "validate",
+      mesureToTake: "measure to be taken",
+      addDescription1: "To add a new control measure for other hazards",
+      addDescription2: "press the '+' button below",
+    },
+
+
+    epi: {
+      description: "Ensure that all required equipment is available, in good condition, suitable for the task, and that you know how to use it correctly. Wear it at all times."
+    },
+    antibruit: {
+      nom: "Noise protection",
+      description: "Do you have the required hearing protection for this task?"
+    },
+    faceProtection: {
+      nom: "Face protection glasses",
+      description: "Do you have the required face protection glasses for this task?"
+    },
+    gant: {
+      nom: "Protective gloves",
+      description: "Do you have the protective gloves required for this task?"
+    },
+    gilet: {
+      nom: "high visibility vest",
+      description: "Do you have the high-visibility vest required for this task?"
+    },
+    gilet2: {
+      nom: "Life jacket",
+      description: "Do you have the life jacket required for this task?"
+    },
+    lunettes: {
+      nom: "Safety glasses",
+      description: "Do you have the required safety glasses for this task?"
+    },
+    chaussuresProtection: {
+      nom: "Protective shoes",
+      description: "Do you have the required protective footwear for this task?"
+    },
+    uniforme: {
+      nom: "Protective clothing",
+      description: "Do you have the required protective clothing for this task?"
+    },
+
+
+    fitness: {
+      merci: "Thank you for taking the time to finish your Take 5!!!",
+      backHome: "return to homepage",
+      finish: "I finished my Take 5"
+    },
     bonneCondition: {
       nom: "Good condition",
       description: "Am I in good condition to do this job?"
@@ -345,8 +531,101 @@ export const translations = {
       description: "Manana AST (Task Safety Analysis) ho an'ity asa ity ve ianao?"
     },
     permis:{
-      nom: "Permis de travail",
+      nom: "Fahazoan-dalana hiasa",
       description: "Manana permis de travail ho an'ity asa ity ve ianao?"
+    },
+    identifyRisks: {
+      description: "Identify the specific hazards and risks associated with your task and environment.",
+      controlMeasure: "My control measures"
+    },
+    biohazard: {
+      nom: "Biological, chemical risk",
+      description: "Are there any biological or chemical risks associated with this task?"
+    },
+    electricite: {
+      nom: "Electricity",
+      description: "Can I get in contact with live electrical parts during this task?"
+    },
+    fatal: {
+      nom: "Mortal risks",
+      description: "Are there any life-threatening risks associated with this task?"
+    },
+    risqueFeu: {
+      nom: "Risk of fire / explosion / blaze",
+      description: "Are there any risks of fire, explosion, or flame associated with this task?"
+    },
+    terrainGlissant: {
+      nom: "Slippery/unstable terrain",
+      description: "Are there any risks of slippery or unstable ground associated with this task?"
+    },
+    attentionMarche: {
+      nom: "stumble",
+      description: "Are there any tripping hazards associated with this task?"
+    },
+    autre: {
+      nom: "Other",
+      description: "Are there any other risks associated with this task besides those mentioned?"
+    }, 
+    unknown: {
+      nom: "Risk of asphyxiation / lack of oxygen",
+      description: "Are there any risks of asphyxiation or lack of oxygen associated with this task?" 
+    },
+
+
+    controlMeasure: {
+      danger: "danger",
+      mesures: "measures",
+      implemented: "implemented",
+      delete: "delete",
+      deleteText: "Do you really want to remove this control measure?",
+      valider: "validate",
+      mesureToTake: "measure to be taken",
+      addDescription1: "To add a new control measure for other hazards",
+      addDescription2: "press the '+' button below",
+    },
+
+
+    epi: {
+      description: "Ensure that all required equipment is available, in good condition, suitable for the task, and that you know how to use it correctly. Wear it at all times."
+    },
+    antibruit: {
+      nom: "Noise protection",
+      description: "Do you have the required hearing protection for this task?"
+    },
+    faceProtection: {
+      nom: "Face protection glasses",
+      description: "Do you have the required face protection glasses for this task?"
+    },
+    gant: {
+      nom: "Protective gloves",
+      description: "Do you have the protective gloves required for this task?"
+    },
+    gilet: {
+      nom: "high visibility vest",
+      description: "Do you have the high-visibility vest required for this task?"
+    },
+    gilet2: {
+      nom: "Life jacket",
+      description: "Do you have the life jacket required for this task?"
+    },
+    lunettes: {
+      nom: "Safety glasses",
+      description: "Do you have the required safety glasses for this task?"
+    },
+    chaussuresProtection: {
+      nom: "Protective shoes",
+      description: "Do you have the required protective footwear for this task?"
+    },
+    uniforme: {
+      nom: "Protective clothing",
+      description: "Do you have the required protective clothing for this task?"
+    },
+
+
+    fitness: {
+      merci: "Thank you for taking the time to finish your Take 5!!!",
+      backHome: "return to homepage",
+      finish: "I finished my Take 5"
     },
 
     bonneCondition: {
