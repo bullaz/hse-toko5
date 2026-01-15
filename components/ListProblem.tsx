@@ -8,6 +8,7 @@ import { imagePathMapping } from "../utils/imagePathMapping";
 import { addCommentaire, resolveToko5 } from "../services/ApiService";
 import Toko5Repository from "../repository/Toko5Repository";
 import * as SecureStore from 'expo-secure-store';
+import { useAppTranslation } from "../contexts/TranslationContext";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ListProblem'>;
 
@@ -16,6 +17,8 @@ export default function ListProblem({ navigation, route }: Props) {
   const theme = useTheme();
 
   //const { toko5 }: { toko5: Toko5Json } = route.params;
+
+  const {t} = useAppTranslation();
 
   const [toko5, setToko5] = useState<Toko5Json>(route.params.toko5);
 
@@ -47,7 +50,7 @@ export default function ListProblem({ navigation, route }: Props) {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: `TOKO 5 de ${toko5.prenomContractant} ${toko5.nomContractant}`,
+      title: `${t("recent.single")} ${toko5.prenomContractant} ${toko5.nomContractant}`,
     });
   }, [navigation, toko5]);
 
@@ -69,13 +72,13 @@ export default function ListProblem({ navigation, route }: Props) {
   const getStatusConfig = (etat: string) => {
     switch (etat?.toLowerCase()) {
       case 'ongoing':
-        return { color: '#FFA726', icon: 'clock-outline', label: 'En cours' };
+        return { color: '#FFA726', icon: 'clock-outline', label: t("singleTake5.enCours") };
       case 'valide':
-        return { color: '#4CAF50', icon: 'check-circle-outline', label: 'Valide' };
+        return { color: '#4CAF50', icon: 'check-circle-outline', label: t("singleTake5.valide") };
       case 'invalide':
-        return { color: '#F44336', icon: 'close-circle-outline', label: 'invalide' };
+        return { color: '#F44336', icon: 'close-circle-outline', label: t("singleTake5.invalide") };
       default:
-        return { color: '#757575', icon: 'help-circle-outline', label: 'Inconnu' };
+        return { color: '#757575', icon: 'help-circle-outline', label: t("singleTake5.unknown") };
     }
   };
 
@@ -132,9 +135,19 @@ export default function ListProblem({ navigation, route }: Props) {
                   <View style={styles.contractorContainer}>
                     <Icon source="account-hard-hat" size={20} color={theme.colors.primary} />
                     <View style={styles.contractorInfo}>
-                      <Text style={styles.contractorLabel}>Contractant</Text>
+                      <Text style={styles.contractorLabel}>{t("home.worker").toLowerCase()}</Text>
                       <Text style={styles.contractorName}>
                         {toko5.prenomContractant} {toko5.nomContractant}
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View style={styles.contractorContainer}>
+                    <Icon source="clipboard-list" size={20} color={theme.colors.primary} />
+                    <View style={styles.contractorInfo}>
+                      <Text style={styles.contractorLabel}>{t("identification.task")}</Text>
+                      <Text style={styles.contractorName}>
+                        {toko5.task.nom}
                       </Text>
                     </View>
                   </View>
@@ -142,17 +155,17 @@ export default function ListProblem({ navigation, route }: Props) {
                   <View style={styles.statsContainer}>
                     <View style={styles.statItem}>
                       <Text style={styles.statNumber}>{toko5.listMesureControle?.length || 0}</Text>
-                      <Text style={styles.statLabel}>Mesures</Text>
+                      <Text style={styles.statLabel}>{t("singleTake5.mesures")}</Text>
                     </View>
                     <View style={styles.statDivider} />
                     <View style={styles.statItem}>
                       <Text style={styles.statNumber}>{toko5.listCommentaire?.length || 0}</Text>
-                      <Text style={styles.statLabel}>Commentaires</Text>
+                      <Text style={styles.statLabel}>{t("singleTake5.commentaires")}</Text>
                     </View>
                     <View style={styles.statDivider} />
                     <View style={styles.statItem}>
                       <Text style={styles.statNumber}>{toko5.listProblem?.length || 0}</Text>
-                      <Text style={styles.statLabel}>Problèmes</Text>
+                      <Text style={styles.statLabel}>{t("singleTake5.problems")}</Text>
                     </View>
                   </View>
                 </View>
@@ -166,7 +179,7 @@ export default function ListProblem({ navigation, route }: Props) {
                   <View style={styles.sectionHeader}>
                     <Icon source="clipboard-check" size={24} color={theme.colors.primary} />
                     <Text style={styles.sectionTitle} variant="titleMedium">
-                      Mesures de Contrôle ({toko5.listMesureControle.length})
+                      {t("singleTake5.mesureLabel")+" ("+toko5.listMesureControle.length+")"}
                     </Text>
                   </View>
 
@@ -186,7 +199,7 @@ export default function ListProblem({ navigation, route }: Props) {
                                 color="white"
                               />
                               <Text style={styles.implementedText}>
-                                {item.implemented ? 'Implémentée' : 'En attente'}
+                                {item.implemented ? t("singleTake5.implemented") : t("singleTake5.notImplemented")}
                               </Text>
                             </View>
                           </View>
@@ -197,7 +210,7 @@ export default function ListProblem({ navigation, route }: Props) {
                         {item.question && (
                           <View style={styles.questionContainer}>
                             <View style={styles.questionTextContainer}>
-                              <Text style={styles.questionLabel}>Danger/risque</Text>
+                              <Text style={styles.questionLabel}>{t("singleTake5.risk")}</Text>
                               <Text style={styles.questionText}>{item.question.nom}</Text>
                             </View>
                             <Icon source={imagePathMapping(item.question.pictogramme)} size={40} />
@@ -220,7 +233,7 @@ export default function ListProblem({ navigation, route }: Props) {
                 <View style={styles.sectionHeader}>
                   <Icon source="message-text" size={24} color={theme.colors.primary} />
                   <Text variant="titleMedium" style={styles.sectionTitle}>
-                    Commentaires ({toko5.listCommentaire?.length || 0})
+                    {t("singleTake5.commentaires")} {toko5.listCommentaire?.length || 0}
                   </Text>
                 </View>
 
@@ -256,7 +269,7 @@ export default function ListProblem({ navigation, route }: Props) {
                 ) : (
                   <View style={styles.noCommentsContainer}>
                     <Icon source="message-outline" size={32} color="#999" />
-                    <Text style={styles.noCommentsText}>Aucun commentaire pour le moment</Text>
+                    <Text style={styles.noCommentsText}>{t("singleTake5.noComment")}</Text>
                   </View>
                 )}
 
@@ -275,7 +288,7 @@ export default function ListProblem({ navigation, route }: Props) {
               <Card.Content>
                 <TextInput
                   mode="outlined"
-                  placeholder="Écrivez votre commentaire ici..."
+                  placeholder={t("singleTake5.commentPlaceholder")}
                   value={newComment}
                   onChangeText={setNewComment}
                   multiline
@@ -293,7 +306,7 @@ export default function ListProblem({ navigation, route }: Props) {
                   disabled={!newComment.trim()}
                   labelStyle={{ color: "white" }}
                 >
-                  commenter
+                  {t("singleTake5.comment")}
                 </Button>
                 {commentLoading && (
                   <View style={{ marginTop: 15 }}>
@@ -303,7 +316,7 @@ export default function ListProblem({ navigation, route }: Props) {
               </Card.Content>
             </Card>
 
-            {/* Problems Section - Show even if empty for awareness */}
+            {/* Problems Section - Show even if empty */}
             <Card style={[styles.sectionCard,
             toko5.listProblem?.length === 0 && styles.emptySection
             ]} mode='contained'>
@@ -315,7 +328,7 @@ export default function ListProblem({ navigation, route }: Props) {
                     color={toko5.listProblem?.length > 0 ? "#F44336" : "#4CAF50"}
                   />
                   <Text style={styles.sectionTitle} variant="titleMedium">
-                    Problèmes ({toko5.listProblem?.length || 0})
+                    {t("singleTake5.problems")} ({toko5.listProblem?.length || 0})
                   </Text>
                 </View>
 
@@ -341,7 +354,7 @@ export default function ListProblem({ navigation, route }: Props) {
                               <View style={styles.questionContainer}>
                                 <View style={styles.questionTextContainer}>
                                   <Text style={styles.questionLabel}>{item.nom}</Text>
-                                  <Text style={styles.questionText}>description</Text>
+                                  {/* <Text style={styles.questionText}>description</Text> */}
                                 </View>
                                 <Icon source={imagePathMapping(item.pictogramme)} size={40} />
                               </View>
@@ -355,7 +368,7 @@ export default function ListProblem({ navigation, route }: Props) {
                       ) : (
                         <View style={styles.emptyState}>
                           <Icon source="check" size={32} color="#4CAF50" />
-                          <Text style={styles.emptyStateText}>Ce toko 5 est ok</Text>
+                          <Text style={styles.emptyStateText}>{t("singleTake5.ok")}</Text>
                         </View>
                       )
                     }
@@ -376,7 +389,7 @@ export default function ListProblem({ navigation, route }: Props) {
                       disabled={!newComment.trim()}
                       labelStyle={{ color: "white" }}
                     >
-                      problèmes resolus
+                      {t("singleTake5.resolve")}
                     </Button>
                   </Card.Content>
                 </Card>
@@ -384,9 +397,9 @@ export default function ListProblem({ navigation, route }: Props) {
             )}
           </ScrollView>
           <Modal visible={resolveVisible} onDismiss={hideResolveModal} contentContainerStyle={styles.resolveModalStyle}>
-            <Text style={{ textAlign: "center", paddingLeft: 17 }}
+            <Text style={{ textAlign: "center", paddingLeft: 10, paddingRight: 10 }}
               variant="titleMedium">
-              Voulez-vous vraiment laisser le contractant continuer son toko 5?
+              {t("singleTake5.resolveText")}
             </Text>
             <View style={{ flexDirection: 'row', justifyContent: 'space-around', gap: 30 }}>
               <Button style={{
@@ -404,7 +417,7 @@ export default function ListProblem({ navigation, route }: Props) {
                   fontSize: 18
                 }}
               >
-                oui
+                {t("common.yes")}
               </Button>
               <Button style={{
                 width: "30%",
@@ -423,7 +436,7 @@ export default function ListProblem({ navigation, route }: Props) {
                   fontSize: 18
                 }}
               >
-                non
+                {t("common.no")}
               </Button>
             </View>
           </Modal>
@@ -436,7 +449,7 @@ export default function ListProblem({ navigation, route }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: 'ghostwhite',
   },
   headerCard: {
     margin: 16,

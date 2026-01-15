@@ -12,3 +12,8 @@ export interface Societe{
     societe_id: number,
     nom: string
 }
+
+export interface Poste{
+    poste_id: number,
+    nom: string
+}

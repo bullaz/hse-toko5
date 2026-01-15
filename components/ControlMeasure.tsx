@@ -151,7 +151,7 @@ export default function ControlMeasure({ navigation, route }: Props) {
               }}>
                 <View
                   style={{
-                    marginTop: 40,
+                    marginTop: 25,
                     marginBottom: 10,
                     // flex: 1,
                     flexWrap: "wrap",
@@ -166,7 +166,7 @@ export default function ControlMeasure({ navigation, route }: Props) {
                       size={40}
                     />
                   <Text
-                    style={{ textAlign: "center", paddingLeft: 17 }}
+                    style={{ textAlign: "auto", paddingLeft: 17 ,flexBasis: '70%' }}
                     variant="titleMedium"
                   >
                    {t("controlMeasure.addDescription1")} {" "}
@@ -343,7 +343,7 @@ export default function ControlMeasure({ navigation, route }: Props) {
 
             {/* also add a delete modal */}
             <Modal visible={deleteVisible} onDismiss={hideDeleteModal} contentContainerStyle={styles.deleteModalStyle}>
-              <Text style={{ textAlign: "center", paddingLeft: 17 }}
+              <Text style={{ textAlign: "center", paddingLeft: 17, paddingRight: 17 }}
                 variant="titleMedium">
                 {t("controlMeasure.deleteText")}
               </Text>

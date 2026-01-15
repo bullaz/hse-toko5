@@ -153,7 +153,7 @@ export default function Organise2({ navigation, route }: Props) {
                                         />
                                     </View>
                                     <View>
-                                        <Text variant="titleMedium" style={{ textAlign: 'center' }}>{question.nom}</Text>
+                                        <Text variant="titleMedium" style={{ textAlign: 'center' }}>{t(question.text_id+".nom")}</Text>
                                     </View>
                                 </View>
                             ))}
@@ -172,7 +172,7 @@ export default function Organise2({ navigation, route }: Props) {
                             fontSize: 16
                         }}
                     >
-                        précédent
+                        {t("navigationButton.previous")}
                     </Button>
                 </View>
 
@@ -193,7 +193,7 @@ export default function Organise2({ navigation, route }: Props) {
                             fontSize: 16
                         }}
                     >
-                        suivant
+                        {t("navigationButton.next")}
                     </Button>
                 </View>
             </View >

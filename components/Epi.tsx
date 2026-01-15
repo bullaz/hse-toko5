@@ -121,7 +121,7 @@ export default function Epi({ navigation, route }: Props) {
                             size={40}
                         />
                         <Text
-                            style={{ textAlign: "center", paddingLeft: 17 }}
+                            style={{ textAlign: "auto", paddingLeft: 17, flexBasis: "70%" }}
                             variant="titleMedium"
                         >
                             {t("epi.description")}

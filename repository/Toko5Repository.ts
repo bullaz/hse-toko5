@@ -19,7 +19,7 @@ import { getLocalDateTimeISOString } from '../utils/commonFunctions';
 import { ETAT } from '../constants/commonConstants';
 import { v7 as uuidv7 } from 'uuid';
 import { Question, Reponse, Toko5 } from '../context';
-import { Societe, Task } from '../types/domain';
+import { Poste, Societe, Task } from '../types/domain';
 
 
 class Toko5Repository {
@@ -189,6 +189,19 @@ class Toko5Repository {
                 console.log('Error creating table mesure_controle: ', error);
             }
 
+
+            try {
+                await this.db.execAsync(
+                    `CREATE TABLE IF NOT EXISTS poste (
+                        poste_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        nom TEXT NOT NULL
+                    )`
+                )
+                console.log('Table poste created successfully');
+            } catch (error) {
+                console.log('Error creating table poste: ', error);
+            }
+
             try {
                 await this.db.execAsync(`DELETE FROM reponse`);
                 await this.db.execAsync(`DELETE FROM toko5`);
@@ -209,12 +222,12 @@ class Toko5Repository {
                         ('permis de travail', 'workpermit', 'permis', 'organise', 1),
                         ('attention eboulement', 'falling-rock', 'eboulement', 'organise', 0),
                         ('pelle', 'pelle', 'pelle', 'organise', 0),
-                        ('attention feu', 'fire_warning', 'fue', 'organise', 0),
-                        ('test1', 'organise22', 'test1', 'organise', 0),
-                        ('test5', 'organise23', 'test5', 'organise', 0),
-                        ('test2', 'organise24', 'test2', 'organise', 0),
-                        ('test3', 'organise211', 'test3', 'organise', 0),
-                        ('test4', 'organiselast', 'test4', 'organise', 0),
+                        ('attention feu', 'fire_warning', 'fire', 'organise', 0),
+                        ('test1', 'organise22', 'confinedSpace', 'organise', 0),
+                        ('test5', 'organise23', 'suspendedLoad', 'organise', 0),
+                        ('test2', 'organise24', 'fall', 'organise', 0),
+                        ('test3', 'organise211', 'pressureExplosion', 'organise', 0),
+                        ('test4', 'organiselast', 'embankment', 'organise', 0),
 
 
                         ('biohazard', 'biohazard','biohazard', 'risk', 0),
@@ -241,6 +254,11 @@ class Toko5Repository {
                         ('Est-ce que je suis en bonne condition pour faire ce travail?',null ,'','safety', 1),
                         ('Est-ce que je suis en securite pour realiser la tache?',null ,'','safety', 1),
                         ('Executer la tache en toute securite',null ,'','safety', 1)
+                    `
+                )
+                await this.db.runAsync(
+                    `INSERT INTO poste (nom) VALUES 
+                        ('poste1'),('poste2'),('poste3')
                     `
                 )
                 await this.db.runAsync(
@@ -294,6 +312,21 @@ class Toko5Repository {
                 return listTask as Task[];
             } catch (error) {
                 console.log("error getAllTask", error);
+                throw error;
+            }
+        } else {
+            throw new Error('Database not initialized');
+        }
+    }
+
+    async getAllPoste(): Promise<Poste[]> {
+        if (this.db !== null) {
+            try {
+                const listPoste = await this.db.getAllAsync('SELECT * FROM Poste');
+                console.log(listPoste);
+                return listPoste as Poste[];
+            } catch (error) {
+                console.log("error getAllPost", error);
                 throw error;
             }
         } else {

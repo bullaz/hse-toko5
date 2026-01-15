@@ -101,9 +101,16 @@ export interface Toko5Json {
   prenomContractant: string,
   dateHeure: string,
   etat: string,
+  task: TaskJson,
   listMesureControle: MesureControleDto[],
   listCommentaire: CommentaireDto[],
   listProblem: QuestionDto[]
+}
+
+export interface TaskJson{
+  taskId: number,
+  nom: string,
+  listQuestion: QuestionDto[]
 }
 
 export interface CommentaireInterface {

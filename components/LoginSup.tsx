@@ -4,15 +4,18 @@ import { ActivityIndicator, Button, Icon, IconButton, Text, useTheme } from "rea
 import { KeyboardAvoidingView, ScrollView, StatusBar, View } from "react-native";
 import styles from "../styles/loginStyle";
 import { TextInput } from "react-native-paper";
-import { useContext, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import { useCameraPermissions } from "expo-camera";
 import * as SecureStore from 'expo-secure-store';
+import { Poste } from "../types/domain";
+import { useFocusEffect } from "@react-navigation/native";
+import { Dropdown } from "react-native-element-dropdown";
+import { useAppTranslation } from "../contexts/TranslationContext";
 
-
-//////////////////////////wrap every other components with a wrapper component that verify if the toko 5 is valid or not
-/////////////////// if it is not valid the wrapper component just navigate to the "please talk with your supervisor" component
 
 type Props = NativeStackScreenProps<RootStackParamList>;
+
+
 
 export default function LoginSup({ navigation }: Props) {
     const theme = useTheme();
@@ -30,6 +33,10 @@ export default function LoginSup({ navigation }: Props) {
 
     const [loading, setLoading] = useState<boolean>(false);
 
+    const {t} = useAppTranslation();
+
+    const [poste, setPoste] = useState<Poste>();
+
     const handleLogin = async () => {
         setLoading(true); //doesn't work maybe (react batching state updates)
         await SecureStore.setItemAsync("nomSuperviseur", nom);
@@ -38,9 +45,40 @@ export default function LoginSup({ navigation }: Props) {
         navigation.navigate('ScanQr');
     }
 
+    const [dropdownFocus, setDropdownFocus] = useState<boolean>(false);
+
     const handleRefresh = () => {
 
     }
+
+    const [initLoading, setInitLoading] = useState<boolean>(true);
+
+    const [posteData, setPosteData] = useState<{ label: string; value: Poste; }[]>([]);
+
+    const init = async () => {
+        if (toko5Repository !== null) {
+            const postes = await toko5Repository.getAllPoste();
+            let dataPoste = [];
+            for (let poste of postes) {
+                dataPoste.push({
+                    label: "         " + poste.nom,
+                    value: poste
+                })
+            }
+            setPosteData(dataPoste);
+        } else {
+            throw new Error("internal error: repository toko5repository is null");
+        }
+        setInitLoading(false);
+    }
+
+    useFocusEffect(
+        useCallback(() => {
+            init();
+            return () => {
+            };
+        }, [])
+    );
 
 
     return (
@@ -56,7 +94,6 @@ export default function LoginSup({ navigation }: Props) {
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
             >
-                {/* Header */}
                 <View style={styles.header}>
                     <View
                         style={{
@@ -68,31 +105,20 @@ export default function LoginSup({ navigation }: Props) {
                             alignContent: "center",
                         }}
                     >
-                        {/* <Icon
-                            source="card-account-details-outline"
-                            size={52}
-                            color="rgba(56, 56, 56, 0.87)"
-                        /> */}
-
-                        {/* <Text
-                            style={{ textAlign: "center", paddingLeft: 17, color: 'rgba(0, 0, 0, 0.87)' }}
-                            variant="titleMedium"
-                        > */}
                         <Text
                             style={{ textAlign: "center", color: "rgba(88, 88, 88, 1)", fontSize: 16 }}
                             variant="titleSmall"
                         >
-                            Fenoy ireny  {" "}
+                            {t("identification.description1")}  {" "}
                             {"\n"}
-                            hahamantarana anao
-                            {/* Vous n'avez pas de : {"\n"}- [something...] */}
+                            {t("identification.description2")}
                         </Text>
                     </View>
                 </View>
                 <View style={styles.card}>
                     <View style={styles.inputContainer}>
                         <Text style={styles.inputLabel}>
-                            Nom <Text style={styles.requiredIndicator}>*</Text>
+                            {t("identification.nom")}<Text style={styles.requiredIndicator}>*</Text>
                         </Text>
                         <TextInput
                             left={<TextInput.Icon
@@ -100,19 +126,17 @@ export default function LoginSup({ navigation }: Props) {
                                 color="#7F8C8D"
                                 size={20}
                             />}
-                            placeholder="Votre nom"
+                            placeholder={t("identification.nomLabel")}
                             value={nom}
                             style={styles.textInput}
                             onChangeText={nom => setNom(nom)}
                             mode="outlined"
-                        // outlineColor="#E8ECF4"
-                        // activeOutlineColor="#3498DB"
                         />
                     </View>
 
                     <View style={styles.inputContainer}>
                         <Text style={styles.inputLabel}>
-                            Prénom <Text style={styles.requiredIndicator}>*</Text>
+                            {t("identification.prenomLabel")} <Text style={styles.requiredIndicator}>*</Text>
                         </Text>
                         <TextInput
                             left={<TextInput.Icon
@@ -120,31 +144,47 @@ export default function LoginSup({ navigation }: Props) {
                                 color="#7F8C8D"
                                 size={20}
                             />}
-                            placeholder="Votre prénom"
+                            placeholder={t("identification.nomLabel")}
                             value={prenom}
                             style={styles.textInput}
                             onChangeText={prenom => setPrenom(prenom)}
                             mode="outlined"
-                        // outlineColor="#E8ECF4"
-                        // activeOutlineColor="#3498DB"
                         />
                     </View>
 
-                    {/* <TextInput
-                            left={<TextInput.Icon icon={require('../assets/pictogram/id.png')} />}
-                            label={
-                                <Text
-                                    style={{ textAlign: "center", color: 'rgba(77, 77, 71, 0.87)' }}
-                                    variant="titleMedium"
-                                >
-                                    ID
-                                </Text>
-                            }
-                            value={text}
-                            style={styles.textInput}
-                            onChangeText={text => setText(text)}
-                            underlineColor='darkgrey'
-                        /> */}
+                    <View style={styles.dropdownContainer}>
+                        <Text style={styles.inputLabel}>
+                            {t("identification.poste")} <Text style={styles.requiredIndicator}>*</Text>
+                        </Text>
+                        <Dropdown
+                            style={[
+                                styles.dropdown,
+                                dropdownFocus && styles.dropdownFocus
+                            ]}
+                            placeholderStyle={styles.placeholderStyle}
+                            selectedTextStyle={styles.selectedTextStyle}
+                            inputSearchStyle={styles.inputSearchStyle}
+                            iconStyle={styles.iconStyle}
+                            data={posteData}
+                            search
+                            maxHeight={300}
+                            labelField="label"
+                            valueField="value"
+                            placeholder={"          " + t("identification.posteLabel")}
+                            searchPlaceholder="Rechercher..."
+                            onFocus={() => setDropdownFocus(true)}
+                            onBlur={() => setDropdownFocus(false)}
+                            onChange={item => setPoste(item.value)}
+                            renderLeftIcon={() => (
+                                <Icon
+                                    source="clipboard-list"
+                                    size={20}
+                                    color={dropdownFocus ? "rgba(26, 85, 161, 0.87)" : "#7F8C8D"}
+                                />
+                            )}
+                        />
+                    </View>
+
                     <Button
                         mode="contained"
                         onPress={handleLogin}

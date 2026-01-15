@@ -130,7 +130,7 @@ function AppNavigator() {
               icon="home-circle"
               size={33}
               iconColor="white"
-              onPress={() => navigation.navigate('Home')}
+              onPress={() => navigation.navigate('Recent')}
             />
           ),
         })}
@@ -337,7 +337,7 @@ function AppNavigator() {
         name="Fitness"
         options={({ navigation }) => ({
           title: screenTitles.fitness, 
-          headerBackVisible: false, 
+          headerBackVisible: true, 
           gestureEnabled: false,
           headerRight: () => (
             <IconButton

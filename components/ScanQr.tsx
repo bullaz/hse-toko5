@@ -9,6 +9,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import axios from "axios";
 import { BACKEND_URL } from "../constants/commonConstants";
 import globalStyles from "../styles";
+import { useAppTranslation } from "../contexts/TranslationContext";
 
 const { width, height } = Dimensions.get('window');
 
@@ -85,6 +86,7 @@ export default function ScanQr({ navigation }: Props) {
     const [loading, setLoading] = useState<boolean>(true);
     const [toko5State, setToko5State] = useState<string>();
     const [currentToko5, setCurrentToko5] = useState<Toko5Json | null>(null);
+    const {t} = useAppTranslation();
 
     const [visible, setVisible] = useState(false);
     const showDialog = () => setVisible(true);
@@ -173,7 +175,7 @@ export default function ScanQr({ navigation }: Props) {
                     {/* Top text */}
                     <View style={styles.topOverlay}>
                         {/* <Text style={styles.instructionText}>Scanner un TOKO 5</Text> */}
-                        <Text style={styles.subText}>Positionnez le code QR dans le cadre</Text>
+                        <Text style={styles.subText}>{t("scanQr.description")}</Text>
                     </View>
 
                     {/* Scan frame */}

@@ -24,6 +24,12 @@ export const translations = {
       next: "suivant",
       home: "accueil"
     },
+
+    scanQr: {
+      description: "Positionnez le code QR dans le cadre"
+    },
+
+
     screenTitles: {
       home: "TAKE 5",
       recent: "TAKE 5 RÉCENT(S)",
@@ -40,14 +46,14 @@ export const translations = {
       commentaire: "COMMENTAIRES",
       listProblem: "INFORMATIONS"
     },
-    recent:{
+    recent: {
       empty: "Vous n'avez pas de TAKE 5",
       pressButtonNewEmpty: "Veuillez presser le bouton en dessous pour en initier un!",
       pressButtonNew: "Veuillez presser le bouton en dessous pour initier un nouveau TAKE 5 !",
       delete: "Voulez-vous vraiment supprimer ce  TAKE 5?", //(supprimer le take 5 ne le supprimera pour de la base données de l'HSE)
       single: "Take 5 de"
     },
-    identification: { 
+    identification: {
       description1: "Veuillez vous identifier",
       description2: "pour continuer",
       nom: "Nom",
@@ -56,6 +62,8 @@ export const translations = {
       phone: "Téléphone",
       societe: "Société",
       task: "Tâche",
+      poste: "Poste",
+      posteLabel: "votre poste",
       nomLabel: "Votre nom",
       permis: "ID permis de travail",
       prenomLabel: "Votre prenom",
@@ -66,7 +74,7 @@ export const translations = {
     },
 
 
-    think:{
+    think: {
       description: "Prenez un moment pour évaluer votre état et vos moyens. Soyez honnête avec vous-même",
     },
     alcool: {
@@ -94,18 +102,57 @@ export const translations = {
     organise1: {
       description: "Veuillez verifier que toutes les autorisations, procédures et plans nécessaires sont en place et compris avant le démarrage des travaux."
     },
-    swp:{
+    swp: {
       nom: "SWP",
       description: "Avez-vous un SWP (Safe Work Procedure) pour cette tâche?"
     },
-    ast:{
+    ast: {
       nom: "AST",
       description: "Avez-vous une AST (Analyse de Sécurité de Tâche) pour cette tâche?"
     },
-    permis:{
+    permis: {
       nom: "Permis de travail",
       description: "Avez-vous un permis de travail pour cette tâche?"
     },
+
+
+
+    organise2: {
+      description: "Organisez votre espace de travail. Regardez autour de vous. Quels sont les dangers à proximité?" //Organise your workspace. Look around you. What hazards are nearby?
+    },
+    pressureExplosion: {
+      nom: "Pression / Explosion",
+      description: "Avez-vous identifié tous les systèmes sous pression ou les matières explosives susceptibles de provoquer des projections de débris pour cette tâche?"
+    },
+    confinedSpace: {
+      nom: "Espace confiné",
+      description: "Avez-vous identifié des zones d'accès restreint, ou des fosses nécessitant un permis d'entrée spécifique pour cette tâche?"
+    },
+    fall: {
+      nom: "Chute de hauteur",
+      description: "Travaillez-vous à proximité d'un rebord non protégé ou à une hauteur où un équipement antichute est nécessaire?"
+    },
+    suspendedLoad: {
+      nom: "Charges suspendues",
+      description: "Avez-vous vérifié l'absence d'activité de pont roulant et vous êtes-vous assuré d'être hors de la zone de chute pour cette tâche?"
+    },
+    fire: {
+      nom: "Substances inflammables",
+      description: "Avez-vous identifié des risques d'incendie et vous êtes-vous assuré que toutes les sources d'inflammation sont maîtrisées pour cette tâche?"
+    },
+    eboulement: {
+      nom: "Risque d'éboulement / Terrain instable",
+      description: "Avez-vous évalué le talus en amont pour déceler les risques d'éboulement ou de débris instables susceptibles de se déplacer lors de cette tâche?"
+    },
+    embankment: {
+      nom: "embankment",
+      description: "Travaillez-vous près d'un quai, d'eaux profondes ou d'un ravin abrupt où il existe un risque de chute?"
+    },
+    pelle: {
+      nom: "Active Work Zone",
+      description: "Active Work Zone"
+    },
+
 
 
 
@@ -119,7 +166,7 @@ export const translations = {
     },
     electricite: {
       nom: "Électricité",
-      description: "Can I get in contact with live electrical parts during this task?"
+      description: "Puis-je entrer en contact avec des composants électriques sous tension pendant cette tâche?"
     },
     fatal: {
       nom: "Risque mortel",
@@ -140,10 +187,10 @@ export const translations = {
     autre: {
       nom: "Autre",
       description: "Y a-t-il d'autres risques que ceux cités associés à cette tâche?"
-    }, 
+    },
     unknown: {
       nom: "Risque d'asphyxie / manque d'oxygène",
-      description: "Y a-t-il des risques d'asphyxie ou de manque d'oxygène associés à cette tâche?" 
+      description: "Y a-t-il des risques d'asphyxie ou de manque d'oxygène associés à cette tâche?"
     },
 
 
@@ -213,6 +260,34 @@ export const translations = {
     executerTache: {
       nom: "Exécuter la tâche en toute sécurité",
       description: "Exécuter la tâche en toute sécurité"
+    },
+
+
+    singleTake5: {
+      mesures: "Mesures",
+      commentaires: "Commentaires",
+      commentPlaceholder: "Écrivez votre commentaire ici...",
+      problems: "Problèmes",
+      mesureLabel: "Mesures de Contrôle",
+      implemented: "Implémentée",
+      notImplemented: "En attente",
+      risk: "Danger/risque",
+      noComment: "Aucun commentaire pour le moment",
+      comment: "commenter",
+      ok: "Ce toko 5 est ok",
+      resolve: "problèmes resolus",
+      resolveText: "Voulez-vous vraiment laisser le contractant continuer son toko 5?",
+      enCours: "En cours",
+      valide: "Valide",
+      invalide: "Invalide",
+      unknown: "Inconnu"
+    },
+
+    invalide: {
+      invalide: "Votre Toko 5 est invalide",
+      manipError: "En cas d'erreur de manipulation, vous pouvez encore reessayer en appuyant sur le bouton en bas a gauche",
+      otherwise: "Sinon",
+      talkToSup: "Veuillez parler avec votre supersiveur"
     }
 
 
@@ -242,7 +317,12 @@ export const translations = {
       next: "next",
       home: "home"
     },
-     screenTitles: {
+
+    scanQr: {
+      description: "Position the QR code in the frame"
+    },
+
+    screenTitles: {
       home: "TAKE 5",
       recent: "RECENT TAKE 5",
       invalide: "TAKE 5 INVALID",
@@ -258,14 +338,14 @@ export const translations = {
       commentaire: "COMMENTS",
       listProblem: "TAKE 5 INFORMATION"
     },
-    recent:{
+    recent: {
       empty: "You don't have any TAKE 5 yet",
       pressButtonNewEmpty: "Please press the button below to initiate one!",
       pressButtonNew: "Please press the button below to initiate a new TAKE 5 !",
       delete: "Do you really wanna delete this TAKE 5?",
       single: "Take 5 of"
     },
-    identification: { 
+    identification: {
       description1: "Please identify yourself ",
       description2: "to continue",
       nom: "Last Name",
@@ -274,6 +354,8 @@ export const translations = {
       phone: "Phone number",
       societe: "Company",
       task: "Task",
+      poste: "Position",
+      posteLabel: "Your position",
       permis: "Work permit ID",
       nomLabel: "Your last name",
       prenomLabel: "Your first name",
@@ -282,7 +364,10 @@ export const translations = {
       enter: "identify yourself",
       refreshData: "Refresh data"
     },
-    think:{
+
+
+
+    think: {
       description: "Take a moment to assess your condition and resources. Be honest with yourself"
     },
     alcool: {
@@ -306,21 +391,62 @@ export const translations = {
       description: "Is there a sufficient number of workers to execute this task?"
     },
 
+
+
     organise1: {
       description: "Please ensure that all necessary permits, procedures and plans are in place and understood before starting work."
     },
-    swp:{
+    swp: {
       nom: "SWP",
       description: "Do you have a SWP (Safe Work Procedure) for this task?"
     },
-    ast:{
+    ast: {
       nom: "AST",
       description: "Do you have an AST (Task Safety Analysis) for this task?"
     },
-    permis:{
+    permis: {
       nom: "Work permit",
       description: "Do you have a work permit for this task?"
     },
+
+
+    organise2: {
+      description: "Organise your workspace. Look around you. What are nearby?"
+    },
+    pressureExplosion: {
+      nom: "Pressure / Explosion",
+      description: "Have you identified all pressurized systems or explosive materials that could cause flying debris for this task?"
+    },
+    confinedSpace: {
+      nom: "Confined space",
+      description: "Have you identified any restricted-access areas, tanks, or pits that require a specific entry permit for this task?"
+    },
+    fall: {
+      nom: "Fall from heights",
+      description: "Are you working near an unprotected ledge or at an elevation where fall arrest equipment is needed?"
+    },
+    suspendedLoad: {
+      nom: "Suspended loads",
+      description: "Have you checked for overhead crane activity and ensured you are clear of the drop zone for this task?"
+    },
+    fire: {
+      nom: "Flammable substances",
+      description: "Have you identified all fire hazards and ensured that all ignition sources are controlled for this task?"
+    },
+    eboulement: {
+      nom: "Falling Rocks / Unstable Ground",
+      description: "Have you assessed the overhead slope for potential rockfall or loose debris that could shift for this task?"
+    },
+    embankment: {
+      nom: "Water/Embankment",
+      description: "Are you working near a quayside, deep water, or a steep drop-off where there is a risk of falling in?"
+    },
+    pelle: {
+      nom: "Active Work Zone",
+      description: "Active Work Zone"
+    },
+
+
 
     identifyRisks: {
       description: "Identify the specific hazards and risks associated with your task and environment.",
@@ -353,10 +479,10 @@ export const translations = {
     autre: {
       nom: "Other",
       description: "Are there any other risks associated with this task besides those mentioned?"
-    }, 
+    },
     unknown: {
       nom: "Risk of asphyxiation / lack of oxygen",
-      description: "Are there any risks of asphyxiation or lack of oxygen associated with this task?" 
+      description: "Are there any risks of asphyxiation or lack of oxygen associated with this task?"
     },
 
 
@@ -408,6 +534,14 @@ export const translations = {
       nom: "Protective clothing",
       description: "Do you have the required protective clothing for this task?"
     },
+    casque: {
+      nom: "Safety helmet",
+      description: ""
+    },
+    cacheBouche: {
+      nom: "Face mask",
+      description: ""
+    },
 
 
     fitness: {
@@ -426,7 +560,36 @@ export const translations = {
     executerTache: {
       nom: "Execute the task safely",
       description: "Execute the task safely"
+    },
+
+
+    singleTake5: {
+      mesures: "Measures",
+      commentaires: "Comments",
+      commentPlaceholder: "Write your comments here...",
+      problems: "Problems",
+      mesureLabel: "Control Measures",
+      implemented: "Implemented",
+      notImplemented: "Pending",
+      risk: "Danger/risk",
+      noComment: "No comments yet",
+      comment: "comment",
+      ok: "This take 5 is ok",
+      resolve: "problems solved",
+      resolveText: "Do you really want to let the contractor continue his toko 5?",
+      enCours: "In progress",
+      valide: "Valid",
+      invalide: "Invalid",
+      unknown: "Unknown"
+    },
+
+    invalide: {
+      invalide: "Your take 5 is invalid",
+      manipError: "If you mistapped, you can try again by pressing the button in the bottom left corner.",
+      otherwise: "Otherwise",
+      talkToSup: "Please speak with your supervisor"
     }
+
   },
 
 
@@ -454,6 +617,12 @@ export const translations = {
       next: "manaraka",
       home: "Accueil"
     },
+
+    
+    scanQr: {
+      description: "Position the QR code in the frame"
+    },
+
     screenTitles: {
       home: "TAKE 5",
       recent: "TAKE 5 VAOVAO",
@@ -470,14 +639,14 @@ export const translations = {
       commentaire: "FANEHOAN-KEVITRA",
       listProblem: "TAKE 5"
     },
-    recent:{
+    recent: {
       empty: "Tsy manana TAKE 5 ianao",
       pressButtonNewEmpty: "Tsindrio io ambany io raha te hanomboka",
       pressButtonNew: "Tsindira io ambany io raha te hanomboka TAKE 5 vaovao!",
       delete: "Tena fafana TAKEa ve io TAKE 5 io?",
       single: "Take 5 an'i"
     },
-    identification: { 
+    identification: {
       description1: "Fenoy ireo",
       description2: "hahamantarana anao",
       nom: "Anarana",
@@ -492,9 +661,11 @@ export const translations = {
       societeLabel: "orinasa iasana",
       taskLabel: "Asa ho atao",
       enter: "s'identifer",
-      refreshData: "Actualiser les données"
+      refreshData: "Actualiser les données",
+      poste: "Andraikitra",
+      posteLabel: "Andraikitra sahaninao"
     },
-    think:{
+    think: {
       description: "Mandania fotoana kely hijerena ny tenanao. Mahaiza mamantatra ny tenanao"
     },
     alcool: {
@@ -518,22 +689,61 @@ export const translations = {
       description: "Ampy tsara ve ny isan'ny mpiasa hanantanteraka an'io asa io?"
     },
 
-    
+
     organise1: {
       description: "Hamarino tsara fa efa vonona sy takatra avokoa ny fahazoan-dalana, ny fomba fiasa ary ny drafitra rehetra ilaina alohan'ny hanombohana ny asa."
     },
-    swp:{
+    swp: {
       nom: "SWP",
       description: "Manana SWP (Safe Work Procedure) ho an'ity asa ity ve ianao?"
     },
-    ast:{
+    ast: {
       nom: "AST",
       description: "Manana AST (Task Safety Analysis) ho an'ity asa ity ve ianao?"
     },
-    permis:{
+    permis: {
       nom: "Fahazoan-dalana hiasa",
       description: "Manana permis de travail ho an'ity asa ity ve ianao?"
     },
+
+
+    organise2: {
+      description: "Diniho ny toeram-piasanao. Jereo ny manodidina anao."
+    },
+    pressureExplosion: {
+      nom: "Pression / Explosion",
+      description: ""
+    },
+    confinedSpace: {
+      nom: "Toerana tery",
+      description: "Nahita faritra tery na lavaka voarara ve ianao izay mitaky fahazoan-dàlana manokana ho an'ity asa ity?"
+    },
+    fall: {
+      nom: "Fall from heights",
+      description: "Are you working near an unprotected ledge or at an elevation where fall arrest equipment is needed?"
+    },
+    suspendedLoad: {
+      nom: "Suspended loads",
+      description: "Have you checked for overhead crane activity and ensured you are clear of the drop zone for this task?"
+    },
+    fire: {
+      nom: "Flammable substances",
+      description: "Have you identified all fire hazards and ensured that all ignition sources are controlled for this task?"
+    },
+    eboulement: {
+      nom: "Falling Rocks / Unstable Ground",
+      description: "Have you assessed the overhead slope for potential rockfall or loose debris that could shift for this task?"
+    },
+    embankment: {
+      nom: "Water/Embankment",
+      description: "Are you working near a quayside, deep water, or a steep drop-off where there is a risk of falling in?"
+    },
+    pelle: {
+      nom: "Active Work Zone",
+      description: "Active Work Zone"
+    },
+
+
     identifyRisks: {
       description: "Identify the specific hazards and risks associated with your task and environment.",
       controlMeasure: "My control measures"
@@ -565,10 +775,10 @@ export const translations = {
     autre: {
       nom: "Other",
       description: "Are there any other risks associated with this task besides those mentioned?"
-    }, 
+    },
     unknown: {
       nom: "Risk of asphyxiation / lack of oxygen",
-      description: "Are there any risks of asphyxiation or lack of oxygen associated with this task?" 
+      description: "Are there any risks of asphyxiation or lack of oxygen associated with this task?"
     },
 
 
@@ -639,6 +849,33 @@ export const translations = {
     executerTache: {
       nom: "Exécuter la tâche en toute sécurité",
       description: "Exécuter la tâche en toute sécurité"
+    },
+
+    singleTake5: {
+      mesures: "Mesures",
+      commentaires: "Commentaires",
+      commentPlaceholder: "Écrivez votre commentaire ici...",
+      problems: "Problèmes",
+      mesureLabel: "Mesures de Contrôle",
+      implemented: "Implémentée",
+      notImplemented: "En attente",
+      risk: "Danger/risque",
+      noComment: "Aucun commentaire pour le moment",
+      comment: "commenter",
+      ok: "Ce toko 5 est ok",
+      resolve: "problèmes resolus",
+      resolveText: "Voulez-vous vraiment laisser le contractant continuer son toko 5?",
+      enCours: "En cours",
+      valide: "Valide",
+      invalide: "Invalide",
+      unknown: "Inconnu"
+    },
+
+    invalide: {
+      invalide: "Votre Toko 5 est invalide",
+      manipError: "En cas d'erreur de manipulation, vous pouvez encore reessayer en appuyant sur le bouton en bas a gauche",
+      otherwise: "raha tsy izany",
+      talkToSup: "Resaho amin'ny mpanara-maso anao izany."
     }
   }
 } as const;
