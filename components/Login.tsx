@@ -172,7 +172,7 @@ export default function Login({ navigation }: Props) {
 
                 const isInternetReachable = await checkConnection();
                 if (isInternetReachable) {
-                    await axios.post(`${BACKEND_URL}/toko5s`, toko5, {
+                    axios.post(`${BACKEND_URL}/toko5s`, toko5, {
                         headers: { 'Content-Type': 'application/json' }
                     });
                 }
@@ -370,7 +370,7 @@ export default function Login({ navigation }: Props) {
                         <Text style={styles.inputLabel}>{t("identification.permis")}</Text>
                         <TextInput
                             left={<TextInput.Icon icon="card-account-details" color="#7F8C8D" />}
-                            placeholder="ID-XXXX-XXXX"
+                            placeholder="XXXX-XXX"
                             value={formData.permisId}
                             style={styles.textInput}
                             onChangeText={(value) => handleInputChange('permisId', value)}

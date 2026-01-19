@@ -64,6 +64,7 @@ export default function ControlMeasure({ navigation, route }: Props) {
   const [currentMesureText, setCurrentMesureText] = useState<string>('')
     ;
   const openMesureModal = async (mesure: any) => {
+    console.log(mesure);
     setCurrentMesure(mesure);
     setCurrentMesureText(mesure.mesure_prise);
     setVisible(true);
@@ -375,6 +376,7 @@ export default function ControlMeasure({ navigation, route }: Props) {
                 }}
                   mode="contained"
                   onPress={async () => {
+                    hideDeleteModal();
                   }}
                   //contentStyle={{ flexDirection: 'row-reverse' }}
                   labelStyle={{

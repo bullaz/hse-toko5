@@ -205,6 +205,8 @@ class Toko5Repository {
             try {
                 await this.db.execAsync(`DELETE FROM reponse`);
                 await this.db.execAsync(`DELETE FROM toko5`);
+                await this.db.execAsync(`DELETE FROM task_question`);
+                await this.db.execAsync(`DELETE FROM task`);
                 await this.db.execAsync(`DELETE FROM question`);
                 await this.db.execAsync(`DELETE FROM mesure_controle`);
                 await this.db.execAsync(`DELETE FROM commentaire`);
@@ -251,9 +253,9 @@ class Toko5Repository {
                         ('chaussures de protection', 'shoes', 'chaussuresProtection', 'epi', 0),
                         ('uniforme', 'uniform', 'uniforme', 'epi', 0),
 
-                        ('Est-ce que je suis en bonne condition pour faire ce travail?',null ,'','safety', 1),
-                        ('Est-ce que je suis en securite pour realiser la tache?',null ,'','safety', 1),
-                        ('Executer la tache en toute securite',null ,'','safety', 1)
+                        ('Est-ce que je suis en bonne condition pour faire ce travail?',null ,'bonneCondition','safety', 1),
+                        ('Est-ce que je suis en securite pour realiser la tache?',null ,'securite','safety', 1),
+                        ('Executer la tache en toute securite',null ,'executerTache','safety', 1)
                     `
                 )
                 await this.db.runAsync(
@@ -271,10 +273,10 @@ class Toko5Repository {
                     `DELETE FROM societe`
                 )
                 await this.db.runAsync(
-                    `INSERT INTO TASK(nom) VALUES ('test_task')`
+                    `INSERT INTO TASK(nom) VALUES ('tache-exemple')`
                 )
                 await this.db.runAsync(
-                    `INSERT INTO societe(nom) VALUES ('Societe1'),('Societe2'),('Societe3')`
+                    `INSERT INTO societe(nom) VALUES ('Company-y'),('Company-x'),('Company-z')`
                 )
                 await this.db.runAsync(
                     `INSERT INTO task_question(task_id,question_id) VALUES ((select task_id from task limit 1),(select question_id from question where nom = 'uniforme'))`
@@ -287,9 +289,7 @@ class Toko5Repository {
                 console.log('Error while inserting inside table question : ', error);
             }
 
-
-
-
+            
             //this.getAllTask();
         }
 

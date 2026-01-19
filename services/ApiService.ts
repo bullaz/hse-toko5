@@ -93,11 +93,11 @@ export const addMesureControle = async (toko5Repository: Toko5Repository | null,
     let netState = await isInternetReachable();
     if (netState && toko5Repository) {
         //console.log("add mesure controle api here");
-        const controlId: string = await toko5Repository.insertIntoControlMeasure(toko5Id, questionId, '', false);
+        const controlId: string = await toko5Repository.insertIntoControlMeasure(toko5Id, questionId, mesurePrise, false);
         //console.log("control Id", controlId);
         const question = await toko5Repository.findQuestionById(questionId);
         //console.log(question);
-        await axios.post(`${BACKEND_URL}/toko5s/toko5/${toko5Id}/mesures_controle`, {
+        axios.post(`${BACKEND_URL}/toko5s/toko5/${toko5Id}/mesures_controle`, {
             mesureControleId: controlId,
             toko5Id: toko5Id,
             questionNom: question.nom,

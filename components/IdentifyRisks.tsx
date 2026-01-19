@@ -76,6 +76,7 @@ export default function IdentifyRisks({ navigation, route }: Props) {
     const addMesure = async () => {
         setMesureLoading(true);
         if (currentQuestionId !== undefined) {
+            // await toko5Repository?.insertIntoControlMeasure(toko5Id,currentQuestionId,currentMesureText,false);
             await addMesureControle(toko5Repository, toko5Id, currentQuestionId, currentMesureText);
             setVisible(false);
         }
@@ -101,13 +102,15 @@ export default function IdentifyRisks({ navigation, route }: Props) {
     }
 
     const saveAllReponse = async (list: Record<number, Reponse> | null) => {
+        console.log('save');
         try {
             setSaveLoading(true);
             if (toko5Repository !== null) {
                 if (list === null) {
                     await toko5Repository.insertListReponse(Object.values(listReponse));
                     await toko5Repository.updateToko5Saved(toko5Id, false);
-                    await updateOrAddToko5(toko5Id, toko5Repository, true, Object.values(listReponse));
+                    // await updateOrAddToko5(toko5Id, toko5Repository, true, Object.values(listReponse));
+                    updateOrAddToko5(toko5Id, toko5Repository, true, Object.values(listReponse));
                     await toko5Repository.updateToko5Saved(toko5Id, true);
                 } else {
                     await toko5Repository.insertListReponse(Object.values(list));

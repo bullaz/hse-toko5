@@ -63,7 +63,7 @@ export default function Fitness({ navigation, route }: Props) {
             if (toko5Repository !== null) {
                 await toko5Repository.insertListReponse(Object.values(listReponse));
                 await toko5Repository.updateToko5Saved(toko5Id, false);
-                // await updateOrAddToko5(toko5Id, toko5Repository, true, Object.values(listReponse));
+                updateOrAddToko5(toko5Id, toko5Repository, true, Object.values(listReponse));
                 //await toko5Repository.updateToko5Saved(toko5Id, true);
             } else {
                 throw new Error('toko5Repository not initialized');
@@ -91,10 +91,10 @@ export default function Fitness({ navigation, route }: Props) {
                 if (isValid) {
                     //const etat = toko
                     await toko5Repository.validateToko5(toko5Id);
-                    await updateOrAddToko5(toko5Id, toko5Repository, true, Object.values(listReponse), true);
+                    updateOrAddToko5(toko5Id, toko5Repository, true, Object.values(listReponse), true);
                     setVisible(true);
                 } else {
-                    await updateOrAddToko5(toko5Id, toko5Repository, true, Object.values(listReponse));
+                    updateOrAddToko5(toko5Id, toko5Repository, true, Object.values(listReponse));
                     const attemptNumber = await toko5Repository.getAttemptNumberToko5(toko5Id);
                     navigation.navigate('Invalide',{toko5Id: toko5Id, attemptNumber: attemptNumber});
                 }
@@ -141,7 +141,7 @@ export default function Fitness({ navigation, route }: Props) {
                         }}>
                             {listQuestion.map((question: Question, index: number) => (
                                 <View style={{ gap: 10 }} key={question.question_id}>
-                                    <Text style={{ textAlign: 'center', }} variant="titleMedium">{t(question.text_id+".nom")}</Text>
+                                    <Text style={{ textAlign: 'center', }} variant="titleMedium">{t(question.text_id+".description")}</Text>
                                     <View style={styles.checkboxContainer}>
                                         {/* <Checkbox
                                             value={listReponse[question.question_id].valeur} onValueChange={() => { updateListReponse(question.question_id, !listReponse[question.question_id].valeur) }}

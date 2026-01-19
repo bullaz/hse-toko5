@@ -26,7 +26,12 @@ export const translations = {
     },
 
     scanQr: {
-      description: "Positionnez le code QR dans le cadre"
+      description: "Positionnez le code QR dans le cadre",
+      valide: "Ce take 5 est valide",
+      invalide: "Ce take 5 est invalide",
+      ongoing: "Ce take 5 est en cours",
+      commenter: "commenter",
+      more: "plus de details"
     },
 
 
@@ -44,7 +49,7 @@ export const translations = {
       epi: "EPI / PPE",
       fitness: "MON ÉTAT",
       commentaire: "COMMENTAIRES",
-      listProblem: "INFORMATIONS"
+      listProblem: "Take 5 de ..."
     },
     recent: {
       empty: "Vous n'avez pas de TAKE 5",
@@ -78,8 +83,8 @@ export const translations = {
       description: "Prenez un moment pour évaluer votre état et vos moyens. Soyez honnête avec vous-même",
     },
     alcool: {
-      nom: "Alcool / Drogues / Sommeil",
-      description: "Etes-vous sous l'influence de l'alcool, de drogues ou de médicaments pouvant affecter votre vigilance ou votre capacité à travailler en toute sécurité? Avez-vous suffisamment dormi?"
+      nom: "Sobre et alerte",
+      description: "Confirmez-vous n'être sous aucune influence d'alcool, de drogues ou de médicaments pouvant affecter votre vigilance ou votre capacité à travailler en toute sécurité? Avez-vous suffisamment dormi?"
     },
     formation: {
       nom: "Formation",
@@ -319,7 +324,12 @@ export const translations = {
     },
 
     scanQr: {
-      description: "Position the QR code in the frame"
+      description: "Position the QR code in the frame",
+      valide: "That take 5 is valid",
+      invalide: "That take 5 is not valid",
+      ongoing: "That take 5 is in progress",
+      commenter: "comment",
+      more: "more details"
     },
 
     screenTitles: {
@@ -336,7 +346,7 @@ export const translations = {
       epi: "PPE / EPP",
       fitness: "MY CONDITION",
       commentaire: "COMMENTS",
-      listProblem: "TAKE 5 INFORMATION"
+      listProblem: "Take 5 of"
     },
     recent: {
       empty: "You don't have any TAKE 5 yet",
@@ -372,7 +382,7 @@ export const translations = {
     },
     alcool: {
       nom: "Alcohol / Drugs / Sleep",
-      description: "Are you under the influence of alcohol, drugs or medication that may affect your alertness or ability to work safely? Have you had enough sleep?"
+      description: "Do you confirm that you are not under the influence of alcohol, drugs or medication that could affect your alertness or your ability to work safely? Have you had enough sleep?"
     },
     formation: {
       nom: "Training",
@@ -576,7 +586,7 @@ export const translations = {
       comment: "comment",
       ok: "This take 5 is ok",
       resolve: "problems solved",
-      resolveText: "Do you really want to let the contractor continue his toko 5?",
+      resolveText: "Do you really want to let the contractor continue his take 5?",
       enCours: "In progress",
       valide: "Valid",
       invalide: "Invalid",
@@ -620,7 +630,12 @@ export const translations = {
 
     
     scanQr: {
-      description: "Position the QR code in the frame"
+      description: "Position the QR code in the frame",
+      valide: "Ce take 5 est valide",
+      invalide: "Ce take 5 est invalide",
+      ongoing: "Ce take 5 est en cours",
+      commenter: "commenter",
+      more: "plus de details"
     },
 
     screenTitles: {
@@ -670,7 +685,7 @@ export const translations = {
     },
     alcool: {
       nom: "Alikaola / Zava-mahadomelina / Torimaso",
-      description: "Nandray toaka, zava-mahadomelina na fanafody mety misy fiantraikany amin'ny fahamailoanao ve ianao? Ampy torimaso ve ianao?"
+      description: "Manamarina ve ianao fa tsy nandray toaka, zava-mahadomelina na fanafody mety misy fiantraikany amin'ny fahamailoanao? Ampy torimaso ve ianao?"
     },
     formation: {
       nom: "Fiofanana",

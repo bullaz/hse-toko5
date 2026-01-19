@@ -196,7 +196,7 @@ export default function ScanQr({ navigation }: Props) {
                     <View style={styles.bottomOverlay}>
                         {scanned && (
                             <Text style={styles.bottomText}>
-                                Code scanné!
+                                Code scanned!
                             </Text>
                         )}
                     </View>
@@ -228,23 +228,23 @@ export default function ScanQr({ navigation }: Props) {
             <Dialog visible={visible} onDismiss={hideDialog}>
                 <Dialog.Title>
                     <Text style={{ color: '#444444ff', fontSize: 20, fontWeight: 'bold' }}>
-                        {loading ? ("Scan Toko 5...") : ("Scan Toko 5")}
+                        {loading ? ("Scan Take 5...") : ("Scan Take 5")}
                     </Text>
                 </Dialog.Title>
                 <Dialog.Content>
                     {loading ? (
                         <ActivityIndicator size="large" color={theme.colors.primary} />
                     ) : (
-                        <Text style={{ fontSize: 20 }}>Ce toko 5 est {toko5State}</Text>
+                        <Text style={{ fontSize: 20 }}>{t("scanQr."+toko5State)}</Text>
                     )}
                 </Dialog.Content>
                 <Dialog.Actions>
                     {loading ? (
-                        <Button onPress={hideDialog}>Annuler</Button>
+                        <Button onPress={hideDialog}>Cancel</Button>
                     ) : (
                         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
-                            <Button onPress={()=>{navigation.navigate("ListProblem",{toko5: currentToko5}); hideDialog() }} labelStyle={{fontSize: 16}}>plus de details</Button>
-                            <Button onPress={()=>{navigation.navigate("Commentaire",{toko5: currentToko5}); hideDialog() }} labelStyle={{fontSize: 16}}>commenter</Button>
+                            <Button onPress={()=>{navigation.navigate("ListProblem",{toko5: currentToko5}); hideDialog() }} labelStyle={{fontSize: 16}}>{t("scanQr.more")}</Button>
+                            <Button onPress={()=>{navigation.navigate("Commentaire",{toko5: currentToko5}); hideDialog() }} labelStyle={{fontSize: 16}}>{t("scanQr.commenter")}</Button>
                         </View>
                     )}
                 </Dialog.Actions>

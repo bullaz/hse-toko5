@@ -18,7 +18,7 @@ export default function ListProblem({ navigation, route }: Props) {
 
   //const { toko5 }: { toko5: Toko5Json } = route.params;
 
-  const {t} = useAppTranslation();
+  const { t } = useAppTranslation();
 
   const [toko5, setToko5] = useState<Toko5Json>(route.params.toko5);
 
@@ -179,7 +179,7 @@ export default function ListProblem({ navigation, route }: Props) {
                   <View style={styles.sectionHeader}>
                     <Icon source="clipboard-check" size={24} color={theme.colors.primary} />
                     <Text style={styles.sectionTitle} variant="titleMedium">
-                      {t("singleTake5.mesureLabel")+" ("+toko5.listMesureControle.length+")"}
+                      {t("singleTake5.mesureLabel") + " (" + toko5.listMesureControle.length + ")"}
                     </Text>
                   </View>
 
@@ -211,7 +211,11 @@ export default function ListProblem({ navigation, route }: Props) {
                           <View style={styles.questionContainer}>
                             <View style={styles.questionTextContainer}>
                               <Text style={styles.questionLabel}>{t("singleTake5.risk")}</Text>
-                              <Text style={styles.questionText}>{item.question.nom}</Text>
+                              {item.question.nom === "electricite" ? (
+                                <Text style={styles.questionText}>{t(item.question.nom+(".nom"))}</Text>
+                              ) : (
+                                <Text style={styles.questionText}>Risk of fire / explosion / blaze</Text>
+                              )}
                             </View>
                             <Icon source={imagePathMapping(item.question.pictogramme)} size={40} />
                           </View>
@@ -353,7 +357,8 @@ export default function ListProblem({ navigation, route }: Props) {
                               </View>
                               <View style={styles.questionContainer}>
                                 <View style={styles.questionTextContainer}>
-                                  <Text style={styles.questionLabel}>{item.nom}</Text>
+                                  {/* a changer */}
+                                  <Text style={styles.questionLabel}>{t(item.nom+(".nom"))}</Text>
                                   {/* <Text style={styles.questionText}>description</Text> */}
                                 </View>
                                 <Icon source={imagePathMapping(item.pictogramme)} size={40} />

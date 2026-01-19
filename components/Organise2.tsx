@@ -59,7 +59,7 @@ export default function Organise2({ navigation, route }: Props) {
             if (toko5Repository !== null) {
                 await toko5Repository.insertListReponse(Object.values(listReponse));
                 await toko5Repository.updateToko5Saved(toko5Id, false);
-                await updateOrAddToko5(toko5Id, toko5Repository, true, Object.values(listReponse));
+                updateOrAddToko5(toko5Id, toko5Repository, true, Object.values(listReponse));
                 await toko5Repository.updateToko5Saved(toko5Id, true);
             } else {
                 throw new Error('toko5Repository not initialized');
