@@ -273,16 +273,16 @@ class Toko5Repository {
                     `DELETE FROM societe`
                 )
                 await this.db.runAsync(
-                    `INSERT INTO TASK(nom) VALUES ('tache-exemple')`
+                    `INSERT INTO TASK(nom) VALUES ('Verification des commutateurs (switch)')`
                 )
                 await this.db.runAsync(
-                    `INSERT INTO societe(nom) VALUES ('Company-y'),('Company-x'),('Company-z')`
+                    `INSERT INTO societe(nom) VALUES ('Stellarix'),('Yas'),('Orange')`
                 )
                 await this.db.runAsync(
-                    `INSERT INTO task_question(task_id,question_id) VALUES ((select task_id from task limit 1),(select question_id from question where nom = 'uniforme'))`
+                    `INSERT INTO task_question(task_id,question_id) VALUES ((select task_id from task limit 1),(select question_id from question where nom = 'chaussures de protection'))`
                 )
                 await this.db.runAsync(
-                    `INSERT INTO task_question(task_id,question_id) VALUES ((select task_id from task limit 1),(select question_id from question where nom = 'alcool'))`
+                    `INSERT INTO task_question(task_id,question_id) VALUES ((select task_id from task limit 1),(select question_id from question where nom = 'gant'))`
                 )
                 console.log('insert inside table question successfully');
             } catch (error) {

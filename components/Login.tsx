@@ -62,7 +62,8 @@ export default function Login({ navigation }: Props) {
         return errors;
     };
 
-    // const renderSocieteLeftIcon = () => {
+    // const renderSocieteLeftIc
+    // on = () => {
     //     return (
     //         <IconButton
     //             icon="office-building"
@@ -134,14 +135,14 @@ export default function Login({ navigation }: Props) {
             let dataTask = [];
             for (let societe of societes) {
                 dataSociete.push({
-                    label: "         " +societe.nom,
+                    label: societe.nom,
                     value: societe
                 })
             }
             setListSociete(dataSociete);
             for (let task of tasks) {
                 dataTask.push({
-                    label: "         " +task.nom,
+                    label: task.nom,
                     value: task
                 })
             }
